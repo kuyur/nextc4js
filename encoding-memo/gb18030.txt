@@ -1,0 +1,17 @@
+00~7F (Ascii)
+
+80 (Euro Sign, in practice / Error, in standard)
+
+81~FE
+  81~FE x 40~7E (Unicode BMP)
+  81~FE x 7F (undefined)
+  81~FE x 80~FE (Unicode BMP)
+  
+  81~84 x 30~39 x 81~FE x 30~39 (Unicode BMP)
+  85    x 30~39 x 81~FE x 30~39 (reserved)
+  86~8F x 30~39 x 81~FE x 30~39 (reserved)
+  90~E3 x 30~39 x 81~FE x 30~39 (Unicode Ext)
+  E4~FC x 30~39 x 81~FE x 30~39 (reserved)
+  FD~FE x 30~39 x 81~FE x 30~39 (reserved, private use area)
+
+FF (Error)

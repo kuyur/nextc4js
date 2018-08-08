@@ -1,9 +1,9 @@
 [{
-  "name": "Shift-JIS (Front-End)",
+  "name": "shift-jis-front-end",
   "description": "Shift-JIS to Unicode.",
   "version": "",
   "type": "front-end",
-  "path": "charmaps/fe-jis2u-little-endian.map",
+  "path": "charmaps/front-jis2u-little-endian.map",
   "readingpolicies": [{
     "begin": 0,
     "end": 127,
@@ -28,7 +28,7 @@
   }, {
     "begin": 128,
     "end": 160,
-    "reference": "0xFFFD"
+    "reference": "undefined"
   }, {
     "begin": 161,
     "end": 223,
@@ -37,11 +37,32 @@
   }, {
     "begin": 224,
     "end": 33087,
-    "reference": "0xFFFD"
+    "reference": "undefined"
   }, {
     "begin": 33088,
     "end": 65535,
     "reference": "buffer",
     "offset": 63
   }]
+}, {
+  "name": "gb18030-front-end",
+  "description": "GB18030 to Unicode.",
+  "version": "",
+  "type": "front-end",
+  "path": "charmaps/front-gb18030-little-endian.map",
+  "rules": [
+    {
+      "byte": 1,
+      "condition": ["0x00~0x7F"]
+    }, {
+      "byte": 1,
+      "condition": ["0x80"]
+    }, {
+      "byte": 1,
+      "condition": ["0xFF"]
+    }, {
+      "byte": 2,
+      "condition": ["0x81~0xFE", "0x40~0x7E"]
+    }
+  ]
 }]
