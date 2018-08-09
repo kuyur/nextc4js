@@ -4,45 +4,48 @@
   "version": "",
   "type": "front-end",
   "path": "charmaps/front-jis2u-little-endian.map",
-  "readingpolicies": [{
-    "begin": 0,
-    "end": 127,
-    "readnext": false
-  }, {
-    "begin": 128,
-    "end": 160,
-    "readnext": true
-  }, {
-    "begin": 161,
-    "end": 223,
-    "readnext": false
-  }, {
-    "begin": 224,
-    "end": 255,
-    "readnext": true
-  }],
+  "rules": [
+    {
+      "byte": 1,
+      "condition": ["0x00~0x7F"]
+    }, {
+      "byte": 1,
+      "condition": ["0xA1~0xDF"]
+    }, {
+      "byte": 2,
+      "condition": ["0x80~0xA0", "0x00~0xFF"]
+    }, {
+      "byte": 2,
+      "condition": ["0xE0~0xFF", "0x00~0xFF"]
+    }
+  ],
   "segments": [{
     "begin": 0,
     "end": 127,
-    "reference": "ascii"
+    "reference": "ascii",
+    "characterset": "ascii"
   }, {
     "begin": 128,
     "end": 160,
-    "reference": "undefined"
+    "reference": "undefined",
+    "characterset": "undefine"
   }, {
     "begin": 161,
     "end": 223,
     "reference": "buffer",
-    "offset": 0
+    "offset": 0,
+    "characterset": "JIS-X-0201"
   }, {
     "begin": 224,
     "end": 33087,
-    "reference": "undefined"
+    "reference": "undefined",
+    "characterset": "undefine"
   }, {
     "begin": 33088,
     "end": 65535,
     "reference": "buffer",
-    "offset": 63
+    "offset": 63,
+    "characterset": "JIS-X-0208"
   }]
 }, {
   "name": "gb18030-front-end",
@@ -53,16 +56,131 @@
   "rules": [
     {
       "byte": 1,
-      "condition": ["0x00~0x7F"]
-    }, {
-      "byte": 1,
-      "condition": ["0x80"]
+      "condition": ["0x00~0x80"]
     }, {
       "byte": 1,
       "condition": ["0xFF"]
     }, {
       "byte": 2,
-      "condition": ["0x81~0xFE", "0x40~0x7E"]
+      "condition": ["0x81~0xFE", "0x40~0xFE"]
+    }, {
+      "byte": 4,
+      "condition": ["0x81~0xFE", "0x30~0x39", "0x00~0xFF", "0x00~0xFF"]
+    }
+  ],
+  "segments":[
+    {
+      "begin": 0,
+      "end": 127,
+      "reference": "ascii",
+      "characterset": "ascii"
+    }, {
+      "begin": 128,
+      "end": 128,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "Euro Sign"
+    }, {
+      "begin": 129,
+      "end": 33087,
+      "reference": "undefined",
+      "characterset": "undefine"
+    }, {
+      "begin": 33088,
+      "end": 65535,
+      "reference": "buffer",
+      "offset": 1,
+      "characterset": "GBK"
+    }, {
+      "begin": 65536,
+      "end": 2167439663,
+      "reference": "undefined",
+      "characterset": "undefine"
+    }, {
+      "begin": 2167439664,
+      "end": 2218393145,
+      "condition": ["0x81~0x84", "0x30~0x39", "0x81~0xFE", "0x30~0x39"],
+      "reference": "indexing-buffer",
+      "offset": 32449,
+      "characterset": "Unicode (BMP)"
+    }, {
+      "begin": 2218393146,
+      "end": 2419097903,
+      "reference": "undefined",
+      "characterset": "undefine"
+    }, {
+      "begin": 2419097904,
+      "end": 3812228665,
+      "condition": ["0x90~0xE3", "0x30~0x39", "0x81~0xFE", "0x30~0x39"],
+      "reference": "gb18030-unicode-sp-mapping",
+      "characterset": "Unicode (SP)"
+    }, {
+      "begin": 3812228666,
+      "end": 4294967295,
+      "reference": "undefined",
+      "characterset": "undefine"
+    }
+  ]
+}, {
+  "name": "simp2tra-medium",
+  "description": "Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).",
+  "version": "Unicode 4.0 Unihan(Wikipedia version)",
+  "type": "medium",
+  "path": "charmaps/medium-simp2tra-little-endian.map",
+  "rules": "utf-16-le",
+  "segments":[
+    {
+      "begin": 0,
+      "end": 13725,
+      "reference": "self",
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 13726,
+      "end": 40863,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 40864,
+      "end": 65535,
+      "reference": "self",
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 65536,
+      "end": 1114111,
+      "reference": "self",
+      "characterset": "Unicode SP"
+    }
+  ]
+}, {
+  "name": "tra2simp-medium",
+  "description": "Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).",
+  "version": "Unicode 4.0 Unihan(Wikipedia version)",
+  "type": "medium",
+  "path": "charmaps/medium-tra2simp-little-endian.map",
+  "rules": "utf-16-le",
+  "segments":[
+    {
+      "begin": 0,
+      "end": 17078,
+      "reference": "self",
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 17079,
+      "end": 40860,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 40861,
+      "end": 65535,
+      "reference": "self",
+      "characterset": "Unicode BMP"
+    }, {
+      "begin": 65536,
+      "end": 1114111,
+      "reference": "self",
+      "characterset": "Unicode SP"
     }
   ]
 }]
