@@ -1,0 +1,27 @@
+{
+  "name": "unicue-online",
+  "description": "Unicue online.",
+  "version": "0.0.1",
+  "homepage": "https://github.com/kuyur/unicue-online",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kuyur/unicue-online.git"
+  },
+  "keywords": [
+    "unicue"
+  ],
+  "author": {
+    "name": "kuyur",
+    "email": "kuyur@kuyur.info"
+  },
+  "dependencies": {
+    "tape": ""
+  },
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/kuyur/unicue-online/issues"
+  },
+  "license": "MIT"
+}
