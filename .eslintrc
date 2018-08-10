@@ -1,0 +1,17 @@
+{
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true
+  },
+  "rules": {
+    "curly": "error",
+    "indent": ["error", 2],
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "quotes": ["error", "single"],
+    "no-global-assign": "error",
+    "no-redeclare": "error",
+    "no-undef": "error",
+    "no-trailing-spaces": "error"
+  }
+}
