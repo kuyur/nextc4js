@@ -15,10 +15,12 @@
     "email": "kuyur@kuyur.info"
   },
   "dependencies": {
-    "tape": ""
+    "gulp": "",
+    "gulp-eslint": "",
+    "gulp-tape": ""
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=8.0.0"
   },
   "bugs": {
     "url": "https://github.com/kuyur/unicue-online/issues"
