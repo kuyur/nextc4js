@@ -15,9 +15,9 @@
     "email": "kuyur@kuyur.info"
   },
   "dependencies": {
-    "gulp": "",
-    "gulp-eslint": "",
-    "gulp-tape": ""
+    "gulp": "3.9.1",
+    "gulp-eslint": "5.0.0",
+    "gulp-tape": "1.0.0"
   },
   "engines": {
     "node": ">=8.0.0"
