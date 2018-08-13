@@ -1,7 +1,7 @@
 [{
   "name": "shift-jis-front-end",
   "description": "Shift-JIS to Unicode.",
-  "version": "",
+  "version": "CP932",
   "type": "front-end",
   "path": "charmaps/front-jis2u-little-endian.map",
   "rules": [
