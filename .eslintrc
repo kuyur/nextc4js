@@ -9,7 +9,7 @@
     "curly": "error",
     "semi": ["error", "always"],
     "indent": ["error", 2],
-    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "eqeqeq": ["error", "smart"],
     "quotes": ["error", "single"],
     "no-global-assign": "error",
     "no-redeclare": "error",
