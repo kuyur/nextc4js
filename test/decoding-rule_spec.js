@@ -34,7 +34,19 @@ test('DecodingRuleMultibyte unit test', function(t) {
     var uint32Array = decodingRule.parse(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
-    assert.equal(uint32Array[0], 2184552504);
+    assert.equal(uint32Array[0], 0x8235A038);
+    assert.end();
+  });
+
+  t.test('parse()', function(assert) {
+    var buffer = new Uint8Array([0x20, 0x81, 0x40, 0x82, 0x35, 0xA0, 0x38]);
+    var decodingRule = new DecodingRuleMultibyte(rules);
+    var uint32Array = decodingRule.parse(buffer);
+    assert.equal(uint32Array instanceof Uint32Array, true);
+    assert.equal(uint32Array.length, 3);
+    assert.equal(uint32Array[0], 0x20);
+    assert.equal(uint32Array[1], 0x8140);
+    assert.equal(uint32Array[2], 0x8235A038);
     assert.end();
   });
 
@@ -44,7 +56,7 @@ test('DecodingRuleMultibyte unit test', function(t) {
     var array = decodingRule.parse2(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
-    assert.equal(array[0], 2184552504);
+    assert.equal(array[0], 0x8235A038);
     assert.end();
   });
 });
@@ -63,7 +75,7 @@ test('DecodingRuleUTF16LE unit test', function(t) {
     var uint32Array = utf16le.parse(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
-    assert.equal(uint32Array[0], 0x1d306);
+    assert.equal(uint32Array[0], 0x1D306);
     assert.end();
   });
 
@@ -73,7 +85,7 @@ test('DecodingRuleUTF16LE unit test', function(t) {
     var array = utf16le.parse2(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
-    assert.equal(array[0], 0x1d306);
+    assert.equal(array[0], 0x1D306);
     assert.end();
   });
 });
@@ -92,7 +104,7 @@ test('DecodingRuleUTF16BE unit test', function(t) {
     var uint32Array = utf16be.parse(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
-    assert.equal(uint32Array[0], 0x1d306);
+    assert.equal(uint32Array[0], 0x1D306);
     assert.end();
   });
 
@@ -102,7 +114,7 @@ test('DecodingRuleUTF16BE unit test', function(t) {
     var array = utf16be.parse2(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
-    assert.equal(array[0], 0x1d306);
+    assert.equal(array[0], 0x1D306);
     assert.end();
   });
 });
@@ -121,7 +133,7 @@ test('DecodingRuleUTF8 unit test', function(t) {
       var uint32Array = utf8.parse(buffer);
       assert.equal(uint32Array instanceof Uint32Array, true);
       assert.equal(uint32Array.length, 1);
-      assert.equal(uint32Array[0], 0x1d306);
+      assert.equal(uint32Array[0], 0x1D306);
       assert.end();
     });
   
@@ -131,7 +143,7 @@ test('DecodingRuleUTF8 unit test', function(t) {
       var array = utf8.parse2(buffer);
       assert.equal(array instanceof Array, true);
       assert.equal(array.length, 1);
-      assert.equal(array[0], 0x1d306);
+      assert.equal(array[0], 0x1D306);
       assert.end();
     });
 });
