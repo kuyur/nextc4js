@@ -1,31 +1,31 @@
 [{
   "name": "UTF-16 (LE) to UTF-8",
-  "description": "UTF-16 (little-ending) to UTF-8.",
+  "description": "UTF-16 (little-endian) to UTF-8.",
   "front-end": "utf-16-le",
   "back-end": "utf-8"
 }, {
   "name": "UTF-16 (LE) to UTF-16 (BE)",
-  "description": "UTF-16 (little-ending) to UTF-16 (big-ending).",
+  "description": "UTF-16 (little-endian) to UTF-16 (big-endian).",
   "front-end": "utf-16-le",
   "back-end": "utf-16-be"
 }, {
   "name": "UTF-16 (BE) to UTF-8",
-  "description": "UTF-16 (big-ending) to UTF-8.",
+  "description": "UTF-16 (big-endian) to UTF-8.",
   "front-end": "utf-16-be",
   "back-end": "utf-8"
 }, {
   "name": "UTF-16 (BE) to UTF-16 (LE)",
-  "description": "UTF-16 (big-ending) to UTF-16 (little-ending).",
+  "description": "UTF-16 (big-endian) to UTF-16 (little-endian).",
   "front-end": "utf-16-be",
   "back-end": "utf-16-le"
 }, {
   "name": "UTF-8 to UTF-16 (LE)",
-  "description": "UTF-8 to UTF-16 (little-ending).",
+  "description": "UTF-8 to UTF-16 (little-endian).",
   "front-end": "utf-8",
   "back-end": "utf-16-le"
 }, {
   "name": "UTF-8 to UTF-16 (BE)",
-  "description": "UTF-8 to UTF-16 (big-ending).",
+  "description": "UTF-8 to UTF-16 (big-endian).",
   "front-end": "utf-8",
   "back-end": "utf-16-be"
 }, {
@@ -34,13 +34,13 @@
   "front-end": "shift-jis-front-end",
   "back-end": "utf-8"
 }, {
-  "name": "Shift-JIS to UCS2 (little-ending)",
-  "description": "Shift-JIS to Unicode UCS2 (little-ending).",
+  "name": "Shift-JIS to UCS2 (little-endian)",
+  "description": "Shift-JIS to Unicode UCS2 (little-endian).",
   "front-end": "shift-jis-front-end",
   "back-end": "utf-16-le"
 }, {
-  "name": "Shift-JIS to UCS2 (big-ending)",
-  "description": "Shift-JIS to Unicode UCS2 (big-ending).",
+  "name": "Shift-JIS to UCS2 (big-endian)",
+  "description": "Shift-JIS to Unicode UCS2 (big-endian).",
   "front-end": "shift-jis-front-end",
   "back-end": "utf-16-be"
 }]

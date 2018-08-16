@@ -28,20 +28,20 @@ test('DecodingRuleMultibyte unit test', function(t) {
     assert.end();
   });
 
-  t.test('parse()', function(assert) {
+  t.test('decode()', function(assert) {
     var buffer = new Uint8Array([0x82, 0x35, 0xA0, 0x38]);
     var decodingRule = new DecodingRuleMultibyte(rules);
-    var uint32Array = decodingRule.parse(buffer);
+    var uint32Array = decodingRule.decode(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
     assert.equal(uint32Array[0], 0x8235A038);
     assert.end();
   });
 
-  t.test('parse()', function(assert) {
+  t.test('decode()', function(assert) {
     var buffer = new Uint8Array([0x20, 0x81, 0x40, 0x82, 0x35, 0xA0, 0x38]);
     var decodingRule = new DecodingRuleMultibyte(rules);
-    var uint32Array = decodingRule.parse(buffer);
+    var uint32Array = decodingRule.decode(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 3);
     assert.equal(uint32Array[0], 0x20);
@@ -50,10 +50,10 @@ test('DecodingRuleMultibyte unit test', function(t) {
     assert.end();
   });
 
-  t.test('parse2()', function(assert) {
+  t.test('parse()', function(assert) {
     var buffer = new Uint8Array([0x82, 0x35, 0xA0, 0x38]);
     var decodingRule = new DecodingRuleMultibyte(rules);
-    var array = decodingRule.parse2(buffer);
+    var array = decodingRule.parse(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
     assert.equal(array[0], 0x8235A038);
@@ -69,20 +69,20 @@ test('DecodingRuleUTF16LE unit test', function(t) {
     assert.end();
   });
 
-  t.test('parse()', function(assert) {
+  t.test('decode()', function(assert) {
     var buffer = new Uint8Array([0x34, 0xD8, 0x06, 0xDF]);
     var utf16le = DECODING_RULE_UTF16LE;
-    var uint32Array = utf16le.parse(buffer);
+    var uint32Array = utf16le.decode(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
     assert.equal(uint32Array[0], 0x1D306);
     assert.end();
   });
 
-  t.test('parse2()', function(assert) {
+  t.test('parse()', function(assert) {
     var buffer = new Uint8Array([0x34, 0xD8, 0x06, 0xDF]);
     var utf16le = DECODING_RULE_UTF16LE;
-    var array = utf16le.parse2(buffer);
+    var array = utf16le.parse(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
     assert.equal(array[0], 0x1D306);
@@ -98,20 +98,20 @@ test('DecodingRuleUTF16BE unit test', function(t) {
     assert.end();
   });
 
-  t.test('parse()', function(assert) {
+  t.test('decode()', function(assert) {
     var buffer = new Uint8Array([0xD8, 0x34, 0xDF, 0x06]);
     var utf16be = DECODING_RULE_UTF16BE;
-    var uint32Array = utf16be.parse(buffer);
+    var uint32Array = utf16be.decode(buffer);
     assert.equal(uint32Array instanceof Uint32Array, true);
     assert.equal(uint32Array.length, 1);
     assert.equal(uint32Array[0], 0x1D306);
     assert.end();
   });
 
-  t.test('parse2()', function(assert) {
+  t.test('parse()', function(assert) {
     var buffer = new Uint8Array([0xD8, 0x34, 0xDF, 0x06]);
     var utf16be = DECODING_RULE_UTF16BE;
-    var array = utf16be.parse2(buffer);
+    var array = utf16be.parse(buffer);
     assert.equal(array instanceof Array, true);
     assert.equal(array.length, 1);
     assert.equal(array[0], 0x1D306);
@@ -127,20 +127,20 @@ test('DecodingRuleUTF8 unit test', function(t) {
       assert.end();
     });
   
-    t.test('parse()', function(assert) {
+    t.test('decode()', function(assert) {
       var buffer = new Uint8Array([0xF0, 0x9D, 0x8C, 0x86]);
       var utf8 = DECODING_RULE_UTF8;
-      var uint32Array = utf8.parse(buffer);
+      var uint32Array = utf8.decode(buffer);
       assert.equal(uint32Array instanceof Uint32Array, true);
       assert.equal(uint32Array.length, 1);
       assert.equal(uint32Array[0], 0x1D306);
       assert.end();
     });
   
-    t.test('parse2()', function(assert) {
+    t.test('parse()', function(assert) {
       var buffer = new Uint8Array([0xF0, 0x9D, 0x8C, 0x86]);
       var utf8 = DECODING_RULE_UTF8;
-      var array = utf8.parse2(buffer);
+      var array = utf8.parse(buffer);
       assert.equal(array instanceof Array, true);
       assert.equal(array.length, 1);
       assert.equal(array[0], 0x1D306);

@@ -11,10 +11,10 @@ test('EncodingRuleUTF16LE unit test', function(t) {
     assert.end();
   });
 
-  t.test('unparse()', function(assert) {
+  t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
     var utf16le = ENCODING_RULE_UTF16LE;
-    var uint8array = utf16le.unparse(buffer);
+    var uint8array = utf16le.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0x34);
@@ -33,10 +33,10 @@ test('EncodingRuleUTF16BE unit test', function(t) {
     assert.end();
   });
 
-  t.test('unparse()', function(assert) {
+  t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
     var utf16be = ENCODING_RULE_UTF16BE;
-    var uint8array = utf16be.unparse(buffer);
+    var uint8array = utf16be.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0xD8);
@@ -55,10 +55,10 @@ test('EncodingRuleUTF8 unit test', function(t) {
     assert.end();
   });
 
-  t.test('unparse()', function(assert) {
+  t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
     var utf8 = ENCODING_RULE_UTF8;
-    var uint8array = utf8.unparse(buffer);
+    var uint8array = utf8.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0xF0);
