@@ -50,7 +50,7 @@
 }, {
   "name": "gb18030-front-end",
   "description": "GB18030 to Unicode.",
-  "version": "",
+  "version": "GB18030-2005",
   "type": "front-end",
   "path": "charmaps/front-gb18030-little-endian.map",
   "rules": [

@@ -1,3 +1,5 @@
+https://archive.org/details/GB18030-2005
+
 00~7F (Ascii)
 
 80 (Euro Sign, in practice / Error, in standard)
@@ -15,3 +17,16 @@
   FD~FE x 30~39 x 81~FE x 30~39 (reserved, private use area)
 
 FF (Error)
+
+
+------------------
+Unicode Supplementary Plain code point Mapping:
+  U+10000 ~ U+10FFFF -> 0x90 30 81 30 ~ 0xE3 32 9A 35
+
+count:
+last_offset = (0xE3 - 0x90) * 0xA * 0x7E * 0xA + (0x32 - 0x30) * 0x7E * 0xA + (0x9A - 0x81) * 0xA + (0x35 - 0x30) = 0xFFFFF
+count = last_offset + 1 = 0x100000
+
+------------------
+https://encoding.spec.whatwg.org/#gb18030-decoder
+https://encoding.spec.whatwg.org/index-gb18030-ranges.txt
