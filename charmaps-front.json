@@ -86,6 +86,38 @@
     "characterset": "GBK"
   }]
 }, {
+  "name": "big5-front-end",
+  "description": "Big5 to Unicode.",
+  "version": "UAO 2.50",
+  "type": "front-end",
+  "path": "charmaps/front-b2u-little-endian.map",
+  "rules": [
+    {
+      "byte": 1,
+      "condition": ["0x00~0x7F"]
+    }, {
+      "byte": 2,
+      "condition": ["0x81~0xFE", "0x40~0xFE"]
+    }
+  ],
+  "segments": [{
+    "begin": 0,
+    "end": 127,
+    "reference": "ascii",
+    "characterset": "ascii"
+  }, {
+    "begin": 128,
+    "end": 33087,
+    "reference": "undefined",
+    "characterset": "undefined"
+  }, {
+    "begin": 33088,
+    "end": 65535,
+    "reference": "buffer",
+    "offset": 0,
+    "characterset": "BIG5 UAO 2.50"
+  }]
+}, {
   "name": "gb18030-front-end",
   "description": "GB18030 to Unicode.",
   "version": "GB18030-2005",
