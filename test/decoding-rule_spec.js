@@ -28,7 +28,7 @@ test('DecodingRuleMultibyte unit test', function(t) {
     assert.end();
   });
 
-  t.test('decode()', function(assert) {
+  t.test('decode() - case1', function(assert) {
     var buffer = new Uint8Array([0x82, 0x35, 0xA0, 0x38]);
     var decodingRule = new DecodingRuleMultibyte(rules);
     var uint32Array = decodingRule.decode(buffer);
@@ -38,7 +38,7 @@ test('DecodingRuleMultibyte unit test', function(t) {
     assert.end();
   });
 
-  t.test('decode()', function(assert) {
+  t.test('decode() - case2', function(assert) {
     var buffer = new Uint8Array([0x20, 0x81, 0x40, 0x82, 0x35, 0xA0, 0x38]);
     var decodingRule = new DecodingRuleMultibyte(rules);
     var uint32Array = decodingRule.decode(buffer);
