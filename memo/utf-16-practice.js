@@ -13,3 +13,6 @@ str.length; // 2
 var str2 = '\u{1d306}';
 
 str === str2; // true
+
+var str3 = String.fromCodePoint(chr);
+str === str3; // true
