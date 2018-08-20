@@ -79,6 +79,10 @@ var big5Options = {
   }]
 };
 
+if (!fs.existsSync('test/out')) {
+  fs.mkdirSync('test/out');
+}
+
 test('GBK Charmap unit test', function(t) {
   t.test('convert()', function(assert) {
     var charmap = fs.readFileSync(gbkOptions.path);
