@@ -115,7 +115,7 @@ test('Big5 Decoder unit test', function(t) {
   });
 });
 
-test('UTF16 Decoder unit test', function(t) {
+test('UTF16LE Decoder unit test', function(t) {
   t.test('convert() - performance', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
