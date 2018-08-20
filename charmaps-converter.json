@@ -2,8 +2,9 @@
   "name": "simp2tra-medium",
   "description": "Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).",
   "version": "Unicode 4.0 Unihan(Wikipedia version)",
-  "type": "medium",
+  "type": "converter",
   "path": "charmaps/medium-simp2tra-little-endian.map",
+  "bytes": 2,
   "segments":[
     {
       "begin": 0,
@@ -32,8 +33,9 @@
   "name": "tra2simp-medium",
   "description": "Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).",
   "version": "Unicode 4.0 Unihan(Wikipedia version)",
-  "type": "medium",
+  "type": "converter",
   "path": "charmaps/medium-tra2simp-little-endian.map",
+  "bytes": 2,
   "segments":[
     {
       "begin": 0,

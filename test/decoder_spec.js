@@ -1,8 +1,7 @@
 var fs = require('fs');
-var MultiByteCharmap = require('../lib/nextc4js/charmap-front.js').Multibyte;
-var CHARMAP_DECODE_UTF16LE = require('../lib/nextc4js/charmap-front.js').UTF16LE;
-var ENCODING_RULE_UTF8 = require('../lib/nextc4js/encoding-rule.js').ENCODING_RULE_UTF8;
-var consts = require('../lib/nextc4js/const.js').consts;
+var decoder = require('../lib/nextc4js/decoder');
+var encodingrule = require('../lib/nextc4js/encoding-rule');
+var consts = require('../lib/nextc4js/const');
 var test = require('tape');
 
 var gbkOptions = {
@@ -10,7 +9,7 @@ var gbkOptions = {
   "description": "GBK to Unicode.",
   "version": "CP936 with enhancement",
   "type": "front-end",
-  "path": "charmaps/front-gb2u-little-endian.map",
+  "path": "charmaps/front-gbk2u-little-endian.map",
   "rules": [
     {
       "byte": 1,
@@ -83,12 +82,12 @@ if (!fs.existsSync('test/out')) {
   fs.mkdirSync('test/out');
 }
 
-test('GBK Charmap unit test', function(t) {
+test('GBK Decoder unit test', function(t) {
   t.test('convert()', function(assert) {
     var charmap = fs.readFileSync(gbkOptions.path);
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
-    var gbkCharmap = new MultiByteCharmap(gbkOptions, new Uint16Array(charmap.buffer));
-    var unicodeBuffer = gbkCharmap.convert(gbkTextBuffer);
+    var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
+    var unicodeBuffer = gbkDecoder.convert(gbkTextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var unicodeString = '';
     unicodeBuffer.forEach(function(code) {
@@ -99,14 +98,14 @@ test('GBK Charmap unit test', function(t) {
   });
 });
 
-test('Big5 Charmap unit test', function(t) {
+test('Big5 Decoder unit test', function(t) {
   t.test('convert()', function(assert) {
     var charmap = fs.readFileSync(big5Options.path);
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
-    var gbkCharmap = new MultiByteCharmap(big5Options, new Uint16Array(charmap.buffer));
-    var unicodeBuffer = gbkCharmap.convert(big5TextBuffer);
+    var big5Decoder = new decoder.Multibyte(big5Options, new Uint16Array(charmap.buffer));
+    var unicodeBuffer = big5Decoder.convert(big5TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var utf8Buffer = ENCODING_RULE_UTF8.encode(unicodeBuffer);
+    var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.open('test/out/hatsukiyura-utf-8.cue', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
       fs.writeSync(fd, utf8Buffer, 0, utf8Buffer.length, consts.UTF8_BOM.length);
@@ -116,13 +115,13 @@ test('Big5 Charmap unit test', function(t) {
   });
 });
 
-test('UTF16 Charmap unit test', function(t) {
+test('UTF16 Decoder unit test', function(t) {
   t.test('convert() - performance', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
-    var unicodeBuffer = CHARMAP_DECODE_UTF16LE.convert(utf16TextBuffer);
+    var unicodeBuffer = decoder.UTF16LE.convert(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var utf8Buffer = ENCODING_RULE_UTF8.encode(unicodeBuffer);
+    var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/bungakusyoujyo-utf-8.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();

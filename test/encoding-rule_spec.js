@@ -1,20 +1,16 @@
-var ENCODING_RULE_UTF16LE = require('../lib/nextc4js/encoding-rule.js').ENCODING_RULE_UTF16LE;
-var ENCODING_RULE_UTF16BE = require('../lib/nextc4js/encoding-rule.js').ENCODING_RULE_UTF16BE;
-var ENCODING_RULE_UTF8 = require('../lib/nextc4js/encoding-rule.js').ENCODING_RULE_UTF8;
+var encodingrule = require('../lib/nextc4js/encoding-rule');
 var test = require('tape');
 
-test('EncodingRuleUTF16LE unit test', function(t) {
+test('EncodingRule.UTF16LE unit test', function(t) {
   t.test('test()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    var utf16le = ENCODING_RULE_UTF16LE;
-    assert.equal(utf16le.test(buffer), 4);
+    assert.equal(encodingrule.UTF16LE.test(buffer), 4);
     assert.end();
   });
 
   t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    var utf16le = ENCODING_RULE_UTF16LE;
-    var uint8array = utf16le.encode(buffer);
+    var uint8array = encodingrule.UTF16LE.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0x34);
@@ -25,18 +21,16 @@ test('EncodingRuleUTF16LE unit test', function(t) {
   });
 });
 
-test('EncodingRuleUTF16BE unit test', function(t) {
+test('EncodingRule.UTF16BE unit test', function(t) {
   t.test('test()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    var utf16be = ENCODING_RULE_UTF16BE;
-    assert.equal(utf16be.test(buffer), 4);
+    assert.equal(encodingrule.UTF16BE.test(buffer), 4);
     assert.end();
   });
 
   t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    var utf16be = ENCODING_RULE_UTF16BE;
-    var uint8array = utf16be.encode(buffer);
+    var uint8array = encodingrule.UTF16BE.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0xD8);
@@ -47,16 +41,16 @@ test('EncodingRuleUTF16BE unit test', function(t) {
   });
 });
 
-test('EncodingRuleUTF8 unit test', function(t) {
+test('EncodingRule.UTF8 unit test', function(t) {
   t.test('test()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    assert.equal(ENCODING_RULE_UTF8.test(buffer), 4);
+    assert.equal(encodingrule.UTF8.test(buffer), 4);
     assert.end();
   });
 
   t.test('encode()', function(assert) {
     var buffer = new Uint32Array([0x1D306]);
-    var uint8array = ENCODING_RULE_UTF8.encode(buffer);
+    var uint8array = encodingrule.UTF8.encode(buffer);
     assert.equal(uint8array instanceof Uint8Array, true);
     assert.equal(uint8array.length, 4);
     assert.equal(uint8array[0], 0xF0);

@@ -1,8 +1,8 @@
 [{
-  "name": "shift-jis-front-end",
+  "name": "shift-jis-decoder",
   "description": "Shift-JIS to Unicode.",
   "version": "CP932",
-  "type": "front-end",
+  "type": "decoder",
   "path": "charmaps/front-jis2u-little-endian.map",
   "rules": [
     {
@@ -48,11 +48,11 @@
     "characterset": "JIS-X-0208"
   }]
 }, {
-  "name": "gbk-front-end",
+  "name": "gbk-decoder",
   "description": "GBK to Unicode.",
   "version": "CP936 with enhancement",
-  "type": "front-end",
-  "path": "charmaps/front-gb2u-little-endian.map",
+  "type": "decoder",
+  "path": "charmaps/front-gbk2u-little-endian.map",
   "rules": [
     {
       "byte": 1,
@@ -86,10 +86,10 @@
     "characterset": "GBK"
   }]
 }, {
-  "name": "big5-front-end",
+  "name": "big5-decoder",
   "description": "Big5 to Unicode.",
   "version": "UAO 2.50",
-  "type": "front-end",
+  "type": "decoder",
   "path": "charmaps/front-b2u-little-endian.map",
   "rules": [
     {
@@ -118,11 +118,11 @@
     "characterset": "BIG5 UAO 2.50"
   }]
 }, {
-  "name": "gb18030-front-end",
+  "name": "gb18030-decoder",
   "description": "GB18030 to Unicode.",
   "version": "GB18030-2005",
-  "type": "front-end",
-  "path": "charmaps/front-gb18030-little-endian.map",
+  "type": "decoder",
+  "path": "charmaps/front-gb2u-little-endian.map",
   "rules": [
     {
       "byte": 1,
