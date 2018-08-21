@@ -2,6 +2,7 @@ var fs = require('fs');
 var decoder = require('../lib/nextc4js/decoder');
 var encodingrule = require('../lib/nextc4js/encoding-rule');
 var consts = require('../lib/nextc4js/const');
+var bufferutils = require('../lib/nextc4js/buffer-utils');
 var test = require('tape');
 
 var gbkOptions = {
@@ -89,10 +90,7 @@ test('GBK Decoder unit test', function(t) {
     var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
     var unicodeBuffer = gbkDecoder.decode(gbkTextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var unicodeString = '';
-    unicodeBuffer.forEach(function(code) {
-      unicodeString += String.fromCodePoint(code);
-    })
+    var unicodeString = bufferutils.toString(unicodeBuffer);
     assert.equal(unicodeString, '任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，以及浪漫气息所打动，情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，会感受到这种懊悔，这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
     assert.end();
   });
