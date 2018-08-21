@@ -8,12 +8,12 @@ if (!fs.existsSync('test/out')) {
 }
 
 test('UTF16LE encoder unit test', function(t) {
-  t.test('convert()', function(assert) {
+  t.test('encode()', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
-    var unicodeBuffer = decoder.UTF16LE.convert(utf16TextBuffer);
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var utf16Buffer = encoder.UTF16LE.convert(unicodeBuffer);
+    var utf16Buffer = encoder.UTF16LE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/bungakusyoujyo-utf-16le.txt', utf16Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();
@@ -21,12 +21,12 @@ test('UTF16LE encoder unit test', function(t) {
 });
 
 test('UTF16BE encoder unit test', function(t) {
-  t.test('convert()', function(assert) {
+  t.test('encode()', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
-    var unicodeBuffer = decoder.UTF16LE.convert(utf16TextBuffer);
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var utf16Buffer = encoder.UTF16BE.convert(unicodeBuffer);
+    var utf16Buffer = encoder.UTF16BE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/bungakusyoujyo-utf-16be.txt', utf16Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();
@@ -34,12 +34,12 @@ test('UTF16BE encoder unit test', function(t) {
 });
 
 test('UTF8 encoder unit test', function(t) {
-  t.test('convert()', function(assert) {
+  t.test('encode()', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig.txt');
-    var unicodeBuffer = decoder.UTF16LE.convert(utf16TextBuffer);
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-    var utf8Buffer = encoder.UTF8.convert(unicodeBuffer);
+    var utf8Buffer = encoder.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/bungakusyoujyo-utf-8-orig.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();

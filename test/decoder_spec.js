@@ -83,11 +83,11 @@ if (!fs.existsSync('test/out')) {
 }
 
 test('GBK Decoder unit test', function(t) {
-  t.test('convert()', function(assert) {
+  t.test('decode()', function(assert) {
     var charmap = fs.readFileSync(gbkOptions.path);
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
     var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
-    var unicodeBuffer = gbkDecoder.convert(gbkTextBuffer);
+    var unicodeBuffer = gbkDecoder.decode(gbkTextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var unicodeString = '';
     unicodeBuffer.forEach(function(code) {
@@ -99,11 +99,11 @@ test('GBK Decoder unit test', function(t) {
 });
 
 test('Big5 Decoder unit test', function(t) {
-  t.test('convert()', function(assert) {
+  t.test('decode()', function(assert) {
     var charmap = fs.readFileSync(big5Options.path);
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
     var big5Decoder = new decoder.Multibyte(big5Options, new Uint16Array(charmap.buffer));
-    var unicodeBuffer = big5Decoder.convert(big5TextBuffer);
+    var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.open('test/out/hatsukiyura-utf-8.cue', 'w+', function(err, fd) {
@@ -116,10 +116,10 @@ test('Big5 Decoder unit test', function(t) {
 });
 
 test('UTF16LE Decoder unit test', function(t) {
-  t.test('convert() - performance', function(assert) {
+  t.test('decode() - performance', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
-    var unicodeBuffer = decoder.UTF16LE.convert(utf16TextBuffer);
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/bungakusyoujyo-utf-8.txt', utf8Buffer, {flag: 'w+'});
