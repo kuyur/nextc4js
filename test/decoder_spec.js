@@ -1,81 +1,81 @@
 var fs = require('fs');
 var decoder = require('../lib/nextc4js/decoder');
 var encodingrule = require('../lib/nextc4js/encoding-rule');
-var consts = require('../lib/nextc4js/const');
+var consts = require('../lib/nextc4js/consts');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
 var test = require('tape');
 
 var gbkOptions = {
-  "name": "gbk-front-end",
-  "description": "GBK to Unicode.",
-  "version": "CP936 with enhancement",
-  "type": "front-end",
-  "path": "charmaps/front-gbk2u-little-endian.map",
-  "rules": [
+  'name': 'gbk-front-end',
+  'description': 'GBK to Unicode.',
+  'version': 'CP936 with enhancement',
+  'type': 'front-end',
+  'path': 'charmaps/front-gbk2u-little-endian.map',
+  'rules': [
     {
-      "byte": 1,
-      "condition": ["0x00~0x80"]
+      'byte': 1,
+      'condition': ['0x00~0x80']
     }, {
-      "byte": 2,
-      "condition": ["0x81~0xFE", "0x40~0xFE"]
+      'byte': 2,
+      'condition': ['0x81~0xFE', '0x40~0xFE']
     }
   ],
-  "segments": [{
-    "begin": 0,
-    "end": 127,
-    "reference": "ascii",
-    "characterset": "ascii"
+  'segments': [{
+    'begin': 0,
+    'end': 127,
+    'reference': 'ascii',
+    'characterset': 'ascii'
   }, {
-    "begin": 128,
-    "end": 128,
-    "reference": "buffer",
-    "offset": 0,
-    "characterset": "Euro Sign"
+    'begin': 128,
+    'end': 128,
+    'reference': 'buffer',
+    'offset': 0,
+    'characterset': 'Euro Sign'
   }, {
-    "begin": 129,
-    "end": 33087,
-    "reference": "undefined",
-    "characterset": "undefined"
+    'begin': 129,
+    'end': 33087,
+    'reference': 'undefined',
+    'characterset': 'undefined'
   }, {
-    "begin": 33088,
-    "end": 65535,
-    "reference": "buffer",
-    "offset": 1,
-    "characterset": "GBK"
+    'begin': 33088,
+    'end': 65535,
+    'reference': 'buffer',
+    'offset': 1,
+    'characterset': 'GBK'
   }]
 };
 
 var big5Options = {
-  "name": "big5-front-end",
-  "description": "Big5 to Unicode.",
-  "version": "UAO 2.50",
-  "type": "front-end",
-  "path": "charmaps/front-b2u-little-endian.map",
-  "rules": [
+  'name': 'big5-front-end',
+  'description': 'Big5 to Unicode.',
+  'version': 'UAO 2.50',
+  'type': 'front-end',
+  'path': 'charmaps/front-b2u-little-endian.map',
+  'rules': [
     {
-      "byte": 1,
-      "condition": ["0x00~0x7F"]
+      'byte': 1,
+      'condition': ['0x00~0x7F']
     }, {
-      "byte": 2,
-      "condition": ["0x81~0xFE", "0x40~0xFE"]
+      'byte': 2,
+      'condition': ['0x81~0xFE', '0x40~0xFE']
     }
   ],
-  "segments": [{
-    "begin": 0,
-    "end": 127,
-    "reference": "ascii",
-    "characterset": "ascii"
+  'segments': [{
+    'begin': 0,
+    'end': 127,
+    'reference': 'ascii',
+    'characterset': 'ascii'
   }, {
-    "begin": 128,
-    "end": 33087,
-    "reference": "undefined",
-    "characterset": "undefined"
+    'begin': 128,
+    'end': 33087,
+    'reference': 'undefined',
+    'characterset': 'undefined'
   }, {
-    "begin": 33088,
-    "end": 65535,
-    "reference": "buffer",
-    "offset": 0,
-    "characterset": "BIG5 UAO 2.50"
+    'begin': 33088,
+    'end': 65535,
+    'reference': 'buffer',
+    'offset': 0,
+    'characterset': 'BIG5 UAO 2.50'
   }]
 };
 
@@ -104,7 +104,7 @@ test('Big5 Decoder unit test', function(t) {
     var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
-    fs.open('test/out/hatsukiyura-utf-8.cue', 'w+', function(err, fd) {
+    fs.open('test/out/decoding-test-big5-in-utf8-out.cue', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
       fs.writeSync(fd, utf8Buffer, 0, utf8Buffer.length, consts.UTF8_BOM.length);
       fs.closeSync(fd);
@@ -120,7 +120,7 @@ test('UTF16LE Decoder unit test', function(t) {
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
-    fs.writeFileSync('test/out/bungakusyoujyo-utf-8.txt', utf8Buffer, {flag: 'w+'});
+    fs.writeFileSync('test/out/decoding-test-utf16le-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();
   });

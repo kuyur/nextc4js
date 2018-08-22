@@ -2,7 +2,7 @@ var condition = require('../lib/nextc4js/condition');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
 var test = require('tape');
 
-var option = ["0x81~0x84", "0x30~0x39", "0x81~0xFE", "0x30~0x39"];
+var option = ['0x81~0x84', '0x30~0x39', '0x81~0xFE', '0x30~0x39'];
 
 test('Condition unit test', function(t) {
   t.test('getIndexingOffset() - case1', function(assert) {
