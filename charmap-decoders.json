@@ -122,7 +122,7 @@
   "description": "GB18030 to Unicode.",
   "version": "GB18030-2005",
   "type": "decoder",
-  "path": "charmaps/front-gb2u-little-endian.map",
+  "path": "charmaps/front-gb180302u-little-endian.map",
   "rules": [
     {
       "byte": 1,
