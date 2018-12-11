@@ -30,3 +30,6 @@ count = last_offset + 1 = 0x100000
 ------------------
 https://encoding.spec.whatwg.org/#gb18030-decoder
 https://encoding.spec.whatwg.org/index-gb18030-ranges.txt
+
+http://icu-project.org/charts/charset/roundtripIndex.html
+http://source.icu-project.org/repos/icu/data/trunk/charset/data/ucm/gb-18030-2005.ucm
