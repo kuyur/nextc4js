@@ -33,3 +33,6 @@ https://encoding.spec.whatwg.org/index-gb18030-ranges.txt
 
 http://icu-project.org/charts/charset/roundtripIndex.html
 http://source.icu-project.org/repos/icu/data/trunk/charset/data/ucm/gb-18030-2005.ucm
+http://source.icu-project.org/repos/icu/data/trunk/charset/source/gb18030/ranges.txt
+
+https://www.unicode.org/Public/12.0.0/charts/blocks/
