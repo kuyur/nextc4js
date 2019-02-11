@@ -16,7 +16,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "gulp": "3.9.1",
+    "gulp": "4.0.0",
     "gulp-eslint": "5.0.0",
     "gulp-tape": "1.0.0"
   },
