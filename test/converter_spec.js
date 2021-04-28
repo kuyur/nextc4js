@@ -4,7 +4,7 @@ var bufferutils = require('../lib/nextc4js/buffer-utils');
 var consts = require('../lib/nextc4js/consts');
 var test = require('tape');
 
-var sim2traOptons= {
+var sim2traOptions= {
   'name': 'simp2tra-medium',
   'description': 'Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
@@ -72,8 +72,8 @@ var tra2simpOptions = {
 
 test('Simplified Chinese to Traditional Chinese Converter unit test', function(t) {
   t.test('convert()', function(assert) {
-    var charmap = fs.readFileSync(sim2traOptons.path);
-    var s2t = new converter.Converter(sim2traOptons, new Uint16Array(charmap.buffer));
+    var charmap = fs.readFileSync(sim2traOptions.path);
+    var s2t = new converter.Converter(sim2traOptions, new Uint16Array(charmap.buffer));
     var text = '铅球万袋一桶浆糊';
     var buffer = s2t.convert(bufferutils.toBuffer(text));
     assert.equal(buffer != null, true);

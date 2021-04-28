@@ -10,3 +10,12 @@ Preparation
 ## Test
 
     gulp test
+
+
+# Generate GB18030 Charmaps
+
+
+```bash
+cd tools
+node ./generate-gb18030-to-unicode-charmap.js
+```
