@@ -90,6 +90,9 @@ var gb18030Options = {
       'byte': 1,
       'condition': ['0x00~0x80']
     }, {
+      "byte": 1,
+      "condition": ["0xFF"]
+    }, {
       'byte': 2,
       'condition': ['0x81~0xFE', '0x40~0xFE']
     }, {
@@ -183,6 +186,32 @@ test('Big5 Decoder unit test', function(t) {
       fs.writeSync(fd, utf8Buffer, 0, utf8Buffer.length, consts.UTF8_BOM.length);
       fs.closeSync(fd);
     });
+    assert.end();
+  });
+});
+
+test('GB18030 Decoder unit test', function(t) {
+  t.test('decode()', function(assert) {
+    var charmap = fs.readFileSync(gb18030Options.path);
+    var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charmap.buffer));
+    var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
+    var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
+    assert.equal(unicodeBuffer != null, true);
+
+    var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);
+    fs.open('test/out/decoding-test-gb18030-in-utf16le-out.txt', 'w+', function(err, fd) {
+      fs.writeSync(fd, consts.UTF16LE_BOM, 0, consts.UTF16LE_BOM.length, 0);
+      fs.writeSync(fd, utf16leBuffer, 0, utf16leBuffer.length, consts.UTF16LE_BOM.length);
+      fs.closeSync(fd);
+    });
+
+    var utf16beBuffer = encodingrule.UTF16BE.encode(unicodeBuffer);
+    fs.open('test/out/decoding-test-gb18030-in-utf16be-out.txt', 'w+', function(err, fd) {
+      fs.writeSync(fd, consts.UTF16BE_BOM, 0, consts.UTF16BE_BOM.length, 0);
+      fs.writeSync(fd, utf16beBuffer, 0, utf16beBuffer.length, consts.UTF16BE_BOM.length);
+      fs.closeSync(fd);
+    });
+
     assert.end();
   });
 });
