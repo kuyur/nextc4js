@@ -18,4 +18,5 @@ Online version of Unicue, using HTML &amp; JavaScript.
 ```bash
 cd tools
 node ./generate-gb18030-to-unicode-charmap.js
+node ./generate-unicode-to-gb18030-charmap.js
 ```
