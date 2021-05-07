@@ -3,6 +3,26 @@ var encoder = require('../lib/nextc4js/encoder');
 var decoder = require('../lib/nextc4js/decoder');
 var test = require('tape');
 
+var gb18030Options =  {
+  'name': 'gb18030-encoder',
+  'description': 'Unicode to GB18030.',
+  'version': 'GB18030-2005',
+  'type': 'encoder',
+  'path': 'charmaps/back-u2gb18030-big-endian.map',
+  'segments': [{
+    'begin': 0,
+    'end': 65535,
+    'reference': 'buffer',
+    'characterset': 'Unicode BMP',
+    'offset': 0
+  }, {
+    'begin': 65536,
+    'end': 1114111,
+    'reference': 'gb18030-unicode-sp-mapping',
+    'characterset': 'Unicode (SP)'
+  }]
+}
+
 if (!fs.existsSync('test/out')) {
   fs.mkdirSync('test/out');
 }
@@ -42,6 +62,14 @@ test('UTF8 encoder unit test', function(t) {
     var utf8Buffer = encoder.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf8-out.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
+    assert.end();
+  });
+});
+
+test('GB18030 encoder unit test', function(t) {
+  t.test('encode()', function(assert) {
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/unicode-bmp-and-sp.txt');
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, true);
     assert.end();
   });
 });

@@ -6,10 +6,10 @@ var bufferutils = require('../lib/nextc4js/buffer-utils');
 var test = require('tape');
 
 var gbkOptions = {
-  'name': 'gbk-front-end',
+  'name': 'gbk-decoder',
   'description': 'GBK to Unicode.',
   'version': 'CP936 with enhancement',
-  'type': 'front-end',
+  'type': 'decoder',
   'path': 'charmaps/front-gbk2u-little-endian.map',
   'rules': [
     {
@@ -46,10 +46,10 @@ var gbkOptions = {
 };
 
 var big5Options = {
-  'name': 'big5-front-end',
+  'name': 'big5-decoder',
   'description': 'Big5 to Unicode.',
   'version': 'UAO 2.50',
-  'type': 'front-end',
+  'type': 'decoder',
   'path': 'charmaps/front-b2u-little-endian.map',
   'rules': [
     {
@@ -80,10 +80,10 @@ var big5Options = {
 };
 
 var gb18030Options = {
-  'name': 'gb18030-front-end',
+  'name': 'gb18030-decoder',
   'description': 'GB18030 to Unicode.',
-  'version': 'GB18030 2005',
-  'type': 'front-end',
+  'version': 'GB18030-2005',
+  'type': 'decoder',
   'path': 'charmaps/front-gb180302u-little-endian.map',
   'rules': [
     {
@@ -197,7 +197,6 @@ test('GB18030 Decoder unit test', function(t) {
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
     assert.equal(unicodeBuffer != null, true);
-
     var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);
     fs.open('test/out/decoding-test-gb18030-in-utf16le-out.txt', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF16LE_BOM, 0, consts.UTF16LE_BOM.length, 0);
@@ -221,6 +220,7 @@ test('UTF16LE Decoder unit test', function(t) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
+    assert.equal(decoder.UTF16LE.hasBom(utf16TextBuffer), true);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/decoding-test-utf16le-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});

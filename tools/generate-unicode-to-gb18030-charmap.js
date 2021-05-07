@@ -4,10 +4,10 @@ var consts = require('../lib/nextc4js/consts');
 var condition = require('../lib/nextc4js/condition');
 
 var gb18030Options = {
-  'name': 'gb18030-front-end',
+  'name': 'gb18030-decoder',
   'description': 'GB18030 to Unicode.',
-  'version': 'GB18030 2005',
-  'type': 'front-end',
+  'version': 'GB18030-2005',
+  'type': 'decoder',
   'path': '../charmaps/front-gb180302u-little-endian.map',
   'rules': [
     {
