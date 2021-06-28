@@ -40,6 +40,19 @@ test('UTF16LE encoder unit test', function(t) {
   });
 });
 
+test('UTF16LE encoder unit test 2', function(t) {
+  t.test('encode()', function(assert) {
+    var ts = new Date;
+    var utf8TextBuffer = fs.readFileSync('test/txt/utf-8/unicode-bmp-and-sp.txt');
+    var unicodeBuffer = decoder.UTF8.decode(utf8TextBuffer);
+    assert.equal(unicodeBuffer != null, true);
+    var utf16Buffer = encoder.UTF16LE.encode(unicodeBuffer);
+    fs.writeFileSync('test/out/encoding-test-utf16le-out-2.txt', utf16Buffer, {flag: 'w+'});
+    console.log('Consumed time: ' + (new Date - ts) + 'ms');
+    assert.end();
+  });
+});
+
 test('UTF16BE encoder unit test', function(t) {
   t.test('encode()', function(assert) {
     var ts = new Date;
@@ -61,6 +74,19 @@ test('UTF8 encoder unit test', function(t) {
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encoder.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf8-out.txt', utf8Buffer, {flag: 'w+'});
+    console.log('Consumed time: ' + (new Date - ts) + 'ms');
+    assert.end();
+  });
+});
+
+test('UTF8 encoder unit test 2', function(t) {
+  t.test('encode()', function(assert) {
+    var ts = new Date;
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/unicode-bmp-and-sp.txt');
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
+    assert.equal(unicodeBuffer != null, true);
+    var utf8Buffer = encoder.UTF8.encode(unicodeBuffer);
+    fs.writeFileSync('test/out/encoding-test-utf8-out2.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
     assert.end();
   });
