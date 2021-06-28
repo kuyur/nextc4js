@@ -8,7 +8,7 @@ var gb18030Options =  {
   'description': 'Unicode to GB18030.',
   'version': 'GB18030-2005',
   'type': 'encoder',
-  'path': 'charmaps/back-u2gb18030-big-endian.map',
+  'path': 'charmaps/back-u2gb18030-little-endian.map',
   'segments': [{
     'begin': 0,
     'end': 65535,
@@ -74,6 +74,8 @@ test('GB18030 encoder unit test', function(t) {
     assert.equal(unicodeBuffer != null, true);
     var charmap = fs.readFileSync(gb18030Options.path);
     var gb18030Encoder = new encoder.Multiplebyte(gb18030Options, new Uint32Array(charmap.buffer));
+    var gb18030Buffer = gb18030Encoder.encode(unicodeBuffer);
+    fs.writeFileSync('test/out/encoding-test-gb18030-out.txt', gb18030Buffer, {flag: 'w+'});
     assert.end();
   });
 });
