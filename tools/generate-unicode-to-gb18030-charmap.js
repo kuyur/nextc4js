@@ -95,6 +95,7 @@ for (; i <= 0x7F; ++i) {
 for (i = 0x80; i <= 0xFFFF; ++i) {
   u2gb18030[i] = 0x3F; // 0x3F: ?
 }
+u2gb18030[0xFFFD] = 0x8431a437;
 
 var chr;
 for (i = 0x80; i <= 0xFFFF; ++i) {
@@ -122,17 +123,52 @@ for (i = 0; i < 39420; ++i) {
   }
 }
 
+function codepointToHex(codepoint) {
+  return '0x' + codepoint.toString(16).toUpperCase();
+}
+
+// validate the code points
+var map = {};
+for (var k = 0; k < 65536; ++k) {
+  if (k < 0xD800 || k > 0xDFFF) { // U+D800 ~ U+DFFF, reserved for UTF-16
+    if (k < 0xE000 || k > 0xF8FF) { // U+E000 ~ U+F8FF, private use
+      if (!map[u2gb18030[k]]) {
+        map[u2gb18030[k]] = {
+          count: 1,
+          unicode: [k]
+        };
+      } else {
+        map[u2gb18030[k]].count++;
+        map[u2gb18030[k]].unicode.push(k);
+      }
+    }
+  }
+}
+
+var arr = [];
+for (var key in map) {
+  if (map[key].count >= 2) {
+    console.log(key, map[key].unicode.length, JSON.stringify(map[key].unicode)); // key = 63, GB+3F
+    map[key].unicode.forEach(codepoint => {
+      arr.push(codepointToHex(codepoint) + ' ' + String.fromCodePoint(codepoint));
+    });
+  }
+}
+if (arr.length) {
+  console.log(arr.join('\n'));
+}
+
 var buffer = new Uint8Array(65536 * 4);
 var j = 0;
 for (i = 0; i <= 0xFFFF; ++i) {
   var codepoint = u2gb18030[i];
-  var fourthByte = codepoint & 0xFF;
-  codepoint = codepoint >>> 8;
-  var thirdByte = codepoint & 0xFF;
+  var firstByte = codepoint & 0xFF;
   codepoint = codepoint >>> 8;
   var secondByte = codepoint & 0xFF;
   codepoint = codepoint >>> 8;
-  var firstByte = codepoint & 0xFF;
+  var thirdByte = codepoint & 0xFF;
+  codepoint = codepoint >>> 8;
+  var fourthByte = codepoint & 0xFF;
   buffer[j++] = firstByte;
   buffer[j++] = secondByte;
   buffer[j++] = thirdByte;
@@ -140,9 +176,9 @@ for (i = 0; i <= 0xFFFF; ++i) {
 }
 
 // remove the file if exists
-if (fs.existsSync('../charmaps/back-u2gb18030-big-endian.map')) {
-  fs.unlinkSync('../charmaps/back-u2gb18030-big-endian.map');
+if (fs.existsSync('../charmaps/back-u2gb18030-little-endian.map')) {
+  fs.unlinkSync('../charmaps/back-u2gb18030-little-endian.map');
 }
 
 // write to file
-fs.writeFileSync('../charmaps/back-u2gb18030-big-endian.map', buffer, 'binary')
+fs.writeFileSync('../charmaps/back-u2gb18030-little-endian.map', buffer, 'binary')

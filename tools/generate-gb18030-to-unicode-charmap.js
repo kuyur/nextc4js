@@ -233,13 +233,120 @@ offsets.forEach(offset => {
   }
 });
 
+var diff = `A8BC    0x1E3F ḿ
+A8BF    0x01F9 ǹ
+A989    0x303E 〾
+A98A    0x2FF0 ⿰
+A98B    0x2FF1 ⿱
+A98C    0x2FF2 ⿲
+A98D    0x2FF3 ⿳
+A98E    0x2FF4 ⿴
+A98F    0x2FF5 ⿵
+A990    0x2FF6 ⿶
+A991    0x2FF7 ⿷
+A992    0x2FF8 ⿸
+A993    0x2FF9 ⿹
+A994    0x2FFA ⿺
+A995    0x2FFB ⿻
+FE50    0x2E81 ⺁
+FE54    0x2E84 ⺄
+FE55    0x3473 㑳
+FE56    0x3447 㑇
+FE57    0x2E88 ⺈
+FE58    0x2E8B ⺋
+FE5A    0x359E 㖞
+FE5B    0x361A 㘚
+FE5C    0x360E 㘎
+FE5D    0x2E8C ⺌
+FE5E    0x2E97 ⺗
+FE5F    0x396E 㥮
+FE60    0x3918 㤘
+FE62    0x39CF 㧏
+FE63    0x39DF 㧟
+FE64    0x3A73 㩳
+FE65    0x39D0 㧐
+FE68    0x3B4E 㭎
+FE69    0x3C6E 㱮
+FE6A    0x3CE0 㳠
+FE6B    0x2EA7 ⺧
+FE6E    0x2EAA ⺪
+FE6F    0x4056 䁖
+FE70    0x415F 䅟
+FE71    0x2EAE ⺮
+FE72    0x4337 䌷
+FE73    0x2EB3 ⺳
+FE74    0x2EB6 ⺶
+FE75    0x2EB7 ⺷
+FE77    0x43B1 䎱
+FE78    0x43AC 䎬
+FE79    0x2EBB ⺻
+FE7A    0x43DD 䏝
+FE7B    0x44D6 䓖
+FE7C    0x4661 䙡
+FE7D    0x464C 䙌
+FE80    0x4723 䜣
+FE81    0x4729 䜩
+FE82    0x477C 䝼
+FE83    0x478D 䞍
+FE84    0x2ECA ⻊
+FE85    0x4947 䥇
+FE86    0x497A 䥺
+FE87    0x497D 䥽
+FE88    0x4982 䦂
+FE89    0x4983 䦃
+FE8A    0x4985 䦅
+FE8B    0x4986 䦆
+FE8C    0x499F 䦟
+FE8D    0x499B 䦛
+FE8E    0x49B7 䦷
+FE8F    0x49B6 䦶
+FE92    0x4CA3 䲣
+FE93    0x4C9F 䲟
+FE94    0x4CA0 䲠
+FE95    0x4CA1 䲡
+FE96    0x4C77 䱷
+FE97    0x4CA2 䲢
+FE98    0x4D13 䴓
+FE99    0x4D14 䴔
+FE9A    0x4D15 䴕
+FE9B    0x4D16 䴖
+FE9C    0x4D17 䴗
+FE9D    0x4D18 䴘
+FE9E    0x4D19 䴙
+FE9F    0x4DAE 䶮`;
+
+var mapping = {};
+var arr2 = diff.split('\n');
+arr2.forEach(line => {
+  var parts = line.replace(/    /g, ' ').split(' ');
+  mapping[parseInt(parts[0], 16)] = parseInt(parts[1]);
+});
+
+// reading GBK charmap (2-bytes characters)
+var bufferGBK = fs.readFileSync('../charmaps/front-gbk2u-little-endian.map');
+
+function getOffsetInBuffer(gbCodepoint) {
+  gbCodepoint = +gbCodepoint;
+  return gbCodepoint - 33088 + 1;
+}
+
+// apply the diff of GB18030-2005 / GB18030-2000
+for (var key in mapping) {
+  var offset = getOffsetInBuffer(key);
+  var codepoint = mapping[key];
+  var lowByte = codepoint & 0xFF;
+  var highByte = codepoint >>> 8;
+  bufferGBK[offset * 2] = lowByte;
+  bufferGBK[offset * 2 + 1] =  highByte;
+}
+
 // remove the file if exists
 if (fs.existsSync('../charmaps/front-gb180302u-little-endian.map')) {
   fs.unlinkSync('../charmaps/front-gb180302u-little-endian.map');
 }
 
-// copy from GBK charmap (2-bytes characters)
-fs.copyFileSync('../charmaps/front-gbk2u-little-endian.map', '../charmaps/front-gb180302u-little-endian.map');
+// write GBK buffer (2-bytes characters)
+fs.writeFileSync('../charmaps/front-gb180302u-little-endian.map', bufferGBK, 'binary')
 
 // append other Unicode BMP codepoints (GB18030 0x81308130 ~ 0x8439FE39, 4-bytes characters)
 fs.appendFileSync('../charmaps/front-gb180302u-little-endian.map', buffer, 'binary');

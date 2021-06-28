@@ -69,7 +69,11 @@ test('UTF8 encoder unit test', function(t) {
 test('GB18030 encoder unit test', function(t) {
   t.test('encode()', function(assert) {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/unicode-bmp-and-sp.txt');
-    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, true);
+    assert.equal(decoder.UTF16LE.hasBom(utf16TextBuffer), true);
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, 2);
+    assert.equal(unicodeBuffer != null, true);
+    var charmap = fs.readFileSync(gb18030Options.path);
+    var gb18030Encoder = new encoder.Multiplebyte(gb18030Options, new Uint32Array(charmap.buffer));
     assert.end();
   });
 });
