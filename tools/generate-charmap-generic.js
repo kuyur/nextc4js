@@ -89,7 +89,7 @@ if (fs.existsSync(output_path)) {
   fs.unlinkSync(output_path);
 }
 
-// write GBK buffer (2-bytes characters)
+// write to file
 fs.writeFileSync(output_path, output_buffer, 'binary');
 
 console.log('Charmap ' + output_path + ' is generated.');
