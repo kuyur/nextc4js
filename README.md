@@ -44,4 +44,10 @@ node ./tools/generate-gb18030-to-unicode-charmap.js -i ./charmaps/front-gbk2u-li
 
 # generate unicode to gb18030 charmap
 node ./tools/generate-unicode-to-gb18030-charmap.js -i ./charmaps/front-gb180302u-little-endian.map -o ./charmaps/back-u2gb18030-little-endian.map
+
+# generate simplified chinese to traditional chinese charmap (basing on unicode bmp)
+node ./tools/generate-medium-charmap-generic -i ./charmaps/source/medium/simp2tra.txt -o ./charmaps/medium-simp2tra-little-endian.map
+
+# generate traditional chinese to simplified chinese charmap (basing on unicode bmp)
+node ./tools/generate-medium-charmap-generic -i ./charmaps/source/medium/tra2simp.txt -o ./charmaps/medium-tra2simp-little-endian.map
 ```
