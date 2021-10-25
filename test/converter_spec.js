@@ -2,6 +2,7 @@ var fs = require('fs');
 var converter = require('../lib/nextc4js/converter');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
 var consts = require('../lib/nextc4js/consts');
+const { CharmapType } = require('../lib/nextc4js/charmap');
 var test = require('tape');
 
 var sim2traOptions= {
@@ -74,6 +75,8 @@ test('Simplified Chinese to Traditional Chinese Converter unit test', function(t
   t.test('convert()', function(assert) {
     var charmap = fs.readFileSync(sim2traOptions.path);
     var s2t = new converter.Converter(sim2traOptions, new Uint16Array(charmap.buffer));
+    assert.equal(s2t.getName(), sim2traOptions.name);
+    assert.equal(s2t.getType(), CharmapType.CONVERTER);
     var text = '铅球万袋一桶浆糊';
     var buffer = s2t.convert(bufferutils.toBuffer(text));
     assert.equal(buffer != null, true);
@@ -87,6 +90,8 @@ test('Traditional Chinese to Simplified Chinese Converter unit test', function(t
   t.test('convert()', function(assert) {
     var charmap = fs.readFileSync(tra2simpOptions.path);
     var t2s = new converter.Converter(tra2simpOptions, new Uint16Array(charmap.buffer));
+    assert.equal(t2s.getName(), tra2simpOptions.name);
+    assert.equal(t2s.getType(), CharmapType.CONVERTER);
     var text = '鉛球萬袋一桶漿糊';
     var buffer = t2s.convert(bufferutils.toBuffer(text));
     assert.equal(buffer != null, true);

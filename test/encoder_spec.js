@@ -1,6 +1,7 @@
 var fs = require('fs');
 var encoder = require('../lib/nextc4js/encoder');
 var decoder = require('../lib/nextc4js/decoder');
+const { CharmapType } = require('../lib/nextc4js/charmap');
 var test = require('tape');
 
 var gb18030Options =  {
@@ -33,6 +34,8 @@ test('UTF16LE encoder unit test', function(t) {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
+    assert.equal(encoder.UTF16LE.getName(), 'UTF-16 (little-endian)');
+    assert.equal(encoder.UTF16LE.getType(), CharmapType.ENCODER);
     var utf16Buffer = encoder.UTF16LE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf16le-out.txt', utf16Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
@@ -59,6 +62,8 @@ test('UTF16BE encoder unit test', function(t) {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
+    assert.equal(encoder.UTF16BE.getName(), 'UTF-16 (big-endian)');
+    assert.equal(encoder.UTF16BE.getType(), CharmapType.ENCODER);
     var utf16Buffer = encoder.UTF16BE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf16be-out.txt', utf16Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
@@ -72,6 +77,8 @@ test('UTF8 encoder unit test', function(t) {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(unicodeBuffer != null, true);
+    assert.equal(encoder.UTF8.getName(), 'UTF-8');
+    assert.equal(encoder.UTF8.getType(), CharmapType.ENCODER);
     var utf8Buffer = encoder.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf8-out.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
@@ -100,6 +107,8 @@ test('GB18030 encoder unit test', function(t) {
     assert.equal(unicodeBuffer != null, true);
     var charmap = fs.readFileSync(gb18030Options.path);
     var gb18030Encoder = new encoder.Multiplebyte(gb18030Options, new Uint32Array(charmap.buffer));
+    assert.equal(gb18030Encoder.getName(), gb18030Options.name);
+    assert.equal(gb18030Encoder.getType(), CharmapType.ENCODER);
     var gb18030Buffer = gb18030Encoder.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-gb18030-out.txt', gb18030Buffer, {flag: 'w+'});
     assert.end();

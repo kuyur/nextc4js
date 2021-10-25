@@ -3,6 +3,7 @@ var decoder = require('../lib/nextc4js/decoder');
 var encodingrule = require('../lib/nextc4js/encoding-rule');
 var consts = require('../lib/nextc4js/consts');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
+const { CharmapType } = require('../lib/nextc4js/charmap');
 var test = require('tape');
 
 var gbkOptions = {
@@ -165,6 +166,8 @@ test('GBK Decoder unit test', function(t) {
     var charmap = fs.readFileSync(gbkOptions.path);
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
     var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
+    assert.equal(gbkDecoder.getName(), gbkOptions.name);
+    assert.equal(gbkDecoder.getType(), CharmapType.DECODER);
     var unicodeBuffer = gbkDecoder.decode(gbkTextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var unicodeString = bufferutils.toString(unicodeBuffer);
@@ -178,6 +181,8 @@ test('Big5 Decoder unit test', function(t) {
     var charmap = fs.readFileSync(big5Options.path);
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
     var big5Decoder = new decoder.Multibyte(big5Options, new Uint16Array(charmap.buffer));
+    assert.equal(big5Decoder.getName(), big5Options.name);
+    assert.equal(big5Decoder.getType(), CharmapType.DECODER);
     var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
     assert.equal(unicodeBuffer != null, true);
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
@@ -194,6 +199,8 @@ test('GB18030 Decoder unit test', function(t) {
   t.test('decode()', function(assert) {
     var charmap = fs.readFileSync(gb18030Options.path);
     var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charmap.buffer));
+    assert.equal(gb18030Decoder.getName(), gb18030Options.name);
+    assert.equal(gb18030Decoder.getType(), CharmapType.DECODER);
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
     assert.equal(unicodeBuffer != null, true);
@@ -219,6 +226,8 @@ test('UTF16LE Decoder unit test', function(t) {
   t.test('decode() - performance', function(assert) {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
+    assert.equal(decoder.UTF16LE.getName(), 'UTF-16 (little-endian)');
+    assert.equal(decoder.UTF16LE.getType(), CharmapType.DECODER);
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     assert.equal(decoder.UTF16LE.hasBom(utf16TextBuffer), true);
     assert.equal(unicodeBuffer != null, true);
