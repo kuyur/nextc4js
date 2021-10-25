@@ -349,6 +349,27 @@ FE9D    0x4D18 䴘
 FE9E    0x4D19 䴙
 FE9F    0x4DAE 䶮`;
 
+/*
+var diff2 = `A6D9    0xFE10 ︐
+A6DA    0xFE12 ︒
+A6DB    0xFE11 ︑
+A6DC    0xFE13 ︓
+A6DD    0xFE14 ︔
+A6DE    0xFE15 ︕
+A6DF    0xFE16 ︖
+A6EC    0xFE17 ︗
+A6ED    0xFE18 ︘
+A6F3    0xFE19 ︙
+FE59    0x9FB4 龴
+FE61    0x9FB5 龵
+FE66    0x9FB6 龶
+FE67    0x9FB7 龷
+FE6D    0x9FB8 龸
+FE7E    0x9FB9 龹
+FE90    0x9FBA 龺
+FEA0    0x9FBB 龻`;
+*/
+
 var mapping = {};
 var arr2 = diff.split('\n');
 arr2.forEach(line => {
