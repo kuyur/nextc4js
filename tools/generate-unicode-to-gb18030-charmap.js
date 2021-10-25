@@ -1,14 +1,39 @@
+/**
+ * @author kuyur@kuyur.info
+ */
+
 var fs = require('fs');
 var decoder = require('../lib/nextc4js/decoder');
 var consts = require('../lib/nextc4js/consts');
 var condition = require('../lib/nextc4js/condition');
+
+function printHelp() {
+  console.log('Usage:');
+  console.log('  --input or -i: specify input file path of gb18030 to unicode charmap');
+  console.log('  --output or -o: specify output file path of unicode to gb18030 charmap');
+}
+
+var args = process.argv.slice(2);
+var input_path, output_path;
+for (var i = 0; i < args.length; ++i) {
+  if (args[i] === '--input' || args[i] === '-i') {
+    input_path = args[i+1];
+  } else if (args[i] === '--output' || args[i] === '-o') {
+    output_path = args[i+1];
+  }
+}
+
+if (!input_path || !output_path) {
+  printHelp();
+  process.exit(1);
+}
 
 var gb18030Options = {
   'name': 'gb18030-decoder',
   'description': 'GB18030 to Unicode.',
   'version': 'GB18030-2005',
   'type': 'decoder',
-  'path': '../charmaps/front-gb180302u-little-endian.map',
+  'path': input_path,
   'rules': [
     {
       'byte': 1,
@@ -176,9 +201,11 @@ for (i = 0; i <= 0xFFFF; ++i) {
 }
 
 // remove the file if exists
-if (fs.existsSync('../charmaps/back-u2gb18030-little-endian.map')) {
-  fs.unlinkSync('../charmaps/back-u2gb18030-little-endian.map');
+if (fs.existsSync(output_path)) {
+  fs.unlinkSync(output_path);
 }
 
 // write to file
-fs.writeFileSync('../charmaps/back-u2gb18030-little-endian.map', buffer, 'binary')
+fs.writeFileSync(output_path, buffer, 'binary')
+
+console.log('Charmap ' + output_path + ' is generated.');

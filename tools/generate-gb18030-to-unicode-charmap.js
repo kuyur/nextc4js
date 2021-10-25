@@ -1,4 +1,38 @@
+/**
+ * @author kuyur@kuyur.info
+ */
+
 var fs = require('fs');
+
+function printHelp() {
+  console.log('Usage:');
+  console.log('  --input or -i: specify input file path of gbk charmap');
+  console.log('  --output or -o: specify output file path of gb18030 charmap');
+}
+
+var args = process.argv.slice(2);
+var input_path, output_path;
+for (var i = 0; i < args.length; ++i) {
+  if (args[i] === '--input' || args[i] === '-i') {
+    input_path = args[i+1];
+  } else if (args[i] === '--output' || args[i] === '-o') {
+    output_path = args[i+1];
+  }
+}
+
+if (!input_path || !output_path) {
+  printHelp();
+  process.exit(1);
+}
+
+// reading GBK charmap (2-bytes characters)
+var bufferGBK;
+try {
+  bufferGBK= fs.readFileSync(input_path);
+} catch (error) {
+  console.log(error.toString());
+  process.exit(1);
+}
 
 var text = `0  0x0080
 36  0x00A5
@@ -322,9 +356,6 @@ arr2.forEach(line => {
   mapping[parseInt(parts[0], 16)] = parseInt(parts[1]);
 });
 
-// reading GBK charmap (2-bytes characters)
-var bufferGBK = fs.readFileSync('../charmaps/front-gbk2u-little-endian.map');
-
 function getOffsetInBuffer(gbCodepoint) {
   gbCodepoint = +gbCodepoint;
   return gbCodepoint - 33088 + 1;
@@ -341,12 +372,14 @@ for (var key in mapping) {
 }
 
 // remove the file if exists
-if (fs.existsSync('../charmaps/front-gb180302u-little-endian.map')) {
-  fs.unlinkSync('../charmaps/front-gb180302u-little-endian.map');
+if (fs.existsSync(output_path)) {
+  fs.unlinkSync(output_path);
 }
 
 // write GBK buffer (2-bytes characters)
-fs.writeFileSync('../charmaps/front-gb180302u-little-endian.map', bufferGBK, 'binary')
+fs.writeFileSync(output_path, bufferGBK, 'binary')
 
 // append other Unicode BMP codepoints (GB18030 0x81308130 ~ 0x8439FE39, 4-bytes characters)
-fs.appendFileSync('../charmaps/front-gb180302u-little-endian.map', buffer, 'binary');
+fs.appendFileSync(output_path, buffer, 'binary');
+
+console.log('Charmap ' + output_path + ' is generated.');

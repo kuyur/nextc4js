@@ -50,7 +50,7 @@
 }, {
   "name": "gbk-decoder",
   "description": "GBK to Unicode.",
-  "version": "CP936 with enhancement",
+  "version": "CP936",
   "type": "decoder",
   "path": "charmaps/front-gbk2u-little-endian.map",
   "rules": [
