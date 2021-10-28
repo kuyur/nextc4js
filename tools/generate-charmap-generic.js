@@ -48,8 +48,8 @@ input_lines.forEach((line, index) => {
 
   var parts = line.split(/\s+/);
   input_raw_arr.push({
-    codepoint: Number.parseInt(parts[0], 16),
-    unicode_codepoint: Number.parseInt(parts[1], 16)
+    source_codepoint: Number.parseInt(parts[0], 16),
+    target_codepoint: Number.parseInt(parts[1], 16)
   });
 });
 
@@ -59,17 +59,17 @@ if (raw_count === 0) {
   process.exit(0);
 }
 
-var start_codepoint = input_raw_arr[0].codepoint,
-  end_codepoint = input_raw_arr[raw_count - 1].codepoint;
+var start_codepoint = input_raw_arr[0].source_codepoint,
+  end_codepoint = input_raw_arr[raw_count - 1].source_codepoint;
 
 var count = end_codepoint - start_codepoint + 1;
 var output_buffer = new Uint8Array(count * 2);
 
 var offset = 0,
-  codepoint_offset = input_raw_arr[0].codepoint;
+  codepoint_offset = input_raw_arr[0].source_codepoint;
 for (var i = 0; i < raw_count; ++i) {
   var pair = input_raw_arr[i];
-  while (codepoint_offset !== pair.codepoint) {
+  while (codepoint_offset !== pair.source_codepoint) {
     output_buffer[offset * 2] = 0xFD;
     output_buffer[offset * 2 + 1] = 0xFF;
     offset++;
@@ -77,9 +77,9 @@ for (var i = 0; i < raw_count; ++i) {
   }
 
   // low byte
-  output_buffer[offset * 2] = pair.unicode_codepoint & 0xFF;
+  output_buffer[offset * 2] = pair.target_codepoint & 0xFF;
   // high byte
-  output_buffer[offset * 2 + 1] = pair.unicode_codepoint >>> 8;
+  output_buffer[offset * 2 + 1] = pair.target_codepoint >>> 8;
   offset++;
   codepoint_offset++;
 }
