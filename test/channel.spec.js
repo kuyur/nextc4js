@@ -64,7 +64,7 @@ describe('Channel unit test', function() {
     expect(chann.match(buffer)).toBe(true);
     var output = chann.process(buffer);
     expect(output).not.toBeNull();
-    fs.open('test/out/channel-test-shiftjis-in-utf8-out.cue', 'w+', function(err, fd) {
+    fs.open('test/out/channel-test-shiftjis-in-utf8-out.txt', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
       fs.writeSync(fd, output, 0, output.length, consts.UTF8_BOM.length);
       fs.closeSync(fd);
