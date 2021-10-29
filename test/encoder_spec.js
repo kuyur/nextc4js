@@ -22,7 +22,7 @@ var gb18030Options =  {
     'reference': 'gb18030-unicode-sp-mapping',
     'characterset': 'Unicode (SP)'
   }]
-}
+};
 
 if (!fs.existsSync('test/out')) {
   fs.mkdirSync('test/out');

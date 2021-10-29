@@ -39,8 +39,8 @@ var gb18030Options = {
       'byte': 1,
       'condition': ['0x00~0x80']
     }, {
-      "byte": 1,
-      "condition": ["0xFF"]
+      'byte': 1,
+      'condition': ['0xFF']
     }, {
       'byte': 2,
       'condition': ['0x81~0xFE', '0x40~0xFE']
@@ -111,39 +111,39 @@ var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charm
 var u2gb18030 = new Uint32Array(65536);
 
 // ASCII code point
-var i = 0;
-for (; i <= 0x7F; ++i) {
-  u2gb18030[i] = i;
+var j = 0;
+for (; j <= 0x7F; ++j) {
+  u2gb18030[j] = j;
 }
 
 // set to unknown char at first
-for (i = 0x80; i <= 0xFFFF; ++i) {
-  u2gb18030[i] = 0x3F; // 0x3F: ?
+for (j = 0x80; j <= 0xFFFF; ++j) {
+  u2gb18030[j] = 0x3F; // 0x3F: ?
 }
 u2gb18030[0xFFFD] = 0x8431a437;
 
 var chr;
-for (i = 0x80; i <= 0xFFFF; ++i) {
-  chr = gb18030Decoder.convertChar_(i);
+for (j = 0x80; j <= 0xFFFF; ++j) {
+  chr = gb18030Decoder.convertChar_(j);
   if (chr !== consts.UNICODE_UNKNOWN_CHAR) {
     if (chr <= 0xFFFF) {
-      u2gb18030[chr] = i;
+      u2gb18030[chr] = j;
     } else {
-      console.error(`Error code point. GB18030 codepoint: ${i}, Unicode codepoint: ${chr}`);
+      console.error(`Error code point. GB18030 codepoint: ${j}, Unicode codepoint: ${chr}`);
     }
   }
 }
 
 var GB18030_4BYTES_UNICODE_BMP = condition.Condition.build(['0x81~0x84', '0x30~0x39', '0x81~0xFE', '0x30~0x39']);
 var gb_chr;
-for (i = 0; i < 39420; ++i) {
-  gb_chr = GB18030_4BYTES_UNICODE_BMP.getCodePoint(i);
+for (j = 0; j < 39420; ++j) {
+  gb_chr = GB18030_4BYTES_UNICODE_BMP.getCodePoint(j);
   chr = gb18030Decoder.convertChar_(gb_chr);
   if (chr !== consts.UNICODE_UNKNOWN_CHAR) {
     if (chr <= 0xFFFF) {
       u2gb18030[chr] = gb_chr;
     } else {
-      console.error(`Error code point. GB18030 codepoint offset: ${i}, codepoint: ${gb_chr}, Unicode codepoint: ${chr}`);
+      console.error(`Error code point. GB18030 codepoint offset: ${j}, codepoint: ${gb_chr}, Unicode codepoint: ${chr}`);
     }
   }
 }
@@ -184,9 +184,9 @@ if (arr.length) {
 }
 
 var buffer = new Uint8Array(65536 * 4);
-var j = 0;
-for (i = 0; i <= 0xFFFF; ++i) {
-  var codepoint = u2gb18030[i];
+var m = 0;
+for (l = 0; l <= 0xFFFF; ++l) {
+  var codepoint = u2gb18030[l];
   var firstByte = codepoint & 0xFF;
   codepoint = codepoint >>> 8;
   var secondByte = codepoint & 0xFF;
@@ -194,10 +194,10 @@ for (i = 0; i <= 0xFFFF; ++i) {
   var thirdByte = codepoint & 0xFF;
   codepoint = codepoint >>> 8;
   var fourthByte = codepoint & 0xFF;
-  buffer[j++] = firstByte;
-  buffer[j++] = secondByte;
-  buffer[j++] = thirdByte;
-  buffer[j++] = fourthByte;
+  buffer[m++] = firstByte;
+  buffer[m++] = secondByte;
+  buffer[m++] = thirdByte;
+  buffer[m++] = fourthByte;
 }
 
 // remove the file if exists
@@ -206,6 +206,6 @@ if (fs.existsSync(output_path)) {
 }
 
 // write to file
-fs.writeFileSync(output_path, buffer, 'binary')
+fs.writeFileSync(output_path, buffer, 'binary');
 
 console.log('Charmap ' + output_path + ' is generated.');

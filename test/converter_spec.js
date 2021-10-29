@@ -1,7 +1,6 @@
 var fs = require('fs');
 var converter = require('../lib/nextc4js/converter');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
-var consts = require('../lib/nextc4js/consts');
 const { CharmapType } = require('../lib/nextc4js/charmap');
 var test = require('tape');
 

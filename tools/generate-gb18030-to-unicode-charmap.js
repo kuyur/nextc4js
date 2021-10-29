@@ -250,8 +250,8 @@ var offsets = arr.map(line => {
   };
 });
 
-for (var i = 0; i < offsets.length - 1; ++i) {
-  offsets[i].end = offsets[i + 1].start - 1;
+for (var m = 0; m < offsets.length - 1; ++m) {
+  offsets[m].end = offsets[m + 1].start - 1;
 }
 offsets[offsets.length - 1].end = 39419;
 
@@ -373,7 +373,7 @@ FEA0    0x9FBB 龻`;
 var mapping = {};
 var arr2 = diff.split('\n');
 arr2.forEach(line => {
-  var parts = line.replace(/    /g, ' ').split(' ');
+  var parts = line.replace(/ {4}/g, ' ').split(' ');
   mapping[parseInt(parts[0], 16)] = parseInt(parts[1]);
 });
 
@@ -398,7 +398,7 @@ if (fs.existsSync(output_path)) {
 }
 
 // write GBK buffer (2-bytes characters)
-fs.writeFileSync(output_path, bufferGBK, 'binary')
+fs.writeFileSync(output_path, bufferGBK, 'binary');
 
 // append other Unicode BMP codepoints (GB18030 0x81308130 ~ 0x8439FE39, 4-bytes characters)
 fs.appendFileSync(output_path, buffer, 'binary');

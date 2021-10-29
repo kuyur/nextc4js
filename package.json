@@ -14,11 +14,16 @@
     "name": "kuyur",
     "email": "kuyur@kuyur.info"
   },
+  "scripts": {
+    "lint": "eslint \"**/*.js\" --quiet",
+    "lint:fix": "eslint \"**/*.js\" --quiet --fix",
+    "test": "jest --forceExit --coverage"
+  },
   "dependencies": {},
   "devDependencies": {
-    "gulp": "4.0.2",
-    "gulp-eslint": "6.0.0",
-    "gulp-tape": "1.0.0"
+    "eslint": "^8.1.0",
+    "jest": "^27.3.1",
+    "supertest": "^6.1.6"
   },
   "engines": {
     "node": ">=8.0.0"

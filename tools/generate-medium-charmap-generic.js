@@ -37,7 +37,7 @@ try {
 
 var input_lines = input_content.trim().replace(/\r\n/g, '\n').split('\n');
 var input_raw_arr = [];
-input_lines.forEach((line, index) => {
+input_lines.forEach((line) => {
   if (!line) {
     return;
   }
@@ -67,8 +67,8 @@ var output_buffer = new Uint8Array(count * 2);
 
 var offset = 0,
   codepoint_offset = input_raw_arr[0].source_codepoint;
-for (var i = 0; i < raw_count; ++i) {
-  var pair = input_raw_arr[i];
+for (var j = 0; j < raw_count; ++j) {
+  var pair = input_raw_arr[j];
   while (codepoint_offset !== pair.source_codepoint) {
     output_buffer[offset * 2] = codepoint_offset & 0xFF;
     output_buffer[offset * 2 + 1] = codepoint_offset >>> 8;

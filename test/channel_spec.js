@@ -54,7 +54,7 @@ var options = {
     'offset': 63,
     'characterset': 'JIS-X-0208'
   }]
-}
+};
 
 test('Channel unit test', function(t) {
   t.test('process()', function(assert) {

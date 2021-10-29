@@ -48,9 +48,9 @@ try {
 if (fs.existsSync(output_path)) {
   fs.unlinkSync(output_path);
 }
- 
+
 // write the first part
-fs.writeFileSync(output_path, input1_buffer, 'binary')
+fs.writeFileSync(output_path, input1_buffer, 'binary');
 
 // write the second part
 fs.appendFileSync(output_path, input2_buffer, 'binary');

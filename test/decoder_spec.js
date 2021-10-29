@@ -91,8 +91,8 @@ var gb18030Options = {
       'byte': 1,
       'condition': ['0x00~0x80']
     }, {
-      "byte": 1,
-      "condition": ["0xFF"]
+      'byte': 1,
+      'condition': ['0xFF']
     }, {
       'byte': 2,
       'condition': ['0x81~0xFE', '0x40~0xFE']
