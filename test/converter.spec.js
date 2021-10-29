@@ -2,7 +2,6 @@ var fs = require('fs');
 var converter = require('../lib/nextc4js/converter');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
 const { CharmapType } = require('../lib/nextc4js/charmap');
-var test = require('tape');
 
 var sim2traOptions= {
   'name': 'simp2tra-medium',
@@ -70,32 +69,30 @@ var tra2simpOptions = {
   ]
 };
 
-test('Simplified Chinese to Traditional Chinese Converter unit test', function(t) {
-  t.test('convert()', function(assert) {
+describe('Simplified Chinese to Traditional Chinese Converter unit test', function() {
+  it('convert()', function() {
     var charmap = fs.readFileSync(sim2traOptions.path);
     var s2t = new converter.Converter(sim2traOptions, new Uint16Array(charmap.buffer));
-    assert.equal(s2t.getName(), sim2traOptions.name);
-    assert.equal(s2t.getType(), CharmapType.CONVERTER);
+    expect(s2t.getName()).toBe(sim2traOptions.name);
+    expect(s2t.getType()).toBe(CharmapType.CONVERTER);
     var text = '铅球万袋一桶浆糊';
     var buffer = s2t.convert(bufferutils.toBuffer(text));
-    assert.equal(buffer != null, true);
+    expect(buffer).not.toBeNull();
     var converted = bufferutils.toString(buffer);
-    assert.equal(converted, '鉛球萬袋一桶漿糊');
-    assert.end();
+    expect(converted).toBe('鉛球萬袋一桶漿糊');
   });
 });
 
-test('Traditional Chinese to Simplified Chinese Converter unit test', function(t) {
-  t.test('convert()', function(assert) {
+describe('Traditional Chinese to Simplified Chinese Converter unit test', function() {
+  it('convert()', function() {
     var charmap = fs.readFileSync(tra2simpOptions.path);
     var t2s = new converter.Converter(tra2simpOptions, new Uint16Array(charmap.buffer));
-    assert.equal(t2s.getName(), tra2simpOptions.name);
-    assert.equal(t2s.getType(), CharmapType.CONVERTER);
+    expect(t2s.getName()).toBe(tra2simpOptions.name);
+    expect(t2s.getType()).toBe(CharmapType.CONVERTER);
     var text = '鉛球萬袋一桶漿糊';
     var buffer = t2s.convert(bufferutils.toBuffer(text));
-    assert.equal(buffer != null, true);
+    expect(buffer).not.toBeNull();
     var converted = bufferutils.toString(buffer);
-    assert.equal(converted, '铅球万袋一桶浆糊');
-    assert.end();
+    expect(converted).toBe('铅球万袋一桶浆糊');
   });
 });

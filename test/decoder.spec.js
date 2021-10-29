@@ -4,7 +4,6 @@ var encodingrule = require('../lib/nextc4js/encoding-rule');
 var consts = require('../lib/nextc4js/consts');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
 const { CharmapType } = require('../lib/nextc4js/charmap');
-var test = require('tape');
 
 var gbkOptions = {
   'name': 'gbk-decoder',
@@ -157,53 +156,53 @@ var gb18030Options = {
   }]
 };
 
-if (!fs.existsSync('test/out')) {
-  fs.mkdirSync('test/out');
-}
+beforeAll(() => {
+  if (!fs.existsSync('test/out')) {
+    fs.mkdirSync('test/out');
+  }
+});
 
-test('GBK Decoder unit test', function(t) {
-  t.test('decode()', function(assert) {
+describe('GBK Decoder unit test', function() {
+  it('decode()', function() {
     var charmap = fs.readFileSync(gbkOptions.path);
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
     var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
-    assert.equal(gbkDecoder.getName(), gbkOptions.name);
-    assert.equal(gbkDecoder.getType(), CharmapType.DECODER);
+    expect(gbkDecoder.getName()).toBe(gbkOptions.name);
+    expect(gbkDecoder.getType()).toBe(CharmapType.DECODER);
     var unicodeBuffer = gbkDecoder.decode(gbkTextBuffer);
-    assert.equal(unicodeBuffer != null, true);
+    expect(unicodeBuffer).not.toBeNull();
     var unicodeString = bufferutils.toString(unicodeBuffer);
-    assert.equal(unicodeString, '任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，以及浪漫气息所打动，情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，会感受到这种懊悔，这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
-    assert.end();
+    expect(unicodeString).toBe('任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，以及浪漫气息所打动，情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，会感受到这种懊悔，这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
   });
 });
 
-test('Big5 Decoder unit test', function(t) {
-  t.test('decode()', function(assert) {
+describe('Big5 Decoder unit test', function() {
+  it('decode()', function() {
     var charmap = fs.readFileSync(big5Options.path);
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
     var big5Decoder = new decoder.Multibyte(big5Options, new Uint16Array(charmap.buffer));
-    assert.equal(big5Decoder.getName(), big5Options.name);
-    assert.equal(big5Decoder.getType(), CharmapType.DECODER);
+    expect(big5Decoder.getName()).toBe(big5Options.name);
+    expect(big5Decoder.getType()).toBe(CharmapType.DECODER);
     var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
-    assert.equal(unicodeBuffer != null, true);
+    expect(unicodeBuffer).not.toBeNull();
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.open('test/out/decoding-test-big5-in-utf8-out.cue', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
       fs.writeSync(fd, utf8Buffer, 0, utf8Buffer.length, consts.UTF8_BOM.length);
       fs.closeSync(fd);
     });
-    assert.end();
   });
 });
 
-test('GB18030 Decoder unit test', function(t) {
-  t.test('decode()', function(assert) {
+describe('GB18030 Decoder unit test', function() {
+  it('decode()', function() {
     var charmap = fs.readFileSync(gb18030Options.path);
     var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charmap.buffer));
-    assert.equal(gb18030Decoder.getName(), gb18030Options.name);
-    assert.equal(gb18030Decoder.getType(), CharmapType.DECODER);
+    expect(gb18030Decoder.getName()).toBe(gb18030Options.name);
+    expect(gb18030Decoder.getType()).toBe(CharmapType.DECODER);
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
-    assert.equal(unicodeBuffer != null, true);
+    expect(unicodeBuffer).not.toBeNull();
     var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);
     fs.open('test/out/decoding-test-gb18030-in-utf16le-out.txt', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF16LE_BOM, 0, consts.UTF16LE_BOM.length, 0);
@@ -217,23 +216,20 @@ test('GB18030 Decoder unit test', function(t) {
       fs.writeSync(fd, utf16beBuffer, 0, utf16beBuffer.length, consts.UTF16BE_BOM.length);
       fs.closeSync(fd);
     });
-
-    assert.end();
   });
 });
 
-test('UTF16LE Decoder unit test', function(t) {
-  t.test('decode() - performance', function(assert) {
+describe('UTF16LE Decoder unit test', function() {
+  it('decode() - performance', function() {
     var ts = new Date;
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
-    assert.equal(decoder.UTF16LE.getName(), 'UTF-16 (little-endian)');
-    assert.equal(decoder.UTF16LE.getType(), CharmapType.DECODER);
+    expect(decoder.UTF16LE.getName()).toBe('UTF-16 (little-endian)');
+    expect(decoder.UTF16LE.getType()).toBe(CharmapType.DECODER);
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
-    assert.equal(decoder.UTF16LE.hasBom(utf16TextBuffer), true);
-    assert.equal(unicodeBuffer != null, true);
+    expect(decoder.UTF16LE.hasBom(utf16TextBuffer)).toBe(true);
+    expect(unicodeBuffer).not.toBeNull();
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     fs.writeFileSync('test/out/decoding-test-utf16le-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
-    assert.end();
   });
 });

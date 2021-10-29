@@ -5,12 +5,15 @@ Online version of Unicue, using HTML &amp; JavaScript.
 ## Preparation
 
     npm install
-    npm install -g gulp
 
 ## Test
 
-    gulp test
+    npm run test
 
+
+## Linting
+
+    npm run lint
 
 # Generate Charmaps
 

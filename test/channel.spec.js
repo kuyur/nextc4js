@@ -3,7 +3,6 @@ var channel = require('../lib/nextc4js/channel');
 var decoder = require('../lib/nextc4js/decoder');
 var encoder = require('../lib/nextc4js/encoder');
 var consts = require('../lib/nextc4js/consts');
-var test = require('tape');
 
 var options = {
   'name': 'shift-jis-decoder',
@@ -56,20 +55,19 @@ var options = {
   }]
 };
 
-test('Channel unit test', function(t) {
-  t.test('process()', function(assert) {
+describe('Channel unit test', function() {
+  it('process()', function() {
     var charmap = fs.readFileSync(options.path);
     var shiftJis = new decoder.Multibyte(options, new Uint16Array(charmap.buffer));
     var chann = new channel.Channel(shiftJis, encoder.UTF8);
     var buffer = fs.readFileSync('test/txt/shift-jis/01-shift-jis.txt');
-    assert.equal(chann.match(buffer), true);
+    expect(chann.match(buffer)).toBe(true);
     var output = chann.process(buffer);
-    assert.equal(output != null, true);
+    expect(output).not.toBeNull();
     fs.open('test/out/channel-test-shiftjis-in-utf8-out.cue', 'w+', function(err, fd) {
       fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
       fs.writeSync(fd, output, 0, output.length, consts.UTF8_BOM.length);
       fs.closeSync(fd);
     });
-    assert.end();
   });
 });

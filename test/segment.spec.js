@@ -1,6 +1,5 @@
 var segment = require('../lib/nextc4js/segment');
 var bufferutils = require('../lib/nextc4js/buffer-utils');
-var test = require('tape');
 
 var segments = [
   {
@@ -56,14 +55,13 @@ var segments = [
   }
 ];
 
-test('Segments unit test', function(t) {
-  t.test('find()', function(assert) {
+describe('Segments unit test', function() {
+  it('find()', function() {
     var buffer = new Uint8Array([0x82, 0x35, 0xA0, 0x38]);
     var chr = bufferutils.readUInt32BE(buffer, 0, 4);
     var seg = new segment.Segments(segments);
     var find = seg.find(chr);
-    assert.equal(find.getBegin(), 2167439664);
-    assert.equal(find.getEnd(), 2218393145);
-    assert.end();
+    expect(find.getBegin()).toBe(2167439664);
+    expect(find.getEnd()).toBe(2218393145);
   });
 });
