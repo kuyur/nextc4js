@@ -185,7 +185,7 @@ if (arr.length) {
 
 var buffer = new Uint8Array(65536 * 4);
 var m = 0;
-for (l = 0; l <= 0xFFFF; ++l) {
+for (var l = 0; l <= 0xFFFF; ++l) {
   var codepoint = u2gb18030[l];
   var firstByte = codepoint & 0xFF;
   codepoint = codepoint >>> 8;
