@@ -3,9 +3,9 @@
  */
 
 var fs = require('fs');
-var decoder = require('../lib/nextc4js/decoder');
-var consts = require('../lib/nextc4js/consts');
-var condition = require('../lib/nextc4js/condition');
+var decoder = require('../lib/decoder');
+var consts = require('../lib/consts');
+var condition = require('../lib/condition');
 
 function printHelp() {
   console.log('Usage:');

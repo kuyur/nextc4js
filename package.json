@@ -1,14 +1,17 @@
 {
-  "name": "unicue-online",
-  "description": "Unicue online.",
-  "version": "0.0.1",
-  "homepage": "https://github.com/kuyur/unicue-online",
+  "name": "nextc4.js",
+  "description": "The JavaScript version of NextC4 library.",
+  "version": "1.0.0",
+  "homepage": "https://github.com/kuyur/nextc4js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kuyur/unicue-online.git"
+    "url": "https://github.com/kuyur/nextc4js.git"
   },
   "keywords": [
-    "unicue"
+    "nextc4.js",
+    "unicue",
+    "encoding",
+    "charset"
   ],
   "author": {
     "name": "kuyur",
@@ -29,7 +32,8 @@
     "node": ">=8.0.0"
   },
   "bugs": {
-    "url": "https://github.com/kuyur/unicue-online/issues"
+    "url": "https://github.com/kuyur/nextc4js/issues"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "main": "index.js"
 }

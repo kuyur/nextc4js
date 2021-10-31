@@ -1,7 +1,7 @@
 var fs = require('fs');
-var encoder = require('../lib/nextc4js/encoder');
-var decoder = require('../lib/nextc4js/decoder');
-const { CharmapType } = require('../lib/nextc4js/charmap');
+var encoder = require('../lib/encoder');
+var decoder = require('../lib/decoder');
+const { CharmapType } = require('../lib/charmap');
 
 var gb18030Options =  {
   'name': 'gb18030-encoder',
@@ -102,7 +102,7 @@ describe('GB18030 encoder unit test', function() {
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, 2);
     expect(unicodeBuffer).not.toBeNull();
     var charmap = fs.readFileSync(gb18030Options.path);
-    var gb18030Encoder = new encoder.Multiplebyte(gb18030Options, new Uint32Array(charmap.buffer));
+    var gb18030Encoder = new encoder.Multibyte(gb18030Options, new Uint32Array(charmap.buffer));
     expect(gb18030Encoder.getName()).toBe(gb18030Options.name);
     expect(gb18030Encoder.getType()).toBe(CharmapType.ENCODER);
     var gb18030Buffer = gb18030Encoder.encode(unicodeBuffer);

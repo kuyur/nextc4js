@@ -1,4 +1,4 @@
-var decodingrule = require('../lib/nextc4js/decoding-rule');
+var decodingrule = require('../lib/decoding-rule');
 
 var rules = [
   {

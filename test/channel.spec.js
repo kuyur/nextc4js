@@ -1,8 +1,8 @@
 var fs = require('fs');
-var channel = require('../lib/nextc4js/channel');
-var decoder = require('../lib/nextc4js/decoder');
-var encoder = require('../lib/nextc4js/encoder');
-var consts = require('../lib/nextc4js/consts');
+var channel = require('../lib/channel');
+var decoder = require('../lib/decoder');
+var encoder = require('../lib/encoder');
+var consts = require('../lib/consts');
 
 var options = {
   'name': 'shift-jis-decoder',

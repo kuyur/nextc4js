@@ -1,7 +1,7 @@
 var fs = require('fs');
-var converter = require('../lib/nextc4js/converter');
-var bufferutils = require('../lib/nextc4js/buffer-utils');
-const { CharmapType } = require('../lib/nextc4js/charmap');
+var converter = require('../lib/converter');
+var bufferutils = require('../lib/buffer-utils');
+const { CharmapType } = require('../lib/charmap');
 
 var sim2traOptions= {
   'name': 'simp2tra-medium',

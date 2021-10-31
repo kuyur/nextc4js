@@ -1,5 +1,5 @@
-var segment = require('../lib/nextc4js/segment');
-var bufferutils = require('../lib/nextc4js/buffer-utils');
+var segment = require('../lib/segment');
+var bufferutils = require('../lib/buffer-utils');
 
 var segments = [
   {

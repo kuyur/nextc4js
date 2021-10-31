@@ -1,5 +1,5 @@
-var condition = require('../lib/nextc4js/condition');
-var bufferutils = require('../lib/nextc4js/buffer-utils');
+var condition = require('../lib/condition');
+var bufferutils = require('../lib/buffer-utils');
 
 var option = ['0x81~0x84', '0x30~0x39', '0x81~0xFE', '0x30~0x39'];
 var option2 = ['0x90~0xE3', '0x30~0x39', '0x81~0xFE', '0x30~0x39'];

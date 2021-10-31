@@ -1,46 +1,46 @@
 [{
   "name": "UTF-16 (LE) to UTF-8",
   "description": "UTF-16 (little-endian) to UTF-8.",
-  "decoder": "utf-16-le",
-  "encoder": "utf-8"
+  "decoder": "UTF-16 (little-endian)",
+  "encoder": "UTF-8"
 }, {
   "name": "UTF-16 (LE) to UTF-16 (BE)",
   "description": "UTF-16 (little-endian) to UTF-16 (big-endian).",
-  "decoder": "utf-16-le",
-  "encoder": "utf-16-be"
+  "decoder": "UTF-16 (little-endian)",
+  "encoder": "UTF-16 (big-endian)"
 }, {
   "name": "UTF-16 (BE) to UTF-8",
   "description": "UTF-16 (big-endian) to UTF-8.",
-  "decoder": "utf-16-be",
-  "encoder": "utf-8"
+  "decoder": "UTF-16 (big-endian)",
+  "encoder": "UTF-8"
 }, {
   "name": "UTF-16 (BE) to UTF-16 (LE)",
   "description": "UTF-16 (big-endian) to UTF-16 (little-endian).",
-  "decoder": "utf-16-be",
-  "encoder": "utf-16-le"
+  "decoder": "UTF-16 (big-endian)",
+  "encoder": "UTF-16 (little-endian)"
 }, {
   "name": "UTF-8 to UTF-16 (LE)",
   "description": "UTF-8 to UTF-16 (little-endian).",
-  "decoder": "utf-8",
-  "encoder": "utf-16-le"
+  "decoder": "UTF-8",
+  "encoder": "UTF-16 (little-endian)"
 }, {
   "name": "UTF-8 to UTF-16 (BE)",
   "description": "UTF-8 to UTF-16 (big-endian).",
-  "decoder": "utf-8",
-  "encoder": "utf-16-be"
+  "decoder": "UTF-8",
+  "encoder": "UTF-16 (big-endian)"
 }, {
   "name": "Shift-JIS to UTF-8",
   "description": "Shift-JIS to UTF-8.",
   "decoder": "shift-jis-decoder",
-  "encoder": "utf-8"
+  "encoder": "UTF-8"
 }, {
   "name": "Shift-JIS to UCS2 (little-endian)",
   "description": "Shift-JIS to Unicode UCS2 (little-endian).",
   "decoder": "shift-jis-decoder",
-  "encoder": "utf-16-le"
+  "encoder": "UTF-16 (little-endian)"
 }, {
   "name": "Shift-JIS to UCS2 (big-endian)",
   "description": "Shift-JIS to Unicode UCS2 (big-endian).",
   "decoder": "shift-jis-decoder",
-  "encoder": "utf-16-be"
+  "encoder": "UTF-16 (big-endian)"
 }]

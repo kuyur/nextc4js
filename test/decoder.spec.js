@@ -1,9 +1,9 @@
 var fs = require('fs');
-var decoder = require('../lib/nextc4js/decoder');
-var encodingrule = require('../lib/nextc4js/encoding-rule');
-var consts = require('../lib/nextc4js/consts');
-var bufferutils = require('../lib/nextc4js/buffer-utils');
-const { CharmapType } = require('../lib/nextc4js/charmap');
+var decoder = require('../lib/decoder');
+var encodingrule = require('../lib/encoding-rule');
+var consts = require('../lib/consts');
+var bufferutils = require('../lib/buffer-utils');
+const { CharmapType } = require('../lib/charmap');
 
 var gbkOptions = {
   'name': 'gbk-decoder',
@@ -229,6 +229,8 @@ describe('UTF16LE Decoder unit test', function() {
     expect(decoder.UTF16LE.hasBom(utf16TextBuffer)).toBe(true);
     expect(unicodeBuffer).not.toBeNull();
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
+    expect(decoder.UTF8.hasBom(utf8Buffer)).toBe(true);
+    expect(decoder.UTF8.match(utf8Buffer)).toBe(true);
     fs.writeFileSync('test/out/decoding-test-utf16le-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
   });

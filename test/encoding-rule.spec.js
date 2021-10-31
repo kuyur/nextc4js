@@ -1,4 +1,4 @@
-var encodingrule = require('../lib/nextc4js/encoding-rule');
+var encodingrule = require('../lib/encoding-rule');
 
 describe('EncodingRule.UTF16LE unit test', function() {
   it('test()', function() {
