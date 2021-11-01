@@ -86,6 +86,15 @@ describe('DecodingRule.UTF16LE unit test', function() {
     expect(array instanceof Array).toBe(true);
     expect(array.length).toBe(1);
     expect(array[0]).toBe(0x1D306);
+
+    var buffer2 = new Uint8Array([0x00, 0x34, 0xD8, 0x06, 0xDF]);
+    var array2 = decodingrule.UTF16LE.parse(buffer2, 1);
+    expect(array2 instanceof Array).toBe(true);
+    expect(array2.length).toBe(1);
+    expect(array2[0]).toBe(0x1D306);
+
+    expect(decodingrule.UTF16LE.parse(buffer2, 4)).toBe(null);
+    expect(decodingrule.UTF16LE.parse(buffer2, 5)).toEqual([]);
   });
 });
 
@@ -122,6 +131,15 @@ describe('DecodingRule.UTF16BE unit test', function() {
     expect(array instanceof Array).toBe(true);
     expect(array.length).toBe(1);
     expect(array[0]).toBe(0x1D306);
+
+    var buffer2 = new Uint8Array([0x00, 0xD8, 0x34, 0xDF, 0x06]);
+    var array2 = decodingrule.UTF16BE.parse(buffer2, 1);
+    expect(array2 instanceof Array).toBe(true);
+    expect(array2.length).toBe(1);
+    expect(array2[0]).toBe(0x1D306);
+
+    expect(decodingrule.UTF16BE.parse(buffer2, 4)).toBe(null);
+    expect(decodingrule.UTF16BE.parse(buffer2, 5)).toEqual([]);
   });
 });
 
@@ -132,18 +150,53 @@ describe('DecodingRule.UTF8 unit test', function() {
   });
 
   it('decode()', function() {
+    expect(decodingrule.UTF8.decode(null)).toBe(null);
+    expect(decodingrule.UTF8.decode(new Uint8Array(0)).length).toBe(0);
+
     var buffer = new Uint8Array([0xF0, 0x9D, 0x8C, 0x86]);
     var uint32Array = decodingrule.UTF8.decode(buffer);
     expect(uint32Array instanceof Uint32Array).toBe(true);
     expect(uint32Array.length).toBe(1);
     expect(uint32Array[0]).toBe(0x1D306);
+
+    var buffer_1 = new Uint8Array([0x00, 0xF0, 0x9D, 0x8C, 0x86]);
+    var uint32Array_1 = decodingrule.UTF8.decode(buffer_1, 1);
+    expect(uint32Array_1 instanceof Uint32Array).toBe(true);
+    expect(uint32Array_1.length).toBe(1);
+    expect(uint32Array_1[0]).toBe(0x1D306);
+
+    var buffer2 = new Uint8Array([0xF9, 0x81, 0x81, 0x81, 0x81]);
+    var uint32Array2 = decodingrule.UTF8.decode(buffer2);
+    expect(uint32Array2 instanceof Uint32Array).toBe(true);
+    expect(uint32Array2.length).toBe(1);
+    expect(uint32Array2[0]).toBe(0x1041041);
+
+    var buffer3 = new Uint8Array([0xFB, 0xBF, 0xBF, 0xBF, 0xBF]);
+    var uint32Array3 = decodingrule.UTF8.decode(buffer3);
+    expect(uint32Array3 instanceof Uint32Array).toBe(true);
+    expect(uint32Array3.length).toBe(1);
+    expect(uint32Array3[0]).toBe(0x3FFFFFF);
+
+    var buffer4 = new Uint8Array([0xFD, 0xBF, 0xBF, 0xBF, 0xBF, 0xBF]);
+    var uint32Array4 = decodingrule.UTF8.decode(buffer4);
+    expect(uint32Array4 instanceof Uint32Array).toBe(true);
+    expect(uint32Array4.length).toBe(1);
+    expect(uint32Array4[0]).toBe(0x7FFFFFFF);
   });
 
   it('parse()', function() {
-    var buffer = new Uint8Array([0xF0, 0x9D, 0x8C, 0x86]);
+    expect(decodingrule.UTF8.parse(new Uint8Array(0))).toEqual([]);
+
+    var buffer = new Uint8Array([0x20, 0xDF, 0xBF, 0xE7, 0x9C, 0x8B, 0xF0, 0x9D, 0x8C, 0x86, 0xFB, 0xBF, 0xBF,
+      0xBF, 0xBF, 0xFD, 0xBF, 0xBF, 0xBF, 0xBF, 0xBF]);
     var array = decodingrule.UTF8.parse(buffer);
     expect(array instanceof Array).toBe(true);
-    expect(array.length).toBe(1);
-    expect(array[0]).toBe(0x1D306);
+    expect(array.length).toBe(6);
+    expect(array[0]).toBe(0x20);
+    expect(array[1]).toBe(0x7FF);
+    expect(array[2]).toBe(0x770B);
+    expect(array[3]).toBe(0x1D306);
+    expect(array[4]).toBe(0x3FFFFFF);
+    expect(array[5]).toBe(0x7FFFFFFF);
   });
 });

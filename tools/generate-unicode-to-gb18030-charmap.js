@@ -143,7 +143,8 @@ for (j = 0; j < 39420; ++j) {
     if (chr <= 0xFFFF) {
       u2gb18030[chr] = gb_chr;
     } else {
-      console.error(`Error code point. GB18030 codepoint offset: ${j}, codepoint: ${gb_chr}, Unicode codepoint: ${chr}`);
+      console.error(`Error code point. GB18030 codepoint offset: ${j}, codepoint: ${gb_chr}, ` +
+        `Unicode codepoint: ${chr}`);
     }
   }
 }

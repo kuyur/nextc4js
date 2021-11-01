@@ -15,6 +15,7 @@
     "no-global-assign": "error",
     "no-redeclare": "error",
     "no-undef": "error",
-    "no-trailing-spaces": "error"
+    "no-trailing-spaces": "error",
+    "max-len": ["error", { "code": 120 }]
   }
 }

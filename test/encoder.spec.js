@@ -97,6 +97,9 @@ describe('UTF8 encoder unit test 2', function() {
 
 describe('GB18030 encoder unit test', function() {
   it('encode()', function() {
+    expect(() => {new encoder.Multibyte();}).toThrow('options should provide name property at least');
+    expect(() => {new encoder.Multibyte({});}).toThrow('options should provide name property at least');
+
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/unicode-bmp-and-sp.txt');
     expect(decoder.UTF16LE.hasBom(utf16TextBuffer)).toBe(true);
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, 2);
