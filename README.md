@@ -1,5 +1,5 @@
-# unicue-online
-Online version of Unicue, using HTML &amp; JavaScript.
+# nextc4.js
+The JavaScript version of nextc4 library.
 
 # Build
 ## Preparation
