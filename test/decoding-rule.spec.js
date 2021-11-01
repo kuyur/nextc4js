@@ -57,6 +57,19 @@ describe('DecodingRule.UTF16LE unit test', function() {
   it('test()', function() {
     var buffer = new Uint8Array([0x34, 0xD8, 0x06, 0xDF]);
     expect(decodingrule.UTF16LE.test(buffer)).toBe(1);
+    expect(decodingrule.UTF16LE.test(buffer, 4)).toBe(0);
+
+    expect(decodingrule.UTF16LE.test(null)).toBe(-1);
+
+    var buffer2 = new Uint8Array(0);
+    expect(decodingrule.UTF16LE.test(buffer2)).toBe(0);
+
+    var buffer3 = new Uint8Array([0x34, 0xD8, 0x06]);
+    expect(decodingrule.UTF16LE.test(buffer3)).toBe(-1);
+
+    // invalid byte order
+    var buffer4 = new Uint8Array([0x06, 0xDF, 0x34, 0xD8]);
+    expect(decodingrule.UTF16LE.test(buffer4)).toBe(-1);
   });
 
   it('decode()', function() {
@@ -80,6 +93,19 @@ describe('DecodingRule.UTF16BE unit test', function() {
   it('test()', function() {
     var buffer = new Uint8Array([0xD8, 0x34, 0xDF, 0x06]);
     expect(decodingrule.UTF16BE.test(buffer)).toBe(1);
+    expect(decodingrule.UTF16BE.test(buffer, 4)).toBe(0);
+
+    expect(decodingrule.UTF16BE.test(null)).toBe(-1);
+
+    var buffer2 = new Uint8Array(0);
+    expect(decodingrule.UTF16BE.test(buffer2)).toBe(0);
+
+    var buffer3 = new Uint8Array([0xD8, 0x34, 0xDF]);
+    expect(decodingrule.UTF16BE.test(buffer3)).toBe(-1);
+
+    // invalid byte order
+    var buffer4 = new Uint8Array([0xDF, 0x06, 0xD8, 0x34]);
+    expect(decodingrule.UTF16BE.test(buffer4)).toBe(-1);
   });
 
   it('decode()', function() {

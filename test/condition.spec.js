@@ -31,4 +31,25 @@ describe('Condition unit test', function() {
     expect(con.getCodePoint(0x10000 - 0x10000)).toBe(0x90308130);
     expect(con.getCodePoint(0x10FFFF - 0x10000)).toBe(0xE3329A35);
   });
+
+  it('getBlockSize()', function() {
+    var con = condition.Condition.build(['0x81~0xFF', '0x40~0xFF']);
+    expect(con.getBlockSize()).toBe(0xFF - 0x40 + 1);
+
+    var con2 = new condition.Condition({});
+    expect(con2.getBlockSize()).toBe(0);
+  });
+
+  it('getBlockCount()', function() {
+    var con = condition.Condition.build(['0x81~0xFF', '0x40~0xFF']);
+    expect(con.getBlockCount()).toBe(0xFF - 0x81 + 1);
+
+    var con2 = new condition.Condition({});
+    expect(con2.getBlockCount()).toBe(0);
+  });
+
+  it('match()', function() {
+    var con = new condition.Condition({});
+    expect(con.match(0)).toBe(false);
+  });
 });

@@ -2,6 +2,8 @@ var fs = require('fs');
 var converter = require('../lib/converter');
 var bufferutils = require('../lib/buffer-utils');
 const { CharmapType } = require('../lib/charmap');
+const { Reference } = require('../lib/segment');
+const { UNICODE_UNKNOWN_CHAR } = require('../lib/consts');
 
 var sim2traOptions= {
   'name': 'simp2tra-medium',
@@ -75,6 +77,9 @@ describe('Simplified Chinese to Traditional Chinese Converter unit test', functi
     var s2t = new converter.Converter(sim2traOptions, new Uint16Array(charmap.buffer));
     expect(s2t.getName()).toBe(sim2traOptions.name);
     expect(s2t.getType()).toBe(CharmapType.CONVERTER);
+
+    expect(s2t.convert(null)).toBe(null);
+
     var text = '铅球万袋一桶浆糊';
     var buffer = s2t.convert(bufferutils.toBuffer(text));
     expect(buffer).not.toBeNull();
@@ -94,5 +99,64 @@ describe('Traditional Chinese to Simplified Chinese Converter unit test', functi
     expect(buffer).not.toBeNull();
     var converted = bufferutils.toString(buffer);
     expect(converted).toBe('铅球万袋一桶浆糊');
+  });
+});
+
+describe('Converter without mapping buffer', function() {
+  it('Construtor', function() {
+    expect(() => {new converter.Converter();}).toThrow('options should provide name property at least');
+    expect(() => {new converter.Converter({});}).toThrow('options should provide name property at least');
+  });
+
+  it('convert() - 1', function() {
+    var conv = new converter.Converter({
+      name: 'test',
+      bytes: 2
+    });
+    expect(conv.getName()).toBe('test');
+    expect(conv.getType()).toBe(CharmapType.CONVERTER);
+
+    var buffer = new Uint32Array([0x61]);
+    expect(conv.convert(buffer)[0]).toBe(UNICODE_UNKNOWN_CHAR);
+  });
+
+  it('convert() - 2', function() {
+    var conv2 = new converter.Converter({
+      name: 'test2',
+      bytes: 2,
+      segments:[
+        {
+          begin: 0x61,
+          end: 0x7A,
+          reference: Reference.BUFFER,
+          characterset: 'a-z'
+        }
+      ]
+    });
+    expect(conv2.getName()).toBe('test2');
+    expect(conv2.getType()).toBe(CharmapType.CONVERTER);
+
+    var buffer = new Uint32Array([0x61]);
+    expect(conv2.convert(buffer)[0]).toBe(UNICODE_UNKNOWN_CHAR);
+  });
+
+  it('convert() - 3', function() {
+    var conv3 = new converter.Converter({
+      name: 'test3',
+      bytes: 2,
+      segments:[
+        {
+          begin: 0x61,
+          end: 0x7A,
+          reference: 'HOGEHOGE',
+          characterset: 'a-z'
+        }
+      ]
+    });
+    expect(conv3.getName()).toBe('test3');
+    expect(conv3.getType()).toBe(CharmapType.CONVERTER);
+
+    var buffer = new Uint32Array([0x61]);
+    expect(conv3.convert(buffer)[0]).toBe(UNICODE_UNKNOWN_CHAR);
   });
 });

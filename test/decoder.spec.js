@@ -222,16 +222,45 @@ describe('GB18030 Decoder unit test', function() {
 describe('UTF16LE Decoder unit test', function() {
   it('decode() - performance', function() {
     var ts = new Date;
-    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
+
     expect(decoder.UTF16LE.getName()).toBe('UTF-16 (little-endian)');
     expect(decoder.UTF16LE.getType()).toBe(CharmapType.DECODER);
-    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
+
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
+    expect(decoder.UTF16LE.match(utf16TextBuffer)).toBe(true);
     expect(decoder.UTF16LE.hasBom(utf16TextBuffer)).toBe(true);
+    expect(decoder.UTF16LE.match(utf16TextBuffer, 2)).toBe(true);
+
+    var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
     expect(decoder.UTF8.hasBom(utf8Buffer)).toBe(true);
     expect(decoder.UTF8.match(utf8Buffer)).toBe(true);
     fs.writeFileSync('test/out/decoding-test-utf16le-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
+
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
+  });
+
+  describe('UTF16BE Decoder unit test', function() {
+    it('decode() - performance', function() {
+      var ts = new Date;
+
+      expect(decoder.UTF16BE.getName()).toBe('UTF-16 (big-endian)');
+      expect(decoder.UTF16BE.getType()).toBe(CharmapType.DECODER);
+
+      var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig-be.txt');
+      expect(decoder.UTF16BE.match(utf16TextBuffer)).toBe(true);
+      expect(decoder.UTF16BE.hasBom(utf16TextBuffer)).toBe(true);
+      expect(decoder.UTF16BE.match(utf16TextBuffer, 2)).toBe(true);
+
+      var unicodeBuffer = decoder.UTF16BE.decode(utf16TextBuffer);
+      expect(unicodeBuffer).not.toBeNull();
+      var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
+      expect(decoder.UTF8.hasBom(utf8Buffer)).toBe(true);
+      expect(decoder.UTF8.match(utf8Buffer)).toBe(true);
+      fs.writeFileSync('test/out/decoding-test-utf16be-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
+
+      console.log('Consumed time: ' + (new Date - ts) + 'ms');
+    });
   });
 });
