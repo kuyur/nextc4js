@@ -1,5 +1,5 @@
 # nextc4.js
-The JavaScript version of nextc4 library.
+The JavaScript version of NextC4 library.
 
 # Build
 ## Preparation
