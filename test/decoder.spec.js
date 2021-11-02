@@ -221,7 +221,7 @@ describe('GB18030 Decoder unit test', function() {
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/01-gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
-  
+
     var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16le-out.txt', consts.UTF16LE_BOM, {flag: 'w+'});
     fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16le-out.txt', utf16leBuffer, {flag: 'a+'});
