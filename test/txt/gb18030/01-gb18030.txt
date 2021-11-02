@@ -56,7 +56,7 @@ GB18030 四字节字符 GB+90308130 ~ GB+E339FE39
 ------------------
 GB18030-2000 和 GB18030-2005的差分字符
 
-ḿǹ〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻⺁⺄㑳㑇⺈⺋㖞㘚㘎⺌⺗㥮㤘㧏㧟㩳㧐㭎㱮㳠⺧⺪䁖䅟⺮䌷⺳⺶⺷䎱䎬⺻䏝䓖䙡䙌䜣䜩䝼䞍⻊䥇䥺䥽䦂䦃䦅䦆䦟䦛䦷䦶䲣䲟䲠䲡䱷䲢䴓䴔䴕䴖䴗䴘䴙䶮
+ǹ〾⿰⿱⿲⿳⿴⿵⿶⿷⿸⿹⿺⿻⺁⺄㑳㑇⺈⺋㖞㘚㘎⺌⺗㥮㤘㧏㧟㩳㧐㭎㱮㳠⺧⺪䁖䅟⺮䌷⺳⺶⺷䎱䎬⺻䏝䓖䙡䙌䜣䜩䝼䞍⻊䥇䥺䥽䦂䦃䦅䦆䦟䦛䦷䦶䲣䲟䲠䲡䱷䲢䴓䴔䴕䴖䴗䴘䴙䶮
 
 ------------------
 0xFFFD �

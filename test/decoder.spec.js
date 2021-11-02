@@ -221,7 +221,7 @@ describe('GB18030 Decoder unit test', function() {
     var gb18030Decoder = new decoder.Multibyte(gb18030Options);
     expect(gb18030Decoder.getName()).toBe(gb18030Options.name);
     expect(gb18030Decoder.getType()).toBe(CharmapType.DECODER);
-    var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
+    var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/01-gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
     var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);

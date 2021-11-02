@@ -140,7 +140,8 @@ var gb_chr;
 for (j = 0; j < 39420; ++j) {
   gb_chr = GB18030_4BYTES_UNICODE_BMP.getCodePoint(j);
   chr = gb18030Decoder.convertChar_(gb_chr);
-  if (chr !== consts.UNICODE_UNKNOWN_CHAR) {
+  // special case: ḿ is overridden in GB18030 4-bytes zone again
+  if (chr !== consts.UNICODE_UNKNOWN_CHAR && gb_chr !== 0x8135F437) {
     if (chr <= 0xFFFF) {
       u2gb18030[chr] = gb_chr;
     } else {

@@ -7,6 +7,7 @@ const { Converter }= require('./lib/converter');
 const decoder = require('./lib/decoder');
 const encoder = require('./lib/encoder');
 const { Reference } = require('./lib/segment');
+const { Context } = require('./lib/context');
 
 module.exports = {
   Converter: Converter,
@@ -22,6 +23,7 @@ module.exports = {
   Condition: Condition,
   CharmapType: CharmapType,
   SegmentReference: Reference,
+  Context: Context,
   Consts: Consts,
   utils: BufferUtils,
 };
