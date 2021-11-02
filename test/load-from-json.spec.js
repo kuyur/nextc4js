@@ -3,6 +3,12 @@ var utils = require('../lib/buffer-utils');
 var { UTF8, UTF16LE } = require('../lib/decoder');
 const fs = require('fs');
 
+beforeAll(() => {
+  if (!fs.existsSync('test/out')) {
+    fs.mkdirSync('test/out');
+  }
+});
+
 describe('Loading Context unit test', function() {
   it('loadFromJsonSync() - anisong', function() {
     var context = loadFromJsonSync('presets/context-anisong.json');
@@ -158,9 +164,6 @@ describe('Loading Context unit test', function() {
     expect(output[output.length - 2]).toBe(0xF7);
     expect(output[output.length - 1]).toBe(0x32);
     // write to file
-    fs.open('test/out/context-test-gb18030-out.txt', 'w+', function(err, fd) {
-      fs.writeSync(fd, output, 0, output.length, 0);
-      fs.closeSync(fd);
-    });
+    fs.writeFileSync('test/out/context-test-gb18030-out.txt', output, {flag: 'w+'});
   });
 });

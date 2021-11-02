@@ -208,11 +208,8 @@ describe('Big5 Decoder unit test', function() {
     var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
     var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
-    fs.open('test/out/decoding-test-big5-in-utf8-out.cue', 'w+', function(err, fd) {
-      fs.writeSync(fd, consts.UTF8_BOM, 0, consts.UTF8_BOM.length, 0);
-      fs.writeSync(fd, utf8Buffer, 0, utf8Buffer.length, consts.UTF8_BOM.length);
-      fs.closeSync(fd);
-    });
+    fs.writeFileSync('test/out/decoding-test-big5-in-utf8-out.cue', consts.UTF8_BOM, {flag: 'w+'});
+    fs.writeFileSync('test/out/decoding-test-big5-in-utf8-out.cue', utf8Buffer, {flag: 'a+'});
   });
 });
 
@@ -224,19 +221,14 @@ describe('GB18030 Decoder unit test', function() {
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/01-gb18030.txt');
     var unicodeBuffer = gb18030Decoder.decode(gb18030TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
+  
     var utf16leBuffer = encodingrule.UTF16LE.encode(unicodeBuffer);
-    fs.open('test/out/decoding-test-gb18030-in-utf16le-out.txt', 'w+', function(err, fd) {
-      fs.writeSync(fd, consts.UTF16LE_BOM, 0, consts.UTF16LE_BOM.length, 0);
-      fs.writeSync(fd, utf16leBuffer, 0, utf16leBuffer.length, consts.UTF16LE_BOM.length);
-      fs.closeSync(fd);
-    });
+    fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16le-out.txt', consts.UTF16LE_BOM, {flag: 'w+'});
+    fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16le-out.txt', utf16leBuffer, {flag: 'a+'});
 
     var utf16beBuffer = encodingrule.UTF16BE.encode(unicodeBuffer);
-    fs.open('test/out/decoding-test-gb18030-in-utf16be-out.txt', 'w+', function(err, fd) {
-      fs.writeSync(fd, consts.UTF16BE_BOM, 0, consts.UTF16BE_BOM.length, 0);
-      fs.writeSync(fd, utf16beBuffer, 0, utf16beBuffer.length, consts.UTF16BE_BOM.length);
-      fs.closeSync(fd);
-    });
+    fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16be-out.txt', consts.UTF16BE_BOM, {flag: 'w+'});
+    fs.writeFileSync('test/out/decoding-test-gb18030-in-utf16be-out.txt', utf16beBuffer, {flag: 'a+'});
   });
 });
 
