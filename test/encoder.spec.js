@@ -2,13 +2,14 @@ var fs = require('fs');
 var encoder = require('../lib/encoder');
 var decoder = require('../lib/decoder');
 const { CharmapType } = require('../lib/charmap');
+var goog = require('../lib/goog-base');
 
 var gb18030Options =  {
   'name': 'gb18030-encoder',
   'description': 'Unicode to GB18030.',
   'version': 'GB18030-2005',
   'type': 'encoder',
-  'path': 'charmaps/back-u2gb18030-little-endian.map',
+  'buffer': 'charmaps/back-u2gb18030-little-endian.map|4',
   'segments': [{
     'begin': 0,
     'end': 65535,
@@ -27,6 +28,13 @@ beforeAll(() => {
   if (!fs.existsSync('test/out')) {
     fs.mkdirSync('test/out');
   }
+
+  if (goog.isString(gb18030Options.buffer)) {
+    var parts = gb18030Options.buffer.split('|');
+    var bytes = +parts[1];
+    var buffer = fs.readFileSync(parts[0]);
+    gb18030Options.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+  }
 });
 
 describe('UTF16LE encoder unit test', function() {
@@ -35,7 +43,7 @@ describe('UTF16LE encoder unit test', function() {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
-    expect(encoder.UTF16LE.getName()).toBe('UTF-16 (little-endian)');
+    expect(encoder.UTF16LE.getName()).toBe('UTF-16LE');
     expect(encoder.UTF16LE.getType()).toBe(CharmapType.ENCODER);
     var utf16Buffer = encoder.UTF16LE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf16le-out.txt', utf16Buffer, {flag: 'w+'});
@@ -61,7 +69,7 @@ describe('UTF16BE encoder unit test', function() {
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer);
     expect(unicodeBuffer).not.toBeNull();
-    expect(encoder.UTF16BE.getName()).toBe('UTF-16 (big-endian)');
+    expect(encoder.UTF16BE.getName()).toBe('UTF-16BE');
     expect(encoder.UTF16BE.getType()).toBe(CharmapType.ENCODER);
     var utf16Buffer = encoder.UTF16BE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf16be-out.txt', utf16Buffer, {flag: 'w+'});
@@ -104,8 +112,7 @@ describe('GB18030 encoder unit test', function() {
     expect(decoder.UTF16LE.hasBom(utf16TextBuffer)).toBe(true);
     var unicodeBuffer = decoder.UTF16LE.decode(utf16TextBuffer, 2);
     expect(unicodeBuffer).not.toBeNull();
-    var charmap = fs.readFileSync(gb18030Options.path);
-    var gb18030Encoder = new encoder.Multibyte(gb18030Options, new Uint32Array(charmap.buffer));
+    var gb18030Encoder = new encoder.Multibyte(gb18030Options);
     expect(gb18030Encoder.getName()).toBe(gb18030Options.name);
     expect(gb18030Encoder.getType()).toBe(CharmapType.ENCODER);
     var gb18030Buffer = gb18030Encoder.encode(unicodeBuffer);

@@ -105,8 +105,9 @@ var gb18030Options = {
   }]
 };
 
-var charmap = fs.readFileSync(gb18030Options.path);
-var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charmap.buffer));
+var charmap = fs.readFileSync(input_path);
+gb18030Options.buffer = new Uint16Array(charmap.buffer);
+var gb18030Decoder = new decoder.Multibyte(gb18030Options);
 
 var u2gb18030 = new Uint32Array(65536);
 

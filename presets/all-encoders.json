@@ -1,0 +1,24 @@
+[
+  {
+    "name": "GB18030",
+    "description": "Unicode to GB18030.",
+    "version": "GB18030-2005",
+    "type": "encoder",
+    "buffer": "charmaps/back-u2gb18030-little-endian.map,4",
+    "segments": [
+      {
+        "begin": 0,
+        "end": 65535,
+        "reference": "buffer",
+        "characterset": "Unicode BMP",
+        "offset": 0
+      },
+      {
+        "begin": 65536,
+        "end": 1114111,
+        "reference": "gb18030-unicode-sp-mapping",
+        "characterset": "Unicode (SP)"
+      }
+    ]
+  }
+]

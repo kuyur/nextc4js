@@ -4,13 +4,14 @@ var encodingrule = require('../lib/encoding-rule');
 var consts = require('../lib/consts');
 var bufferutils = require('../lib/buffer-utils');
 const { CharmapType } = require('../lib/charmap');
+var goog = require('../lib/goog-base');
 
 var gbkOptions = {
   'name': 'gbk-decoder',
   'description': 'GBK to Unicode.',
   'version': 'CP936 with enhancement',
   'type': 'decoder',
-  'path': 'charmaps/front-gbk2u-little-endian.map',
+  'buffer': 'charmaps/front-gbk2u-little-endian.map|2',
   'rules': [
     {
       'byte': 1,
@@ -50,7 +51,7 @@ var big5Options = {
   'description': 'Big5 to Unicode.',
   'version': 'UAO 2.50',
   'type': 'decoder',
-  'path': 'charmaps/front-b2u-little-endian.map',
+  'buffer': 'charmaps/front-b2u-little-endian.map|2',
   'rules': [
     {
       'byte': 1,
@@ -84,7 +85,7 @@ var gb18030Options = {
   'description': 'GB18030 to Unicode.',
   'version': 'GB18030-2005',
   'type': 'decoder',
-  'path': 'charmaps/front-gb180302u-little-endian.map',
+  'buffer': 'charmaps/front-gb180302u-little-endian.map|2',
   'rules': [
     {
       'byte': 1,
@@ -160,13 +161,33 @@ beforeAll(() => {
   if (!fs.existsSync('test/out')) {
     fs.mkdirSync('test/out');
   }
+
+  if (goog.isString(gbkOptions.buffer)) {
+    var parts = gbkOptions.buffer.split('|');
+    var bytes = +parts[1];
+    var buffer = fs.readFileSync(parts[0]);
+    gbkOptions.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+  }
+
+  if (goog.isString(big5Options.buffer)) {
+    var parts2 = big5Options.buffer.split('|');
+    var bytes2 = +parts2[1];
+    var buffer2 = fs.readFileSync(parts2[0]);
+    big5Options.buffer = bytes2 === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
+  }
+
+  if (goog.isString(gb18030Options.buffer)) {
+    var parts3 = gb18030Options.buffer.split('|');
+    var bytes3 = +parts3[1];
+    var buffer3 = fs.readFileSync(parts3[0]);
+    gb18030Options.buffer = bytes3 === 2 ? new Uint16Array(buffer3.buffer) : new Uint32Array(buffer3.buffer);
+  }
 });
 
 describe('GBK Decoder unit test', function() {
   it('decode()', function() {
-    var charmap = fs.readFileSync(gbkOptions.path);
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
-    var gbkDecoder = new decoder.Multibyte(gbkOptions, new Uint16Array(charmap.buffer));
+    var gbkDecoder = new decoder.Multibyte(gbkOptions);
     expect(gbkDecoder.getName()).toBe(gbkOptions.name);
     expect(gbkDecoder.getType()).toBe(CharmapType.DECODER);
     var unicodeBuffer = gbkDecoder.decode(gbkTextBuffer);
@@ -180,9 +201,8 @@ describe('GBK Decoder unit test', function() {
 
 describe('Big5 Decoder unit test', function() {
   it('decode()', function() {
-    var charmap = fs.readFileSync(big5Options.path);
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
-    var big5Decoder = new decoder.Multibyte(big5Options, new Uint16Array(charmap.buffer));
+    var big5Decoder = new decoder.Multibyte(big5Options);
     expect(big5Decoder.getName()).toBe(big5Options.name);
     expect(big5Decoder.getType()).toBe(CharmapType.DECODER);
     var unicodeBuffer = big5Decoder.decode(big5TextBuffer);
@@ -198,8 +218,7 @@ describe('Big5 Decoder unit test', function() {
 
 describe('GB18030 Decoder unit test', function() {
   it('decode()', function() {
-    var charmap = fs.readFileSync(gb18030Options.path);
-    var gb18030Decoder = new decoder.Multibyte(gb18030Options, new Uint16Array(charmap.buffer));
+    var gb18030Decoder = new decoder.Multibyte(gb18030Options);
     expect(gb18030Decoder.getName()).toBe(gb18030Options.name);
     expect(gb18030Decoder.getType()).toBe(CharmapType.DECODER);
     var gb18030TextBuffer = fs.readFileSync('test/txt/gb18030/gb18030.txt');
@@ -225,7 +244,7 @@ describe('UTF16LE Decoder unit test', function() {
   it('decode() - performance', function() {
     var ts = new Date;
 
-    expect(decoder.UTF16LE.getName()).toBe('UTF-16 (little-endian)');
+    expect(decoder.UTF16LE.getName()).toBe('UTF-16LE');
     expect(decoder.UTF16LE.getType()).toBe(CharmapType.DECODER);
 
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
@@ -247,7 +266,7 @@ describe('UTF16LE Decoder unit test', function() {
     it('decode() - performance', function() {
       var ts = new Date;
 
-      expect(decoder.UTF16BE.getName()).toBe('UTF-16 (big-endian)');
+      expect(decoder.UTF16BE.getName()).toBe('UTF-16BE');
       expect(decoder.UTF16BE.getType()).toBe(CharmapType.DECODER);
 
       var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig-be.txt');

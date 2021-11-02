@@ -4,14 +4,14 @@ var bufferutils = require('../lib/buffer-utils');
 const { CharmapType } = require('../lib/charmap');
 const { Reference } = require('../lib/segment');
 const { UNICODE_UNKNOWN_CHAR } = require('../lib/consts');
+var goog = require('../lib/goog-base');
 
 var sim2traOptions= {
   'name': 'simp2tra-medium',
   'description': 'Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
   'type': 'converter',
-  'path': 'charmaps/medium-simp2tra-little-endian.map',
-  'bytes': 2,
+  'buffer': 'charmaps/medium-simp2tra-little-endian.map|2',
   'segments':[
     {
       'begin': 0,
@@ -43,8 +43,7 @@ var tra2simpOptions = {
   'description': 'Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
   'type': 'converter',
-  'path': 'charmaps/medium-tra2simp-little-endian.map',
-  'bytes': 2,
+  'buffer': 'charmaps/medium-tra2simp-little-endian.map|2',
   'segments':[
     {
       'begin': 0,
@@ -71,10 +70,25 @@ var tra2simpOptions = {
   ]
 };
 
+beforeAll(() => {
+  if (goog.isString(sim2traOptions.buffer)) {
+    var parts = sim2traOptions.buffer.split('|');
+    var bytes = +parts[1];
+    var buffer = fs.readFileSync(parts[0]);
+    sim2traOptions.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+  }
+
+  if (goog.isString(tra2simpOptions.buffer)) {
+    var parts2 = tra2simpOptions.buffer.split('|');
+    var bytes2 = +parts2[1];
+    var buffer2 = fs.readFileSync(parts2[0]);
+    tra2simpOptions.buffer = bytes2 === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
+  }
+});
+
 describe('Simplified Chinese to Traditional Chinese Converter unit test', function() {
   it('convert()', function() {
-    var charmap = fs.readFileSync(sim2traOptions.path);
-    var s2t = new converter.Converter(sim2traOptions, new Uint16Array(charmap.buffer));
+    var s2t = new converter.Converter(sim2traOptions);
     expect(s2t.getName()).toBe(sim2traOptions.name);
     expect(s2t.getType()).toBe(CharmapType.CONVERTER);
 
@@ -90,8 +104,7 @@ describe('Simplified Chinese to Traditional Chinese Converter unit test', functi
 
 describe('Traditional Chinese to Simplified Chinese Converter unit test', function() {
   it('convert()', function() {
-    var charmap = fs.readFileSync(tra2simpOptions.path);
-    var t2s = new converter.Converter(tra2simpOptions, new Uint16Array(charmap.buffer));
+    var t2s = new converter.Converter(tra2simpOptions);
     expect(t2s.getName()).toBe(tra2simpOptions.name);
     expect(t2s.getType()).toBe(CharmapType.CONVERTER);
     var text = '鉛球萬袋一桶漿糊';
@@ -110,8 +123,7 @@ describe('Converter without mapping buffer', function() {
 
   it('convert() - 1', function() {
     var conv = new converter.Converter({
-      name: 'test',
-      bytes: 2
+      name: 'test'
     });
     expect(conv.getName()).toBe('test');
     expect(conv.getType()).toBe(CharmapType.CONVERTER);
@@ -123,7 +135,6 @@ describe('Converter without mapping buffer', function() {
   it('convert() - 2', function() {
     var conv2 = new converter.Converter({
       name: 'test2',
-      bytes: 2,
       segments:[
         {
           begin: 0x61,
@@ -143,7 +154,6 @@ describe('Converter without mapping buffer', function() {
   it('convert() - 3', function() {
     var conv3 = new converter.Converter({
       name: 'test3',
-      bytes: 2,
       segments:[
         {
           begin: 0x61,

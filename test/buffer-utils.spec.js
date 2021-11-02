@@ -24,6 +24,8 @@ describe('BufferUtils unit test', function() {
     var buffer = new Uint32Array([0x1D306, 0x98CE]); // 𝌆 风
     var str = utils.toString(buffer);
     expect(str.length).toBe(3);
+    expect(str).toBe('𝌆风');
+
     var chr = 0x1D306;
     var m = chr - 0x10000;
     var low = m & 0x3FF;

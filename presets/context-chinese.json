@@ -1,0 +1,182 @@
+{
+  "decoders": [
+    {
+      "name": "GBK(CP936)",
+      "description": "GBK to Unicode.",
+      "version": "CP936",
+      "type": "decoder",
+      "buffer": "charmaps/front-gbk2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x80"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0xFE",
+            "0x40~0xFE"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 128,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "Euro Sign"
+        },
+        {
+          "begin": 129,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 1,
+          "characterset": "GBK"
+        }
+      ]
+    },
+    {
+      "name": "BIG5(UAO2.50)",
+      "description": "Big5 to Unicode.",
+      "version": "UAO 2.50",
+      "type": "decoder",
+      "buffer": "charmaps/front-b2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x7F"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0xFE",
+            "0x40~0xFE"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "BIG5 UAO 2.50"
+        }
+      ]
+    }
+  ],
+  "encoders": [],
+  "converters": [
+    {
+      "name": "simp2tra",
+      "description": "Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).",
+      "version": "Unicode 4.0 Unihan(Wikipedia version)",
+      "type": "converter",
+      "buffer": "charmaps/medium-simp2tra-little-endian.map|2",
+      "segments": [
+        {
+          "begin": 0,
+          "end": 13725,
+          "reference": "self",
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 13726,
+          "end": 40863,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 40864,
+          "end": 65535,
+          "reference": "self",
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 65536,
+          "end": 1114111,
+          "reference": "self",
+          "characterset": "Unicode SP"
+        }
+      ]
+    },
+    {
+      "name": "tra2simp",
+      "description": "Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).",
+      "version": "Unicode 4.0 Unihan(Wikipedia version)",
+      "type": "converter",
+      "buffer": "charmaps/medium-tra2simp-little-endian.map|2",
+      "segments": [
+        {
+          "begin": 0,
+          "end": 17078,
+          "reference": "self",
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 17079,
+          "end": 40860,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 40861,
+          "end": 65535,
+          "reference": "self",
+          "characterset": "Unicode BMP"
+        },
+        {
+          "begin": 65536,
+          "end": 1114111,
+          "reference": "self",
+          "characterset": "Unicode SP"
+        }
+      ]
+    }
+  ],
+  "channels": [
+    {
+      "name": "GBK_to_UTF16-LE_Traditionalized",
+      "decoder": "GBK(CP936)",
+      "converters": [
+        "simp2tra"
+      ],
+      "encoder": "UTF-16LE"
+    },
+    {
+      "name": "BIG5_to_UTF16-LE_Simplified",
+      "decoder": "BIG5(UAO2.50)",
+      "converters": [
+        "tra2simp"
+      ],
+      "encoder": "UTF-16LE"
+    }
+  ]
+}

@@ -8,7 +8,7 @@ The JavaScript version of NextC4 library.
 
 ## Test
 
-    npm run test
+    npm test
 
 
 ## Linting

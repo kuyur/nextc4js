@@ -4,13 +4,14 @@ var decoder = require('../lib/decoder');
 var encoder = require('../lib/encoder');
 var converter = require('../lib/converter');
 var consts = require('../lib/consts');
+var goog = require('../lib/goog-base');
 
 var options = {
   'name': 'shift-jis-decoder',
   'description': 'Shift-JIS to Unicode.',
   'version': 'CP932',
   'type': 'decoder',
-  'path': 'charmaps/front-jis2u-little-endian.map',
+  'buffer': 'charmaps/front-jis2u-little-endian.map|2',
   'rules': [
     {
       'byte': 1,
@@ -61,8 +62,7 @@ var tra2simpOptions = {
   'description': 'Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
   'type': 'converter',
-  'path': 'charmaps/medium-tra2simp-little-endian.map',
-  'bytes': 2,
+  'buffer': 'charmaps/medium-tra2simp-little-endian.map|2',
   'segments':[
     {
       'begin': 0,
@@ -89,10 +89,25 @@ var tra2simpOptions = {
   ]
 };
 
+beforeAll(() => {
+  if (goog.isString(options.buffer)) {
+    var parts = options.buffer.split('|');
+    var bytes = +parts[1];
+    var buffer = fs.readFileSync(parts[0]);
+    options.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+  }
+
+  if (goog.isString(tra2simpOptions.buffer)) {
+    var parts2 = tra2simpOptions.buffer.split('|');
+    var bytes2 = +parts2[1];
+    var buffer2 = fs.readFileSync(parts2[0]);
+    tra2simpOptions.buffer = bytes2 === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
+  }
+});
+
 describe('Channel unit test', function() {
   it('process()', function() {
-    var charmap = fs.readFileSync(options.path);
-    var shiftJis = new decoder.Multibyte(options, new Uint16Array(charmap.buffer));
+    var shiftJis = new decoder.Multibyte(options);
     var chann = new channel.Channel(shiftJis, encoder.UTF8);
 
     expect(chann.process(null)).toBe(null);
@@ -109,11 +124,9 @@ describe('Channel unit test', function() {
   });
 
   it('process() with converter', function() {
-    var charmap = fs.readFileSync(options.path);
-    var shiftJis = new decoder.Multibyte(options, new Uint16Array(charmap.buffer));
+    var shiftJis = new decoder.Multibyte(options);
 
-    var t2scharmap = fs.readFileSync(tra2simpOptions.path);
-    var t2s = new converter.Converter(tra2simpOptions, new Uint16Array(t2scharmap.buffer));
+    var t2s = new converter.Converter(tra2simpOptions);
 
     var chann = new channel.Channel(shiftJis, encoder.UTF16LE, t2s);
     var buffer = fs.readFileSync('test/txt/shift-jis/02-shift-jis.txt');

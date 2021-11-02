@@ -1,0 +1,297 @@
+{
+  "decoders": [
+    {
+      "name": "Shift-JIS(CP932)",
+      "description": "Shift-JIS to Unicode.",
+      "version": "CP932",
+      "type": "decoder",
+      "buffer": "charmaps/front-jis2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x7F"
+          ]
+        },
+        {
+          "condition": [
+            "0xA1~0xDF"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0x9F",
+            "0x40~0xFC"
+          ]
+        },
+        {
+          "condition": [
+            "0xE0~0xFC",
+            "0x40~0xFC"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 160,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 161,
+          "end": 223,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "JIS-X-0201"
+        },
+        {
+          "begin": 224,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 63,
+          "characterset": "JIS-X-0208"
+        }
+      ]
+    },
+    {
+      "name": "GBK(CP936)",
+      "description": "GBK to Unicode.",
+      "version": "CP936",
+      "type": "decoder",
+      "buffer": "charmaps/front-gbk2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x80"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0xFE",
+            "0x40~0xFE"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 128,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "Euro Sign"
+        },
+        {
+          "begin": 129,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 1,
+          "characterset": "GBK"
+        }
+      ]
+    },
+    {
+      "name": "BIG5(UAO2.50)",
+      "description": "Big5 to Unicode.",
+      "version": "UAO 2.50",
+      "type": "decoder",
+      "buffer": "charmaps/front-b2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x7F"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0xFE",
+            "0x40~0xFE"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "BIG5 UAO 2.50"
+        }
+      ]
+    },
+    {
+      "name": "EUC-KR(CP949)",
+      "description": "EUC-KR to Unicode.",
+      "version": "Microsoft CP949",
+      "type": "decoder",
+      "buffer": "charmaps/front-kr2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0x7F"
+          ]
+        },
+        {
+          "condition": [
+            "0x81~0xFE",
+            "0x40~0xFE"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 33087,
+          "reference": "undefined",
+          "characterset": "undefined"
+        },
+        {
+          "begin": 33088,
+          "end": 65535,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "CP949-double-bytes"
+        }
+      ]
+    },
+    {
+      "name": "Latin(CP1252)",
+      "description": "Latin to Unicode.",
+      "version": "Microsoft CP1252",
+      "type": "decoder",
+      "buffer": "charmaps/front-latin2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0xFF"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 255,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "CP1252"
+        }
+      ]
+    },
+    {
+      "name": "Cyrillic(CP1251)",
+      "description": "Cyrillic to Unicode.",
+      "version": "Microsoft CP1251",
+      "type": "decoder",
+      "buffer": "charmaps/front-cyrillic2u-little-endian.map|2",
+      "rules": [
+        {
+          "condition": [
+            "0x00~0xFF"
+          ]
+        }
+      ],
+      "segments": [
+        {
+          "begin": 0,
+          "end": 127,
+          "reference": "ascii",
+          "characterset": "ascii"
+        },
+        {
+          "begin": 128,
+          "end": 255,
+          "reference": "buffer",
+          "offset": 0,
+          "characterset": "CP1251"
+        }
+      ]
+    }
+  ],
+  "detection_order": [
+    "Shift-JIS(CP932)",
+    "GBK(CP936)",
+    "BIG5(UAO2.50)",
+    "EUC-KR(CP949)"
+  ],
+  "encoders": [],
+  "converters": [],
+  "channels": [
+    {
+      "name": "Shift-JIS_to_UTF-8",
+      "decoder": "Shift-JIS(CP932)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "GBK_to_UTF-8",
+      "decoder": "GBK(CP936)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "BIG5_to_UTF-8",
+      "decoder": "BIG5(UAO2.50)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "EUC-KR-CP949_to_UTF-8",
+      "decoder": "EUC-KR(CP949)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "Latin-CP1252_to_UTF-8",
+      "decoder": "Latin(CP1252)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "Cyrillic-CP1251_to_UTF-8",
+      "decoder": "Cyrillic(CP1251)",
+      "encoder": "UTF-8"
+    }
+  ]
+}
