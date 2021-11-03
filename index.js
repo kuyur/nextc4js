@@ -1,3 +1,5 @@
+'use strict';
+
 const BufferUtils = require('./lib/buffer-utils');
 const { Channel } = require('./lib/channel');
 const { CharmapType } = require('./lib/charmap');
