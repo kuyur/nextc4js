@@ -62,6 +62,11 @@ describe('Loading Context unit test', function() {
       expect(result).not.toBe(null);
       expect(result.encoding).toBe('GBK(CP936)');
       expect(result.hasBom).toBe(false);
+      var gbk = context.getDecoder('GBK(CP936)');
+      var utf16buffer = gbk.decode(gbkBuffer);
+      expect(utils.toString(utf16buffer)).toBe('任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，' +
+        '以及浪漫气息所打动，情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，' +
+        '会感受到这种懊悔，这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
     });
   });
 
