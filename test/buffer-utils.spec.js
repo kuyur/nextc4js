@@ -35,7 +35,7 @@ describe('BufferUtils unit test', function() {
     expect(str.charCodeAt(0)).toBe(high);
     expect(str.charCodeAt(1)).toBe(low);
     expect(str.codePointAt(0)).toBe(0x1D306);
-    expect(str[2] === '风');
+    expect(str[2]).toBe('风');
 
     expect(utils.toString(null)).toBe(null);
   });
