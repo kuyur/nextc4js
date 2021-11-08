@@ -1,7 +1,7 @@
 {
   "name": "nextc4.js",
   "description": "The JavaScript version of NextC4 library.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "https://github.com/kuyur/nextc4js",
   "repository": {
     "type": "git",
