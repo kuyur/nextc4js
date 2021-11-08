@@ -1,25 +1,18 @@
 # nextc4.js
-The JavaScript version of NextC4 library.
+A pure JavaScript library of Character Sets encoding/decoding. The basic concepts are coming from [C4](https://github.com/kuyur/c4) and [NextC4](https://github.com/kuyur/next-c4) projects.
 
 # Development
+
+## Checkout source code
+
+    git clone https://github.com/kuyur/next-c4.git
+
 ## Preparation
 
     npm install
+    npm install -g rollup
 
-## Test
-
-    npm test
-
-
-## Linting
-
-    npm run lint
-
-## Build the distribution
-
-    npm run build
-
-# Generate Charmaps
+## Generate Charmaps
 
 Create a folder called `temp` under `charmaps` and execute:
 
@@ -53,8 +46,32 @@ node ./tools/generate-gb18030-to-unicode-charmap.js -i ./charmaps/front-gbk2u-li
 node ./tools/generate-unicode-to-gb18030-charmap.js -i ./charmaps/front-gb180302u-little-endian.map -o ./charmaps/back-u2gb18030-little-endian.map
 
 # generate simplified chinese to traditional chinese charmap (basing on unicode bmp)
-node ./tools/generate-medium-charmap-generic -i ./charmaps/source/medium/simp2tra.txt -o ./charmaps/medium-simp2tra-little-endian.map
+node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/simp2tra.txt -o ./charmaps/medium-simp2tra-little-endian.map
 
 # generate traditional chinese to simplified chinese charmap (basing on unicode bmp)
-node ./tools/generate-medium-charmap-generic -i ./charmaps/source/medium/tra2simp.txt -o ./charmaps/medium-tra2simp-little-endian.map
+node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/tra2simp.txt -o ./charmaps/medium-tra2simp-little-endian.map
 ```
+
+## Generate charmap-embedded preset
+
+```bash
+node ./tools/generate-charmap-embedded-preset.js -i ./presets/context-default.json -o ./presets-charmap-embedded/context-default.json
+```
+
+## Linting
+
+```bash
+# linting
+npm run lint
+
+# auto-fix
+npm run lint:fix
+```
+
+## Test
+
+    npm test
+
+## Build the distribution
+
+    npm run build

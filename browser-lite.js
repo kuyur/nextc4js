@@ -12,7 +12,6 @@ const { Reference } = require('./lib/segment');
 const { Context } = require('./lib/context');
 const base64 = require('./lib/base64');
 const { loadFromUrl } = require('./lib/load-from-url');
-const { loadDefault } = require('./lib/load-default');
 
 module.exports = {
   Converter: Converter,
@@ -32,6 +31,5 @@ module.exports = {
   Consts: Consts,
   utils: BufferUtils,
   base64: base64,
-  loadFromUrl: loadFromUrl,
-  loadDefault: loadDefault
+  loadFromUrl: loadFromUrl
 };

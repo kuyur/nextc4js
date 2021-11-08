@@ -367,7 +367,7 @@
    * @author kuyur@kuyur.info
    */
 
-  const goog$6 = googBase;
+  const goog$7 = googBase;
 
   /**
    * Channel class. A channel must have a decoder and an encoder at least.
@@ -381,7 +381,7 @@
     this.decoder_ = decoder;
     this.encoder_ = encoder;
     if (opt_converters) {
-      this.converters_ = goog$6.isArray(opt_converters) ? opt_converters.slice() : [opt_converters];
+      this.converters_ = goog$7.isArray(opt_converters) ? opt_converters.slice() : [opt_converters];
     }
   };
 
@@ -706,22 +706,23 @@
 
   condition.Condition = Condition$4;
 
-  var consts$4 = {};
+  var consts$7 = {};
 
   /**
    * @author kuyur@kuyur.info
    */
 
-  consts$4.UNICODE_UNKNOWN_CHAR = 0xFFFD;
-  consts$4.UNICODE_BYTE_ORDER_MARK = 0xFEFF; // U+FEFF byte order mark (BOM)
-  consts$4.UTF8_BOM = new Uint8Array([0xEF, 0xBB, 0xBF]);
-  consts$4.UTF16LE_BOM = new Uint8Array([0xFF, 0xFE]);
-  consts$4.UTF16BE_BOM = new Uint8Array([0xFE, 0xFF]);
-  consts$4.MBCS_UNKNOWN_CHAR = 0x3F; // ?
-  consts$4.MBCS_WHITE_SPACE = {
+  consts$7.UNICODE_UNKNOWN_CHAR = 0xFFFD;
+  consts$7.UNICODE_BYTE_ORDER_MARK = 0xFEFF; // U+FEFF byte order mark (BOM)
+  consts$7.UTF8_BOM = new Uint8Array([0xEF, 0xBB, 0xBF]);
+  consts$7.UTF16LE_BOM = new Uint8Array([0xFF, 0xFE]);
+  consts$7.UTF16BE_BOM = new Uint8Array([0xFE, 0xFF]);
+  consts$7.MBCS_UNKNOWN_CHAR = 0x3F; // ?
+  consts$7.MBCS_WHITE_SPACE = {
     GBK: 0xA1A1, // GBK full-width whitespace
     GB18030: 0xA1A1
   };
+  consts$7.EMBEDDED_BASE64_PREFIX = 'data:application/octet-stream;base64,';
 
   var converter = {};
 
@@ -748,7 +749,14 @@
 
   /**
    * @constructor
-   * @param {Object} options
+   * @param {{
+   *   begin: number,
+   *   end: number,
+   *   condition: string[],
+   *   reference: Reference,
+   *   offset: number,
+   *   characterset: string
+   * }} options
    */
   var Segment = function(options) {
     this.begin_ = options.begin;
@@ -873,14 +881,176 @@
   segment$3.Segment = Segment;
   segment$3.Segments = Segments;
 
+  var base64$4 = {};
+
+  /**
+   * The base64 encoding/decoding implementation for browser environment.
+   * The encode method accepts an Uint8Array as input.
+   * The decode method outputs an Uint8Array as result.
+   * @author kuyur@kuyur.info
+   * @see https://en.wikipedia.org/wiki/Base64
+   */
+
+  /**
+   * the index table of base64 (000000 ~ 111111) to accelerate the converting.
+   * @type {string}
+   */
+  const mapping = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+  /**
+   * the padding character.
+   * @type {string}
+   */
+  const padding = '=';
+
+  /**
+   * Encode a binary array into base64.
+   * @param {Uint8Array} buffer Binary buffer.
+   * @return {string} The encoded base64 string.
+   */
+  base64$4.encode = function(buffer) {
+    if (!buffer) {
+      return '';
+    }
+    var length = buffer.length;
+    if (!length) {
+      return '';
+    }
+
+    var result = [],
+      tail = length % 3,
+      end = length - tail,
+      uint24 = 0,
+      offset = 0;
+    for (var i = 0; i < end; i += 3) {
+      uint24 = (buffer[i] << 16) | (buffer[i+1] << 8) | buffer[i+2];
+      result[offset++] = mapping[(uint24 >>> 18) & 0x3F];
+      result[offset++] = mapping[(uint24 >>> 12) & 0x3F];
+      result[offset++] = mapping[(uint24 >>> 6) & 0x3F];
+      result[offset++] = mapping[uint24 & 0x3F];
+    }
+    if (tail === 1) {
+      result[offset++] = mapping[(buffer[end] >>> 2) & 0x3F];
+      result[offset++] = mapping[(buffer[end] << 4) & 0x30];
+      result[offset++] = padding;
+      result[offset] = padding;
+    } else if (tail === 2) {
+      result[offset++] = mapping[(buffer[end] >>> 2) & 0x3F];
+      result[offset++] = mapping[((buffer[end] << 4) & 0x30) | ((buffer[end + 1] >>> 4) & 0xF)];
+      result[offset++] = mapping[(buffer[end + 1] << 2) &0x3C];
+      result[offset] = padding;
+    }
+
+    return result.join('');
+  };
+
+  /**
+   * The reversed mapping.
+   * @type {Object.<string, number>}
+   */
+  const decoding_mapping = (function() {
+    var result = {};
+    for (var i = 0; i < 64; ++i) {
+      result[mapping[i]] = i;
+    }
+    return result;
+  })();
+
+  /**
+   * Decode a base64 encoded string and return binary array. Supporting the string
+   * which is not padded with "=".
+   * @param {string} string The encoded base64 string.
+   * @return {Uint8Array} The decoded binary buffer.
+   */
+  base64$4.decode = function(string) {
+    if (!string) {
+      return new Uint8Array(0);
+    }
+    var length = string.length;
+    if (!length) {
+      return new Uint8Array(0);
+    }
+
+    if (string.endsWith('==')) {
+      string = string.substring(0, length - 2);
+      length -= 2;
+    } else if (string.endsWith('=')) {
+      string = string.substring(0, length - 1);
+      length -= 1;
+    }
+
+    var tail = length % 4;
+    var total = Math.floor(length / 4) * 3;
+    if (tail !== 0) {
+      if (tail === 1) {
+        throw 'Invalid base64 string.';
+      }
+      // check last 6 bits
+      var bit6_last = decoding_mapping[string[length - 1]];
+      if (bit6_last === undefined) {
+        throw 'Invalid base64 string.';
+      }
+      if (tail === 2 && ((bit6_last & 0xF) !== 0)) {
+        throw 'Invalid base64 string.';
+      }
+      if (tail === 3 && ((bit6_last & 0x3) !== 0)) {
+        throw 'Invalid base64 string.';
+      }
+      total += tail === 2 ? 1 : 2;
+    }
+
+    var buffer = new Uint8Array(total),
+      end = length - tail,
+      uint24 = 0,
+      bit6_1,
+      bit6_2,
+      bit6_3,
+      bit6_4,
+      offset = 0;
+    for (var i = 0; i < end; i += 4) {
+      bit6_1 = decoding_mapping[string[i]];
+      bit6_2 = decoding_mapping[string[i + 1]];
+      bit6_3 = decoding_mapping[string[i + 2]];
+      bit6_4 = decoding_mapping[string[i + 3]];
+      if (bit6_1 === undefined || bit6_2 === undefined || bit6_3 === undefined || bit6_4 === undefined) {
+        throw 'Invalid base64 string.';
+      }
+
+      uint24 = (bit6_1 << 18) | (bit6_2 << 12) | (bit6_3 << 6) | bit6_4;
+      buffer[offset++] = (uint24 >>> 16) & 0xFF;
+      buffer[offset++] = (uint24 >>> 8) & 0xFF;
+      buffer[offset++] = uint24 & 0xFF;
+    }
+    if (tail === 2) {
+      bit6_1 = decoding_mapping[string[end]];
+      bit6_2 = decoding_mapping[string[end + 1]];
+      if (bit6_1 === undefined) {
+        throw 'Invalid base64 string.';
+      }
+      buffer[offset] = (bit6_1 << 2) | (bit6_2 >>> 4);
+    } else if (tail === 3) {
+      bit6_1 = decoding_mapping[string[end]];
+      bit6_2 = decoding_mapping[string[end + 1]];
+      bit6_3 = decoding_mapping[string[end + 2]];
+      if (bit6_1 === undefined || bit6_2 === undefined) {
+        throw 'Invalid base64 string.';
+      }
+      buffer[offset++] = (bit6_1 << 2) | (bit6_2 >>> 4);
+      buffer[offset] = ((bit6_2 & 0xF) << 4) | (bit6_3 >>> 2);
+    }
+
+    return buffer;
+  };
+
   /**
    * @author kuyur@kuyur.info
    */
 
   const { Charmap: Charmap$2, CharmapType: CharmapType$3} = charmap;
-  const consts$3 = consts$4;
-  const goog$5 = googBase;
+  const consts$6 = consts$7;
+  const goog$6 = googBase;
   const segment$2 = segment$3;
+  const base64$3 = base64$4;
 
   /**
    * The Converter class. Converter is basing on Unicode.
@@ -888,24 +1058,37 @@
    *   name: string,
    *   description: string,
    *   version: string,
-   *   buffer: Uint16Array|Uint32Array,
+   *   buffer: Uint16Array|Uint32Array|string,
+   *   byte: ?number,
    *   segments: Array.<Object>
    * }} options
    * @constructor
    * @extends {Charmap}
    */
   var Converter$2 = function(options) {
-    if (!options || !options['name']) {
+    if (!options || !options.name) {
       throw 'options should provide name property at least';
     }
-    Charmap$2.call(this, options['name'], CharmapType$3.CONVERTER);
+    Charmap$2.call(this, options.name, CharmapType$3.CONVERTER);
 
-    this.description_ = options['description'];
-    this.version_ = options['version'];
-    this.segments_ = new segment$2.Segments(options['segments']);
-    this.mappingBuffer_ = options['buffer'];
+    this.description_ = options.description;
+    this.version_ = options.version;
+    this.segments_ = new segment$2.Segments(options.segments);
+
+    this.mappingBuffer_ = null;
+    if (options.buffer) {
+      if ((options.buffer instanceof Uint16Array) || (options.buffer instanceof Uint32Array)) {
+        this.mappingBuffer_ = options.buffer;
+      } else if (goog$6.isString(options.buffer)) {
+        if (options.buffer.startsWith(consts$6.EMBEDDED_BASE64_PREFIX)) {
+          var encoded = options.buffer.substring(consts$6.EMBEDDED_BASE64_PREFIX.length);
+          var charmap = base64$3.decode(encoded.trim());
+          this.mappingBuffer_ = options.byte === 2 ? new Uint16Array(charmap.buffer) : new Uint32Array(charmap.buffer);
+        }
+      }
+    }
   };
-  goog$5.inherits(Converter$2, Charmap$2);
+  goog$6.inherits(Converter$2, Charmap$2);
 
   /**
    * @private
@@ -980,7 +1163,7 @@
     chr = chr >>> 0;
     var seg = this.segments_.find(chr);
     if (!seg) {
-      return consts$3.UNICODE_UNKNOWN_CHAR;
+      return consts$6.UNICODE_UNKNOWN_CHAR;
     }
 
     switch (seg.getReference()) {
@@ -988,11 +1171,11 @@
         return chr;
       case segment$2.Reference.BUFFER:
         if (!this.mappingBuffer_) {
-          return consts$3.UNICODE_UNKNOWN_CHAR;
+          return consts$6.UNICODE_UNKNOWN_CHAR;
         }
         return this.mappingBuffer_[chr - seg.getBegin() + seg.getOffset()];
       default:
-        return consts$3.UNICODE_UNKNOWN_CHAR;
+        return consts$6.UNICODE_UNKNOWN_CHAR;
     }
   };
 
@@ -1008,7 +1191,7 @@
    */
 
   const { Condition: Condition$2 } = condition;
-  const goog$4 = googBase;
+  const goog$5 = googBase;
 
   /**
    * The basic class of decoding-rule.
@@ -1032,7 +1215,7 @@
     }
 
     var result = new Uint32Array(length);
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     var bytes;
     for (var pos = 0, len = buffer.length; offset < len; ++pos) {
       bytes = this.consume(buffer, offset, result, pos);
@@ -1055,7 +1238,7 @@
    */
   DecodingRule.prototype.parse = function(buffer, opt_offset) {
     var result = [];
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     var bytes;
     for (var pos = 0, len = buffer.length; offset < len; ++pos) {
       bytes = this.consume_s(buffer, offset, result, pos);
@@ -1075,7 +1258,7 @@
    * @param {?number} opt_offset the position in buffer to start test. 0 by default.
    * @return {number} The count of code points.
    */
-  DecodingRule.prototype.test = goog$4.abstractMethod;
+  DecodingRule.prototype.test = goog$5.abstractMethod;
 
   /**
    * Consume(parse) a code point from the buffer and save into result array.
@@ -1089,7 +1272,7 @@
    *   result array.
    * @return {number} bytes consumed.
    */
-  DecodingRule.prototype.consume = goog$4.abstractMethod;
+  DecodingRule.prototype.consume = goog$5.abstractMethod;
 
   /**
    * Consume(parse) a code point from the buffer and save into result array.
@@ -1103,7 +1286,7 @@
    *   result array.
    * @return {number} bytes consumed.
    */
-  DecodingRule.prototype.consume_s = goog$4.abstractMethod;
+  DecodingRule.prototype.consume_s = goog$5.abstractMethod;
 
   /**
    * UTF-16 little-endian decoding rule.
@@ -1113,7 +1296,7 @@
   var DecodingRuleUTF16LE = function() {
     DecodingRule.call(this);
   };
-  goog$4.inherits(DecodingRuleUTF16LE, DecodingRule);
+  goog$5.inherits(DecodingRuleUTF16LE, DecodingRule);
 
   /**
    * @override
@@ -1122,7 +1305,7 @@
    * @return {number} The count of code points.
    */
   DecodingRuleUTF16LE.prototype.test = function(buffer, opt_offset) {
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     if (!buffer) {
       return -1;
     }
@@ -1221,7 +1404,7 @@
   var DecodingRuleUTF16BE = function() {
     DecodingRule.call(this);
   };
-  goog$4.inherits(DecodingRuleUTF16BE, DecodingRule);
+  goog$5.inherits(DecodingRuleUTF16BE, DecodingRule);
 
   /**
    * @override
@@ -1230,7 +1413,7 @@
    * @return {number} The count of code points.
    */
   DecodingRuleUTF16BE.prototype.test = function(buffer, opt_offset) {
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     if (!buffer) {
       return -1;
     }
@@ -1331,7 +1514,7 @@
   var DecodingRuleUTF8 = function() {
     DecodingRule.call(this);
   };
-  goog$4.inherits(DecodingRuleUTF8, DecodingRule);
+  goog$5.inherits(DecodingRuleUTF8, DecodingRule);
 
   /**
    * @override
@@ -1340,7 +1523,7 @@
    * @return {number} The count of code points.
    */
   DecodingRuleUTF8.prototype.test = function(buffer, opt_offset) {
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     if (!buffer) {
       return -1;
     }
@@ -1515,7 +1698,7 @@
   /**
    * The decoding rule for common Variable-width encoding (MBCS, Multi-byte Character Set).
    * @see https://en.wikipedia.org/wiki/Variable-width_encoding
-   * @param {Array} options
+   * @param {Array.<{condition: string[]}>} options
    * @constructor
    * @extends {DecodingRule}
    */
@@ -1523,16 +1706,16 @@
     DecodingRule.call(this);
 
     this.conditions_ = [];
-    if (options && goog$4.isArray(options)) {
+    if (options && goog$5.isArray(options)) {
       options.forEach(function(option) {
-        var con = Condition$2.build(option['condition']);
+        var con = Condition$2.build(option.condition);
         if (con) {
           this.conditions_.push(con);
         }
       }, this);
     }
   };
-  goog$4.inherits(DecodingRuleMultibyte, DecodingRule);
+  goog$5.inherits(DecodingRuleMultibyte, DecodingRule);
 
   /**
    * @private
@@ -1547,7 +1730,7 @@
    * @return {number} The count of code points.
    */
   DecodingRuleMultibyte.prototype.test = function(buffer, opt_offset) {
-    var offset = goog$4.isNumber(opt_offset) ? opt_offset : 0;
+    var offset = goog$5.isNumber(opt_offset) ? opt_offset : 0;
     if (!this.conditions_.length || !buffer) {
       return -1;
     }
@@ -1643,7 +1826,7 @@
    */
 
   const { Condition: Condition$1 } = condition;
-  const consts$2 = consts$4;
+  const consts$5 = consts$7;
 
   var GB18030_UNICODE_SP = Condition$1.build(['0x90~0xE3', '0x30~0x39', '0x81~0xFE', '0x30~0x39']);
 
@@ -1656,11 +1839,11 @@
    */
   var convertGB18030ToUnicodeSP = function(chr) {
     if (chr < 0x90308130 || chr > 0xE3329A35)  {
-      return consts$2.UNICODE_UNKNOWN_CHAR;
+      return consts$5.UNICODE_UNKNOWN_CHAR;
     }
     var offset = GB18030_UNICODE_SP.getIndexingOffset(chr);
     if (offset === -1 || offset > 0xFFFFF) {
-      return consts$2.UNICODE_UNKNOWN_CHAR;
+      return consts$5.UNICODE_UNKNOWN_CHAR;
     }
     return offset + 0x10000;
   };
@@ -1672,7 +1855,7 @@
    */
   var convertUnicodeSPToGB18030 = function(chr) {
     if (chr < 0x10000 || chr > 0x10FFFF) {
-      return consts$2.MBCS_WHITE_SPACE.GB18030;
+      return consts$5.MBCS_WHITE_SPACE.GB18030;
     }
     var offset = chr - 0x10000;
     return GB18030_UNICODE_SP.getCodePoint(offset);
@@ -1686,11 +1869,12 @@
    */
 
   const { Charmap: Charmap$1, CharmapType: CharmapType$2 }= charmap;
-  const consts$1 = consts$4;
+  const consts$4 = consts$7;
   const decodingrule = decodingRule;
   const gb18030utils$1 = gb18030;
-  const goog$3 = googBase;
+  const goog$4 = googBase;
   const segment$1 = segment$3;
+  const base64$2 = base64$4;
 
   /**
    * Front-end Charmap class.
@@ -1701,7 +1885,7 @@
   var Decoder = function(name) {
     Charmap$1.call(this, name, CharmapType$2.DECODER);
   };
-  goog$3.inherits(Decoder, Charmap$1);
+  goog$4.inherits(Decoder, Charmap$1);
 
   /**
    * The rule of byte-reading.
@@ -1716,7 +1900,7 @@
    * @param {?number} opt_offset the start position in buffer to test. 0 by default.
    * @return {boolean}
    */
-  Decoder.prototype.match = goog$3.abstractMethod;
+  Decoder.prototype.match = goog$4.abstractMethod;
 
   /**
    * Decode the buffer and return Unicode code points. Use toString() method of
@@ -1725,7 +1909,7 @@
    * @param {?number} opt_offset the start position in buffer to decode. 0 by default.
    * @return {Uint32Array}
    */
-  Decoder.prototype.decode = goog$3.abstractMethod;
+  Decoder.prototype.decode = goog$4.abstractMethod;
 
   /**
    * @constructor
@@ -1735,7 +1919,7 @@
     Decoder.call(this, 'UTF-16LE');
     this.rule_ = decodingrule.UTF16LE;
   };
-  goog$3.inherits(DecoderUtf16le, Decoder);
+  goog$4.inherits(DecoderUtf16le, Decoder);
 
   /**
    * Is the buffer matched the charmap or not.
@@ -1754,8 +1938,8 @@
    * @return {boolean}
    */
   DecoderUtf16le.prototype.hasBom = function(buffer) {
-    return buffer && buffer.length >= 2 && buffer[0] === consts$1.UTF16LE_BOM[0] &&
-      buffer[1] === consts$1.UTF16LE_BOM[1];
+    return buffer && buffer.length >= 2 && buffer[0] === consts$4.UTF16LE_BOM[0] &&
+      buffer[1] === consts$4.UTF16LE_BOM[1];
   };
 
   /**
@@ -1777,7 +1961,7 @@
     Decoder.call(this, 'UTF-16BE');
     this.rule_ = decodingrule.UTF16BE;
   };
-  goog$3.inherits(DecoderUtf16be, Decoder);
+  goog$4.inherits(DecoderUtf16be, Decoder);
 
   /**
    * Is the buffer matched the charmap or not.
@@ -1796,8 +1980,8 @@
    * @return {boolean}
    */
   DecoderUtf16be.prototype.hasBom = function(buffer) {
-    return buffer && buffer.length >= 2 && buffer[0] === consts$1.UTF16BE_BOM[0] &&
-      buffer[1] === consts$1.UTF16BE_BOM[1];
+    return buffer && buffer.length >= 2 && buffer[0] === consts$4.UTF16BE_BOM[0] &&
+      buffer[1] === consts$4.UTF16BE_BOM[1];
   };
 
   /**
@@ -1819,7 +2003,7 @@
     Decoder.call(this, 'UTF-8');
     this.rule_ = decodingrule.UTF8;
   };
-  goog$3.inherits(DecoderUtf8, Decoder);
+  goog$4.inherits(DecoderUtf8, Decoder);
 
   /**
    * Is the buffer matched the charmap or not.
@@ -1838,8 +2022,8 @@
    * @return {boolean}
    */
   DecoderUtf8.prototype.hasBom = function(buffer) {
-    return buffer && buffer.length >= 3 && buffer[0] === consts$1.UTF8_BOM[0] &&
-      buffer[1] === consts$1.UTF8_BOM[1] && buffer[2] === consts$1.UTF8_BOM[2];
+    return buffer && buffer.length >= 3 && buffer[0] === consts$4.UTF8_BOM[0] &&
+      buffer[1] === consts$4.UTF8_BOM[1] && buffer[2] === consts$4.UTF8_BOM[2];
   };
 
   /**
@@ -1859,7 +2043,8 @@
    *   name: string,
    *   description: string,
    *   version: string,
-   *   buffer: Uint16Array|Uint32Array,
+   *   buffer: Uint16Array|Uint32Array|string,
+   *   byte: ?number,
    *   rules: Array.<Object>,
    *   segments: Array.<Object>
    * }} options
@@ -1867,18 +2052,30 @@
    * @extends {Decoder}
    */
   var DecoderMultibyte = function(options) {
-    if (!options || !options['name']) {
+    if (!options || !options.name) {
       throw 'options should provide name property at least';
     }
-    Decoder.call(this, options['name']);
+    Decoder.call(this, options.name);
 
-    this.description_ = options['description'];
-    this.version_ = options['version'];
-    this.rule_ = new decodingrule.Multibyte(options['rules']);
-    this.segments_ = new segment$1.Segments(options['segments']);
-    this.mappingBuffer_ = options['buffer'];
+    this.description_ = options.description;
+    this.version_ = options.version;
+    this.rule_ = new decodingrule.Multibyte(options.rules);
+    this.segments_ = new segment$1.Segments(options.segments);
+
+    this.mappingBuffer_ = null;
+    if (options.buffer) {
+      if ((options.buffer instanceof Uint16Array) || (options.buffer instanceof Uint32Array)) {
+        this.mappingBuffer_ = options.buffer;
+      } else if (goog$4.isString(options.buffer)) {
+        if (options.buffer.startsWith(consts$4.EMBEDDED_BASE64_PREFIX)) {
+          var encoded = options.buffer.substring(consts$4.EMBEDDED_BASE64_PREFIX.length);
+          var charmap = base64$2.decode(encoded.trim());
+          this.mappingBuffer_ = options.byte === 2 ? new Uint16Array(charmap.buffer) : new Uint32Array(charmap.buffer);
+        }
+      }
+    }
   };
-  goog$3.inherits(DecoderMultibyte, Decoder);
+  goog$4.inherits(DecoderMultibyte, Decoder);
 
   /**
    * The mapping buffer to convert MBCS code point to Unicode code point.
@@ -1931,7 +2128,7 @@
     var chr;
     for (var i = 0, len = decoded.length; i < len; ++i) {
       chr = this.convertChar_(decoded[i]);
-      if (chr === consts$1.UNICODE_UNKNOWN_CHAR) {
+      if (chr === consts$4.UNICODE_UNKNOWN_CHAR) {
         return false;
       }
     }
@@ -1969,26 +2166,26 @@
     chr = chr >>> 0;
     var seg = this.segments_.find(chr);
     if (!seg) {
-      return consts$1.UNICODE_UNKNOWN_CHAR;
+      return consts$4.UNICODE_UNKNOWN_CHAR;
     }
 
     switch (seg.getReference()) {
       case segment$1.Reference.ASCII:
         return chr & 0x7F;
       case segment$1.Reference.UNDEFINED:
-        return consts$1.UNICODE_UNKNOWN_CHAR;
+        return consts$4.UNICODE_UNKNOWN_CHAR;
       case segment$1.Reference.BUFFER:
         if (!this.mappingBuffer_) {
-          return consts$1.UNICODE_UNKNOWN_CHAR;
+          return consts$4.UNICODE_UNKNOWN_CHAR;
         }
         return this.mappingBuffer_[chr - seg.getBegin() + seg.getOffset()];
       case segment$1.Reference.INDEXING_BUFFER:
         if (!this.mappingBuffer_) {
-          return consts$1.UNICODE_UNKNOWN_CHAR;
+          return consts$4.UNICODE_UNKNOWN_CHAR;
         }
         var offset = this.getIndexingBufferOffset_(seg, chr);
         if (offset === -1) {
-          return consts$1.UNICODE_UNKNOWN_CHAR;
+          return consts$4.UNICODE_UNKNOWN_CHAR;
         }
         return this.mappingBuffer_[offset + seg.getOffset()];
       case segment$1.Reference.SELF:
@@ -1996,7 +2193,7 @@
       case segment$1.Reference.GB18030_UNICODE_SP_MAPPING:
         return gb18030utils$1.convertGB18030ToUnicodeSP(chr);
       default:
-        return consts$1.UNICODE_UNKNOWN_CHAR;
+        return consts$4.UNICODE_UNKNOWN_CHAR;
     }
   };
 
@@ -2030,10 +2227,12 @@
    * @author kuyur@kuyur.info
    */
 
-  const goog$2 = googBase;
+  const goog$3 = googBase;
+  const consts$3 = consts$7;
   const segment = segment$3;
   const gb18030utils = gb18030;
   const bufferutils = bufferUtils;
+  const base64$1 = base64$4;
 
   /**
    * The basic class of encoding-rule.
@@ -2043,7 +2242,7 @@
 
   /**
    * Encoding the Unicode code points.
-   * @param {Uint32Array|Array.<number>} buffer Every element must be a UTF-16
+   * @param {Uint32Array|Array.<number>} buffer Every element must be a Unicode
    *   code points.
    * @return {Uint8Array}
    */
@@ -2067,7 +2266,7 @@
    * @param {Uint32Array|Array.<number>} buffer
    * @return {number} The length of encoded bytes.
    */
-  EncodingRule.prototype.test = goog$2.abstractMethod;
+  EncodingRule.prototype.test = goog$3.abstractMethod;
 
   /**
    * Consume a Unicode code point from source buffer and save the encoded binary
@@ -2081,7 +2280,7 @@
    *   into result array.
    * @return {number} bytes encoded.
    */
-  EncodingRule.prototype.consume = goog$2.abstractMethod;
+  EncodingRule.prototype.consume = goog$3.abstractMethod;
 
   /**
    * UTF-16 little-endian encoding rule.
@@ -2091,7 +2290,7 @@
   var EncodingRuleUTF16LE = function() {
     EncodingRule.call(this);
   };
-  goog$2.inherits(EncodingRuleUTF16LE, EncodingRule);
+  goog$3.inherits(EncodingRuleUTF16LE, EncodingRule);
 
   /**
    * The invalid Unicode code point will be skipped.
@@ -2165,7 +2364,7 @@
   var EncodingRuleUTF16BE = function() {
     EncodingRule.call(this);
   };
-  goog$2.inherits(EncodingRuleUTF16BE, EncodingRule);
+  goog$3.inherits(EncodingRuleUTF16BE, EncodingRule);
 
   /**
    * The invalid Unicode code point will be ignored.
@@ -2239,7 +2438,7 @@
   var EncodingRuleUTF8 = function() {
     EncodingRule.call(this);
   };
-  goog$2.inherits(EncodingRuleUTF8, EncodingRule);
+  goog$3.inherits(EncodingRuleUTF8, EncodingRule);
 
   /**
    * The invalid Unicode code point will be ignored.
@@ -2318,19 +2517,31 @@
    * The encoding rule for common Variable-width encoding (MBCS, Multiple-byte Character Set).
    * @constructor
    * @param {Array.<Object>} segments
-   * @param {Uint16Array|Uint32Array} mappingBuffer
+   * @param {Uint16Array|Uint32Array|string} mappingBuffer
+   * @param {number} byte
    * @param {number} unknownChar
    * @extends {EncodingRule}
    */
-  var EncodingRuleMultibyte = function(segments, mappingBuffer, unknownChar) {
+  var EncodingRuleMultibyte = function(segments, mappingBuffer, byte, unknownChar) {
     EncodingRule.call(this);
 
     this.segments_ = new segment.Segments(segments);
-    this.mappingBuffer_ = mappingBuffer;
+    this.mappingBuffer_ = null;
+    if (mappingBuffer) {
+      if ((mappingBuffer instanceof Uint16Array) ||(mappingBuffer instanceof Uint32Array)) {
+        this.mappingBuffer_ = mappingBuffer;
+      } else if (goog$3.isString(mappingBuffer)) {
+        if (mappingBuffer.startsWith(consts$3.EMBEDDED_BASE64_PREFIX)) {
+          var encoded = mappingBuffer.substring(consts$3.EMBEDDED_BASE64_PREFIX.length);
+          var charmap = base64$1.decode(encoded.trim());
+          this.mappingBuffer_ = byte === 2 ? new Uint16Array(charmap.buffer) : new Uint32Array(charmap.buffer);
+        }
+      }
+    }
     this.unknownChar_ = unknownChar || 0x3F;
     this.unknownCharBytes_ = this.getCharBytes_(this.unknownChar_);
   };
-  goog$2.inherits(EncodingRuleMultibyte, EncodingRule);
+  goog$3.inherits(EncodingRuleMultibyte, EncodingRule);
 
   /**
    * @private
@@ -2400,7 +2611,11 @@
           result += 1;
           break;
         case segment.Reference.BUFFER:
-          result += this.getCharBytes_(this.mappingBuffer_[chr - seg.getBegin() + seg.getOffset()]);
+          if (!this.mappingBuffer_) {
+            result += this.unknownCharBytes_;
+          } else {
+            result += this.getCharBytes_(this.mappingBuffer_[chr - seg.getBegin() + seg.getOffset()]);
+          }
           break;
         case segment.Reference.GB18030_UNICODE_SP_MAPPING:
           result += 4;
@@ -2420,7 +2635,6 @@
   };
 
   /**
-   * The invalid Unicode code point will be skipped.
    * @override
    * @param {Uint32Array|Array.<number>} buffer
    * @param {number} pos
@@ -2442,6 +2656,10 @@
         bytes = 1;
         break;
       case segment.Reference.BUFFER:
+        if (!this.mappingBuffer_) {
+          bufferutils.writeUInt32BE(result, offset, this.unknownChar_, this.unknownCharBytes_);
+          return this.unknownCharBytes_;
+        }
         converted = this.mappingBuffer_[chr - seg.getBegin() + seg.getOffset()];
         bytes = this.getCharBytes_(converted);
         bufferutils.writeUInt32BE(result, offset, converted, bytes);
@@ -2465,9 +2683,9 @@
    */
 
   const { Charmap, CharmapType: CharmapType$1 } = charmap;
-  const consts = consts$4;
+  const consts$2 = consts$7;
   const encodingrule = encodingRule;
-  const goog$1 = googBase;
+  const goog$2 = googBase;
 
   /**
    * Back-end Charmap class.
@@ -2478,7 +2696,7 @@
   var Encoder = function(name) {
     Charmap.call(this, name, CharmapType$1.ENCODER);
   };
-  goog$1.inherits(Encoder, Charmap);
+  goog$2.inherits(Encoder, Charmap);
 
   /**
    * @private
@@ -2491,7 +2709,7 @@
    * @param {Uint32Array} buffer
    * @return {Uint8Array}
    */
-  Encoder.prototype.encode = goog$1.abstractMethod;
+  Encoder.prototype.encode = goog$2.abstractMethod;
 
   /**
    * @constructor
@@ -2501,7 +2719,7 @@
     Encoder.call(this, 'UTF-16LE');
     this.rule_ = encodingrule.UTF16LE;
   };
-  goog$1.inherits(EncoderUtf16le, Encoder);
+  goog$2.inherits(EncoderUtf16le, Encoder);
 
   /**
    * @override
@@ -2520,7 +2738,7 @@
     Encoder.call(this, 'UTF-16BE');
     this.rule_ = encodingrule.UTF16BE;
   };
-  goog$1.inherits(EncoderUtf16be, Encoder);
+  goog$2.inherits(EncoderUtf16be, Encoder);
 
   /**
    * @override
@@ -2539,7 +2757,7 @@
     Encoder.call(this, 'UTF-8');
     this.rule_ = encodingrule.UTF8;
   };
-  goog$1.inherits(EncoderUtf8, Encoder);
+  goog$2.inherits(EncoderUtf8, Encoder);
 
   /**
    * @override
@@ -2556,23 +2774,24 @@
    *   name: string,
    *   description: string,
    *   version: string,
-   *   buffer: Uint16Array|Uint32Array,
+   *   buffer: Uint16Array|Uint32Array|string,
+   *   byte: number,
    *   segments: Array.<Object>
    * }} options
    * @extends {Encoder}
    */
   var EncoderMultibyte = function(options) {
-    if (!options || !options['name']) {
+    if (!options || !options.name) {
       throw 'options should provide name property at least';
     }
-    Encoder.call(this, options['name']);
+    Encoder.call(this, options.name);
 
-    this.description_ = options['description'];
-    this.version_ = options['version'];
-    this.rule_ = new encodingrule.Multibyte(options['segments'],
-      options['buffer'], consts.MBCS_UNKNOWN_CHAR);
+    this.description_ = options.description;
+    this.version_ = options.version;
+    this.rule_ = new encodingrule.Multibyte(options.segments,
+      options.buffer, options.byte, consts$2.MBCS_UNKNOWN_CHAR);
   };
-  goog$1.inherits(EncoderMultibyte, Encoder);
+  goog$2.inherits(EncoderMultibyte, Encoder);
 
   /**
    * Get bytes of one code point inside mapping buffer.
@@ -2603,18 +2822,20 @@
    * @author kuyur@kuyur.info
    */
 
+  const consts$1 = consts$7;
+  const utils = bufferUtils;
   const { Channel: Channel$1 } = channel;
   const { Converter: Converter$1 } = converter;
   const decoder$1 = decoder$2;
   const encoder$1 = encoder$2;
-  const goog = googBase;
+  const goog$1 = googBase;
 
   /**
    * Context Class.
    * @constructor
    * @param {Object} configs
    */
-  var Context$1 = function(configs) {
+  var Context$2 = function(configs) {
     this.reload(configs);
   };
 
@@ -2622,37 +2843,37 @@
    * @type {Object.<string, encoder.Encoder>}}
    * @private
   */
-  Context$1.prototype.encoders_;
+  Context$2.prototype.encoders_;
 
   /**
    * @type {Object.<string, decoder.Decoder>}
    * @private
    */
-  Context$1.prototype.decoders_;
+  Context$2.prototype.decoders_;
 
   /**
    * @type {Object.<string, Converter>}
    * @private
    */
-  Context$1.prototype.converters_;
+  Context$2.prototype.converters_;
 
   /**
    * @type {Object.<string, Channel>}
    * @private
    */
-  Context$1.prototype.channels_;
+  Context$2.prototype.channels_;
 
   /**
    * @type {Array.<string>}
    * @private
    */
-  Context$1.prototype.detectionOrder_;
+  Context$2.prototype.detectionOrder_;
 
   /**
    * Reload configuration.
    * @param {Object} configs
    */
-  Context$1.prototype.reload = function(configs) {
+  Context$2.prototype.reload = function(configs) {
     this.decoders_ = {};
     this.decoders_[decoder$1.UTF8.getName()] = decoder$1.UTF8;
     this.decoders_[decoder$1.UTF16LE.getName()] = decoder$1.UTF16LE;
@@ -2669,7 +2890,7 @@
 
     if (configs) {
       // external decoders
-      if (goog.isArray(configs.decoders)) {
+      if (goog$1.isArray(configs.decoders)) {
         configs.decoders.forEach(config => {
           var dec = new decoder$1.Multibyte(config);
           this.decoders_[dec.getName()] = dec;
@@ -2677,12 +2898,12 @@
       }
 
       // detection order
-      if (goog.isArray(configs.detection_order)) {
+      if (goog$1.isArray(configs.detection_order)) {
         this.detectionOrder_ = configs.detection_order.slice();
       }
 
       // external encoders
-      if (goog.isArray(configs.encoders)) {
+      if (goog$1.isArray(configs.encoders)) {
         configs.encoders.forEach(config => {
           var enc = new encoder$1.Multibyte(config);
           this.encoders_[enc.getName()] = enc;
@@ -2690,7 +2911,7 @@
       }
 
       // external converters
-      if (goog.isArray(configs.converters)) {
+      if (goog$1.isArray(configs.converters)) {
         configs.converters.forEach(config => {
           var conv = new Converter$1(config);
           this.converters_[conv.getName()] = conv;
@@ -2698,7 +2919,7 @@
       }
 
       // channels
-      if (goog.isArray(configs.channels)) {
+      if (goog$1.isArray(configs.channels)) {
         configs.channels.forEach(config => {
           this.newChannel(config.name, config.decoder, config.encoder, config.converters);
         }, this);
@@ -2711,7 +2932,7 @@
    * @param {string} name
    * @return {?decoder.Decoder}
    */
-  Context$1.prototype.getDecoder = function(name) {
+  Context$2.prototype.getDecoder = function(name) {
     return this.decoders_[name];
   };
 
@@ -2719,7 +2940,7 @@
    * Get name list of all decoders.
    * @return {Array.<string>}
    */
-  Context$1.prototype.getDecoderNames = function() {
+  Context$2.prototype.getDecoderNames = function() {
     return Object.keys(this.decoders_);
   };
 
@@ -2728,7 +2949,7 @@
    * @param {string} name
    * @return {?encoder.Encoder}
    */
-  Context$1.prototype.getEncoder = function(name) {
+  Context$2.prototype.getEncoder = function(name) {
     return this.encoders_[name];
   };
 
@@ -2736,7 +2957,7 @@
    * Get name list of all encoders.
    * @return {Array.<string>}
    */
-  Context$1.prototype.getEncoderNames = function() {
+  Context$2.prototype.getEncoderNames = function() {
     return Object.keys(this.encoders_);
   };
 
@@ -2745,7 +2966,7 @@
    * @param {string} name
    * @return {?Converter}
    */
-  Context$1.prototype.getConverter = function(name) {
+  Context$2.prototype.getConverter = function(name) {
     return this.converters_[name];
   };
 
@@ -2753,7 +2974,7 @@
    * Get name list of all converters.
    * @return {Array.<string>}
    */
-  Context$1.prototype.getConverterNames = function() {
+  Context$2.prototype.getConverterNames = function() {
     return Object.keys(this.converters_);
   };
 
@@ -2762,7 +2983,7 @@
    * @param {string} name
    * @return {?Channel}
    */
-  Context$1.prototype.getChannel = function(name) {
+  Context$2.prototype.getChannel = function(name) {
     return this.channels_[name];
   };
 
@@ -2770,30 +2991,30 @@
    * Get name list of all channels.
    * @return {Array.<string>}
    */
-  Context$1.prototype.getChannelNames = function() {
+  Context$2.prototype.getChannelNames = function() {
     return Object.keys(this.channels_);
   };
 
   /**
    * Create a new channel from existing charmaps.
    * @param {string} name name of the new channel.
-   * @param {string} decoder name of decoder.
-   * @param {string} encoder name of encoder.
+   * @param {string} decoderName name of decoder.
+   * @param {string} encoderName name of encoder.
    * @param {?(string|Array.<string>)} opt_converters name list of converters.
    * @return {?Channel}
    */
-  Context$1.prototype.newChannel = function(name, decoder, encoder, opt_converters) {
-    if (!this.decoders_[decoder] || !this.encoders_[encoder]) {
+  Context$2.prototype.newChannel = function(name, decoderName, encoderName, opt_converters) {
+    if (!this.decoders_[decoderName] || !this.encoders_[encoderName]) {
       return null;
     }
 
     var converters = [];
     if (opt_converters) {
-      if (goog.isString(opt_converters)) {
+      if (goog$1.isString(opt_converters)) {
         if (this.converters_[opt_converters]) {
           converters.push(this.converters_[opt_converters]);
         }
-      } else if (goog.isArray(opt_converters)) {
+      } else if (goog$1.isArray(opt_converters)) {
         opt_converters.forEach(name => {
           if (this.converters_[name]) {
             converters.push(this.converters_[name]);
@@ -2802,7 +3023,112 @@
       }
     }
 
-    return this.channels_[name] = new Channel$1(this.decoders_[decoder], this.encoders_[encoder], converters);
+    return this.channels_[name] = new Channel$1(this.decoders_[decoderName], this.encoders_[encoderName], converters);
+  };
+
+  /**
+   * Decode the buffer and return Unicode code points. Notice that no additional
+   * BOM handling in this method. This function is a shortcut for the code in example.
+   * @example
+   *   var dec = context.getDecoder(decoder);
+   *   var output = dec.decode(buffer, opt_offset);
+   * @param {Uint8Array} buffer input buffer to decode.
+   * @param {string} decoderName name of decoder.
+   * @return {Uint32Array} Unicode code points.
+   */
+  Context$2.prototype.decode = function(buffer, decoderName, opt_offset) {
+    var dec = this.getDecoder(decoderName);
+    if (!dec) {
+      throw `Error: decoder ${decoderName} not found in the context.`;
+    }
+    return dec.decode(buffer, opt_offset);
+  };
+
+  /**
+   * Encode the Unicode code points with specified encoding. Notice that no
+   * additional BOM handling in this method even UTF-8/UTF-16LE/UTF-16BE
+   * is specified. This function is a shortcut for the code in example.
+   * @example
+   *   var enc = context.getEncoder(encoder);
+   *   var output = enc.encode(buffer);
+   * @param {Uint32Array} buffer the buffer to encode. Every element in the
+   *   buffer must be a Unicode code points.
+   * @param {string} encoderName name of decoder.
+   * @return {Uint8Array} encoded buffer (binary data) which can be written to file directly.
+   */
+  Context$2.prototype.encode = function(buffer, encoderName) {
+    var enc = this.getEncoder(encoderName);
+    if (!enc) {
+      throw `Error: encoder ${encoderName} not found in the context.`;
+    }
+    return enc.encode(buffer);
+  };
+
+  /**
+   * Decode the buffer and return a javascript string. Will remove the BOM at the header
+   * if the BOM is existing. The function is a shortcut for the code in example.
+   * @example
+   *  const nextc4 = require('nextc4.js');
+   *  ...
+   *  var dec = context.getDecoder(decoder);
+   *  var decoded = nextc4.utils.toString(dec.decode(buffer, opt_offset));
+   *  if (decoded && decoded.codePointAt(0) === nextc4.Consts.UNICODE_BYTE_ORDER_MARK) {
+   *    decoded = decoded.substring(1);
+   *  }
+   *  ...
+   * @param {Uint8Array} buffer input buffer to decode.
+   * @param {string} decoderName name of decoder.
+   * @param {?number} opt_offset the start position in buffer to decode. 0 by default.
+   * @return {string} decoded javascript string.
+   */
+  Context$2.prototype.decodeAsString = function(buffer, decoderName, opt_offset) {
+    var dec = this.getDecoder(decoderName);
+    if (!dec) {
+      throw `Error: decoder ${decoderName} not found in the context.`;
+    }
+
+    var decoded = utils.toString(dec.decode(buffer, opt_offset));
+    if (decoded && decoded.codePointAt(0) === consts$1.UNICODE_BYTE_ORDER_MARK) {
+      return decoded.substring(1);
+    }
+    return decoded;
+  };
+
+  /**
+   * Encode a javascript string with the specified encoding. BOM will be attached to the
+   * encoded buffer if UTF-8/UTF-16LE/UTF-16BE is specified and opt_appendBOM is set to
+   * true. This function is a shortcut for the code in example.
+   * @example
+   *   const nextc4 = require('nextc4.js');
+   *   ...
+   *   var enc = context.getEncoder(encoderName);
+   *   // append the BOM if necessary
+   *   if (str.codePointAt(0) !== nextc4.Consts.UNICODE_BYTE_ORDER_MARK) {
+   *     str = String.fromCodePoint(nextc4.Consts.UNICODE_BYTE_ORDER_MARK) + str;
+   *   }
+   *   var output = enc.encode(nextc4.utils.toBuffer(str));
+   * @param {string} str the javascript string to encode.
+   * @param {string} encoderName name of encoder.
+   * @param {?boolean} opt_appendBOM attach the BOM to header if the parameter is set
+   *   as true. false by default. Only used for UTF-8/UTF-16LE/UTF-16BE.
+   * @return {Uint8Array} encoded buffer (binary data) which can be written to file directly.
+   */
+  Context$2.prototype.encodeFromString = function(str, encoderName, opt_appendBOM) {
+    var enc = this.getEncoder(encoderName);
+    if (!enc) {
+      throw `Error: encoder ${encoderName} not found in the context.`;
+    }
+    if (!goog$1.isString(str)) {
+      throw 'Error: invalid type for str.';
+    }
+
+    if (opt_appendBOM && (enc === encoder$1.UTF8 || enc === encoder$1.UTF16LE || enc === encoder$1.UTF16BE)) {
+      // append the BOM
+      if (str.codePointAt(0) !== consts$1.UNICODE_BYTE_ORDER_MARK) {
+        str = String.fromCodePoint(consts$1.UNICODE_BYTE_ORDER_MARK) + str;
+      }
+    }
+    return enc.encode(utils.toBuffer(str));
   };
 
   /**
@@ -2815,7 +3141,7 @@
    *   hasBom: boolean
    * }}
    */
-  Context$1.prototype.findPossibleEncoding = function(buffer) {
+  Context$2.prototype.findPossibleEncoding = function(buffer) {
     if (decoder$1.UTF8.match(buffer)) {
       return {
         encoding: decoder$1.UTF8.getName(),
@@ -2852,182 +3178,82 @@
     return null;
   };
 
-  context.Context = Context$1;
+  context.Context = Context$2;
 
-  var base64$1 = {};
+  var loadFromUrl$1 = {};
 
   /**
-   * The base64 encoding/decoding implementation for browser environment.
-   * The encode method accepts an Uint8Array as input.
-   * The decode method outputs an Uint8Array as result.
    * @author kuyur@kuyur.info
-   * @see https://en.wikipedia.org/wiki/Base64
    */
+
+  const { Context: Context$1 } = context;
+  const goog = googBase;
+  const consts = consts$7;
 
   /**
-   * the index table of base64 (000000 ~ 111111) to accelerate the converting.
-   * @type {string}
+   * Create a Context instance by loading configuration from a URL. (for browser)
+   * @param {string} url url of configuration file.
+   * @return {Promise.<Context>}
    */
-  const mapping = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+  loadFromUrl$1.loadFromUrl = function(url) {
+    var promise = fetch(url).then(response => response.json());
 
-  /**
-   * the padding character.
-   * @type {string}
-   */
-  const padding = '=';
-
-  /**
-   * Encode a binary array into base64.
-   * @param {Uint8Array} buffer Binary buffer.
-   * @return {string} The encoded base64 string.
-   */
-  base64$1.encode = function(buffer) {
-    if (!buffer) {
-      return '';
-    }
-    var length = buffer.length;
-    if (!length) {
-      return '';
-    }
-
-    var result = [],
-      tail = length % 3,
-      end = length - tail,
-      uint24 = 0,
-      offset = 0;
-    for (var i = 0; i < end; i += 3) {
-      uint24 = (buffer[i] << 16) | (buffer[i+1] << 8) | buffer[i+2];
-      result[offset++] = mapping[(uint24 >>> 18) & 0x3F];
-      result[offset++] = mapping[(uint24 >>> 12) & 0x3F];
-      result[offset++] = mapping[(uint24 >>> 6) & 0x3F];
-      result[offset++] = mapping[uint24 & 0x3F];
-    }
-    if (tail === 1) {
-      result[offset++] = mapping[(buffer[end] >>> 2) & 0x3F];
-      result[offset++] = mapping[(buffer[end] << 4) & 0x30];
-      result[offset++] = padding;
-      result[offset] = padding;
-    } else if (tail === 2) {
-      result[offset++] = mapping[(buffer[end] >>> 2) & 0x3F];
-      result[offset++] = mapping[((buffer[end] << 4) & 0x30) | ((buffer[end + 1] >>> 4) & 0xF)];
-      result[offset++] = mapping[(buffer[end + 1] << 2) &0x3C];
-      result[offset] = padding;
-    }
-
-    return result.join('');
-  };
-
-  /**
-   * The reversed mapping.
-   * @type {Object.<string, number>}
-   */
-  const decoding_mapping = (function() {
-    var result = {};
-    for (var i = 0; i < 64; ++i) {
-      result[mapping[i]] = i;
-    }
-    return result;
-  })();
-
-  /**
-   * Decode a base64 encoded string and return binary array. Supporting the string
-   * which is not padded with "=".
-   * @param {string} string The encoded base64 string.
-   * @return {Uint8Array} The decoded binary buffer.
-   */
-  base64$1.decode = function(string) {
-    if (!string) {
-      return new Uint8Array(0);
-    }
-    var length = string.length;
-    if (!length) {
-      return new Uint8Array(0);
-    }
-
-    if (string.endsWith('==')) {
-      string = string.substring(0, length - 2);
-      length -= 2;
-    } else if (string.endsWith('=')) {
-      string = string.substring(0, length - 1);
-      length -= 1;
-    }
-
-    var tail = length % 4;
-    var total = Math.floor(length / 4) * 3;
-    if (tail !== 0) {
-      if (tail === 1) {
-        throw 'Invalid base64 string.';
+    var loadBuffer = function(option) {
+      if (goog.isString(option.buffer) && !option.buffer.startsWith(consts.EMBEDDED_BASE64_PREFIX)) {
+        return fetch(option.buffer).then(response => response.arrayBuffer()).then(charmap => {
+          option.buffer = option.byte === 2 ? new Uint16Array(charmap) : new Uint32Array(charmap);
+        });
+      } else {
+        return Promise.resolve();
       }
-      // check last 6 bits
-      var bit6_last = decoding_mapping[string[length - 1]];
-      if (bit6_last === undefined) {
-        throw 'Invalid base64 string.';
-      }
-      if (tail === 2 && ((bit6_last & 0xF) !== 0)) {
-        throw 'Invalid base64 string.';
-      }
-      if (tail === 3 && ((bit6_last & 0x3) !== 0)) {
-        throw 'Invalid base64 string.';
-      }
-      total += tail === 2 ? 1 : 2;
-    }
+    };
 
-    var buffer = new Uint8Array(total),
-      end = length - tail,
-      uint24 = 0,
-      bit6_1,
-      bit6_2,
-      bit6_3,
-      bit6_4,
-      offset = 0;
-    for (var i = 0; i < end; i += 4) {
-      bit6_1 = decoding_mapping[string[i]];
-      bit6_2 = decoding_mapping[string[i + 1]];
-      bit6_3 = decoding_mapping[string[i + 2]];
-      bit6_4 = decoding_mapping[string[i + 3]];
-      if (bit6_1 === undefined || bit6_2 === undefined || bit6_3 === undefined || bit6_4 === undefined) {
-        throw 'Invalid base64 string.';
+    promise = promise.then(configs => {
+      var promises = [];
+
+      // loop decoders
+      if (goog.isArray(configs.decoders)) {
+        configs.decoders.forEach(option => {
+          promises.push(loadBuffer(option));
+        });
       }
 
-      uint24 = (bit6_1 << 18) | (bit6_2 << 12) | (bit6_3 << 6) | bit6_4;
-      buffer[offset++] = (uint24 >>> 16) & 0xFF;
-      buffer[offset++] = (uint24 >>> 8) & 0xFF;
-      buffer[offset++] = uint24 & 0xFF;
-    }
-    if (tail === 2) {
-      bit6_1 = decoding_mapping[string[end]];
-      bit6_2 = decoding_mapping[string[end + 1]];
-      if (bit6_1 === undefined) {
-        throw 'Invalid base64 string.';
+      // loop encoders
+      if (goog.isArray(configs.encoders)) {
+        configs.encoders.forEach(option => {
+          promises.push(loadBuffer(option));
+        });
       }
-      buffer[offset] = (bit6_1 << 2) | (bit6_2 >>> 4);
-    } else if (tail === 3) {
-      bit6_1 = decoding_mapping[string[end]];
-      bit6_2 = decoding_mapping[string[end + 1]];
-      bit6_3 = decoding_mapping[string[end + 2]];
-      if (bit6_1 === undefined || bit6_2 === undefined) {
-        throw 'Invalid base64 string.';
-      }
-      buffer[offset++] = (bit6_1 << 2) | (bit6_2 >>> 4);
-      buffer[offset] = ((bit6_2 & 0xF) << 4) | (bit6_3 >>> 2);
-    }
 
-    return buffer;
+      // loop converters
+      if (goog.isArray(configs.converters)) {
+        configs.converters.forEach(option => {
+          promises.push(loadBuffer(option));
+        });
+      }
+
+      return Promise.all(promises).then(() => configs);
+    });
+
+    return promise.then(configs => {
+      return new Context$1(configs);
+    });
   };
 
   const BufferUtils = bufferUtils;
   const { Channel } = channel;
   const { CharmapType } = charmap;
   const { Condition } = condition;
-  const Consts = consts$4;
+  const Consts = consts$7;
   const { Converter }= converter;
   const decoder = decoder$2;
   const encoder = encoder$2;
   const { Reference } = segment$3;
   const { Context } = context;
-  const base64 = base64$1;
+  const base64 = base64$4;
+  const { loadFromUrl } = loadFromUrl$1;
 
-  var browser = {
+  var browserLite = {
     Converter: Converter,
     DecoderMultibyte: decoder.Multibyte,
     DECODER_UTF8: decoder.UTF8,
@@ -3044,9 +3270,10 @@
     Context: Context,
     Consts: Consts,
     utils: BufferUtils,
-    base64: base64
+    base64: base64,
+    loadFromUrl: loadFromUrl
   };
 
-  return browser;
+  return browserLite;
 
 }));
