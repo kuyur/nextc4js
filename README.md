@@ -1,7 +1,7 @@
 # nextc4.js
 The JavaScript version of NextC4 library.
 
-# Build
+# Development
 ## Preparation
 
     npm install
@@ -14,6 +14,10 @@ The JavaScript version of NextC4 library.
 ## Linting
 
     npm run lint
+
+## Build the distribution
+
+    npm run build
 
 # Generate Charmaps
 
