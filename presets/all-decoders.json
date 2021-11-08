@@ -4,7 +4,8 @@
     "description": "Shift-JIS to Unicode.",
     "version": "CP932",
     "type": "decoder",
-    "buffer": "charmaps/front-jis2u-little-endian.map|2",
+    "buffer": "charmaps/front-jis2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -69,7 +70,8 @@
     "description": "GBK to Unicode.",
     "version": "CP936",
     "type": "decoder",
-    "buffer": "charmaps/front-gbk2u-little-endian.map|2",
+    "buffer": "charmaps/front-gbk2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -117,7 +119,8 @@
     "description": "GB18030 to Unicode.",
     "version": "GB18030-2005",
     "type": "decoder",
-    "buffer": "charmaps/front-gb180302u-little-endian.map|2",
+    "buffer": "charmaps/front-gb180302u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -229,7 +232,8 @@
     "description": "Big5 to Unicode.",
     "version": "UAO 2.50",
     "type": "decoder",
-    "buffer": "charmaps/front-b2u-little-endian.map|2",
+    "buffer": "charmaps/front-b2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -270,7 +274,8 @@
     "description": "EUC-KR to Unicode.",
     "version": "Microsoft CP949",
     "type": "decoder",
-    "buffer": "charmaps/front-kr2u-little-endian.map|2",
+    "buffer": "charmaps/front-kr2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -311,7 +316,8 @@
     "description": "Latin to Unicode.",
     "version": "Microsoft CP1252",
     "type": "decoder",
-    "buffer": "charmaps/front-latin2u-little-endian.map|2",
+    "buffer": "charmaps/front-latin2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [
@@ -340,7 +346,8 @@
     "description": "Cyrillic to Unicode.",
     "version": "Microsoft CP1251",
     "type": "decoder",
-    "buffer": "charmaps/front-cyrillic2u-little-endian.map|2",
+    "buffer": "charmaps/front-cyrillic2u-little-endian.map",
+    "byte": 2,
     "rules": [
       {
         "condition": [

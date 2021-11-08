@@ -11,7 +11,8 @@ var sim2traOptions= {
   'description': 'Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
   'type': 'converter',
-  'buffer': 'charmaps/medium-simp2tra-little-endian.map|2',
+  'buffer': 'charmaps/medium-simp2tra-little-endian.map',
+  'byte': 2,
   'segments':[
     {
       'begin': 0,
@@ -43,7 +44,8 @@ var tra2simpOptions = {
   'description': 'Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).',
   'version': 'Unicode 4.0 Unihan(Wikipedia version)',
   'type': 'converter',
-  'buffer': 'charmaps/medium-tra2simp-little-endian.map|2',
+  'buffer': 'charmaps/medium-tra2simp-little-endian.map',
+  'byte': 2,
   'segments':[
     {
       'begin': 0,
@@ -72,17 +74,14 @@ var tra2simpOptions = {
 
 beforeAll(() => {
   if (goog.isString(sim2traOptions.buffer)) {
-    var parts = sim2traOptions.buffer.split('|');
-    var bytes = +parts[1];
-    var buffer = fs.readFileSync(parts[0]);
-    sim2traOptions.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+    var buffer = fs.readFileSync(sim2traOptions.buffer);
+    sim2traOptions.buffer = sim2traOptions.byte === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
   }
 
   if (goog.isString(tra2simpOptions.buffer)) {
-    var parts2 = tra2simpOptions.buffer.split('|');
-    var bytes2 = +parts2[1];
-    var buffer2 = fs.readFileSync(parts2[0]);
-    tra2simpOptions.buffer = bytes2 === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
+    var buffer2 = fs.readFileSync(tra2simpOptions.buffer);
+    tra2simpOptions.buffer = tra2simpOptions.byte === 2 ?
+      new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
   }
 });
 

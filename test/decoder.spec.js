@@ -11,7 +11,8 @@ var gbkOptions = {
   'description': 'GBK to Unicode.',
   'version': 'CP936 with enhancement',
   'type': 'decoder',
-  'buffer': 'charmaps/front-gbk2u-little-endian.map|2',
+  'buffer': 'charmaps/front-gbk2u-little-endian.map',
+  'byte': 2,
   'rules': [
     {
       'byte': 1,
@@ -51,7 +52,8 @@ var big5Options = {
   'description': 'Big5 to Unicode.',
   'version': 'UAO 2.50',
   'type': 'decoder',
-  'buffer': 'charmaps/front-b2u-little-endian.map|2',
+  'buffer': 'charmaps/front-b2u-little-endian.map',
+  'byte': 2,
   'rules': [
     {
       'byte': 1,
@@ -85,7 +87,8 @@ var gb18030Options = {
   'description': 'GB18030 to Unicode.',
   'version': 'GB18030-2005',
   'type': 'decoder',
-  'buffer': 'charmaps/front-gb180302u-little-endian.map|2',
+  'buffer': 'charmaps/front-gb180302u-little-endian.map',
+  'byte': 2,
   'rules': [
     {
       'byte': 1,
@@ -163,24 +166,19 @@ beforeAll(() => {
   }
 
   if (goog.isString(gbkOptions.buffer)) {
-    var parts = gbkOptions.buffer.split('|');
-    var bytes = +parts[1];
-    var buffer = fs.readFileSync(parts[0]);
-    gbkOptions.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+    var buffer = fs.readFileSync(gbkOptions.buffer);
+    gbkOptions.buffer = gbkOptions.byte === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
   }
 
   if (goog.isString(big5Options.buffer)) {
-    var parts2 = big5Options.buffer.split('|');
-    var bytes2 = +parts2[1];
-    var buffer2 = fs.readFileSync(parts2[0]);
-    big5Options.buffer = bytes2 === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
+    var buffer2 = fs.readFileSync(big5Options.buffer);
+    big5Options.buffer = big5Options.byte === 2 ? new Uint16Array(buffer2.buffer) : new Uint32Array(buffer2.buffer);
   }
 
   if (goog.isString(gb18030Options.buffer)) {
-    var parts3 = gb18030Options.buffer.split('|');
-    var bytes3 = +parts3[1];
-    var buffer3 = fs.readFileSync(parts3[0]);
-    gb18030Options.buffer = bytes3 === 2 ? new Uint16Array(buffer3.buffer) : new Uint32Array(buffer3.buffer);
+    var buffer3 = fs.readFileSync(gb18030Options.buffer);
+    gb18030Options.buffer = gb18030Options.byte === 2 ?
+      new Uint16Array(buffer3.buffer) : new Uint32Array(buffer3.buffer);
   }
 });
 

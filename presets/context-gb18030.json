@@ -5,7 +5,8 @@
       "description": "GB18030 to Unicode.",
       "version": "GB18030-2005",
       "type": "decoder",
-      "buffer": "charmaps/front-gb180302u-little-endian.map|2",
+      "buffer": "charmaps/front-gb180302u-little-endian.map",
+      "byte": 2,
       "rules": [
         {
           "condition": [
@@ -119,7 +120,8 @@
       "description": "Unicode to GB18030.",
       "version": "GB18030-2005",
       "type": "encoder",
-      "buffer": "charmaps/back-u2gb18030-little-endian.map|4",
+      "buffer": "charmaps/back-u2gb18030-little-endian.map",
+      "byte": 4,
       "segments": [
         {
           "begin": 0,

@@ -5,7 +5,8 @@
       "description": "GBK to Unicode.",
       "version": "CP936",
       "type": "decoder",
-      "buffer": "charmaps/front-gbk2u-little-endian.map|2",
+      "buffer": "charmaps/front-gbk2u-little-endian.map",
+      "byte": 2,
       "rules": [
         {
           "condition": [
@@ -53,7 +54,8 @@
       "description": "Big5 to Unicode.",
       "version": "UAO 2.50",
       "type": "decoder",
-      "buffer": "charmaps/front-b2u-little-endian.map|2",
+      "buffer": "charmaps/front-b2u-little-endian.map",
+      "byte": 2,
       "rules": [
         {
           "condition": [
@@ -97,7 +99,8 @@
       "description": "Simplified Chinese character to Traditional Chinese character basing on UCS2 (Unicode BMP).",
       "version": "Unicode 4.0 Unihan(Wikipedia version)",
       "type": "converter",
-      "buffer": "charmaps/medium-simp2tra-little-endian.map|2",
+      "buffer": "charmaps/medium-simp2tra-little-endian.map",
+      "byte": 2,
       "segments": [
         {
           "begin": 0,
@@ -131,7 +134,8 @@
       "description": "Traditional Chinese character to Simplified Chinese character basing on UCS2 (Unicode BMP).",
       "version": "Unicode 4.0 Unihan(Wikipedia version)",
       "type": "converter",
-      "buffer": "charmaps/medium-tra2simp-little-endian.map|2",
+      "buffer": "charmaps/medium-tra2simp-little-endian.map",
+      "byte": 2,
       "segments": [
         {
           "begin": 0,

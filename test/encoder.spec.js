@@ -9,7 +9,8 @@ var gb18030Options =  {
   'description': 'Unicode to GB18030.',
   'version': 'GB18030-2005',
   'type': 'encoder',
-  'buffer': 'charmaps/back-u2gb18030-little-endian.map|4',
+  'buffer': 'charmaps/back-u2gb18030-little-endian.map',
+  'byte': 4,
   'segments': [{
     'begin': 0,
     'end': 65535,
@@ -30,10 +31,8 @@ beforeAll(() => {
   }
 
   if (goog.isString(gb18030Options.buffer)) {
-    var parts = gb18030Options.buffer.split('|');
-    var bytes = +parts[1];
-    var buffer = fs.readFileSync(parts[0]);
-    gb18030Options.buffer = bytes === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+    var buffer = fs.readFileSync(gb18030Options.buffer);
+    gb18030Options.buffer = gb18030Options.byte === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
   }
 });
 
