@@ -6,6 +6,73 @@ var bufferutils = require('../lib/buffer-utils');
 const { CharmapType } = require('../lib/charmap');
 var goog = require('../lib/goog-base');
 
+var shiftJisOption = {
+  'name': 'Shift-JIS(CP932)',
+  'description': 'Shift-JIS to Unicode.',
+  'version': 'CP932',
+  'type': 'decoder',
+  'buffer': 'charmaps/front-jis2u-little-endian.map',
+  'byte': 2,
+  'rules': [
+    {
+      'condition': [
+        '0x00~0x7F'
+      ]
+    },
+    {
+      'condition': [
+        '0xA1~0xDF'
+      ]
+    },
+    {
+      'condition': [
+        '0x81~0x9F',
+        '0x40~0xFC'
+      ]
+    },
+    {
+      'condition': [
+        '0xE0~0xFC',
+        '0x40~0xFC'
+      ]
+    }
+  ],
+  'segments': [
+    {
+      'begin': 0,
+      'end': 127,
+      'reference': 'ascii',
+      'characterset': 'ascii'
+    },
+    {
+      'begin': 128,
+      'end': 160,
+      'reference': 'undefined',
+      'characterset': 'undefined'
+    },
+    {
+      'begin': 161,
+      'end': 223,
+      'reference': 'buffer',
+      'offset': 0,
+      'characterset': 'JIS-X-0201'
+    },
+    {
+      'begin': 224,
+      'end': 33087,
+      'reference': 'undefined',
+      'characterset': 'undefined'
+    },
+    {
+      'begin': 33088,
+      'end': 65535,
+      'reference': 'buffer',
+      'offset': 63,
+      'characterset': 'JIS-X-0208'
+    }
+  ]
+};
+
 var gbkOptions = {
   'name': 'gbk-decoder',
   'description': 'GBK to Unicode.',
@@ -165,9 +232,15 @@ beforeAll(() => {
     fs.mkdirSync('test/out');
   }
 
+  if (goog.isString(shiftJisOption.buffer)) {
+    var buffer0 = fs.readFileSync(shiftJisOption.buffer);
+    shiftJisOption.buffer = shiftJisOption.byte === 2 ?
+      new Uint16Array(buffer0.buffer) : new Uint32Array(buffer0.buffer);
+  }
+
   if (goog.isString(gbkOptions.buffer)) {
-    var buffer = fs.readFileSync(gbkOptions.buffer);
-    gbkOptions.buffer = gbkOptions.byte === 2 ? new Uint16Array(buffer.buffer) : new Uint32Array(buffer.buffer);
+    var buffer1 = fs.readFileSync(gbkOptions.buffer);
+    gbkOptions.buffer = gbkOptions.byte === 2 ? new Uint16Array(buffer1.buffer) : new Uint32Array(buffer1.buffer);
   }
 
   if (goog.isString(big5Options.buffer)) {
@@ -185,6 +258,9 @@ beforeAll(() => {
 describe('GBK Decoder unit test', function() {
   it('decode()', function() {
     var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
+    var shiftJisDecoder = new decoder.Multibyte(shiftJisOption);
+    expect(shiftJisDecoder.match(gbkTextBuffer)).toBe(false);
+
     var gbkDecoder = new decoder.Multibyte(gbkOptions);
     expect(gbkDecoder.getName()).toBe(gbkOptions.name);
     expect(gbkDecoder.getType()).toBe(CharmapType.DECODER);
@@ -199,6 +275,10 @@ describe('GBK Decoder unit test', function() {
 
 describe('Big5 Decoder unit test', function() {
   it('decode()', function() {
+    var big5TextBuffer0 = fs.readFileSync('test/txt/big5/01-big5.cue');
+    var gbkDecoder = new decoder.Multibyte(gbkOptions);
+    expect(gbkDecoder.match(big5TextBuffer0)).toBe(false);
+
     var big5TextBuffer = fs.readFileSync('test/txt/big5/02-big5.cue');
     var big5Decoder = new decoder.Multibyte(big5Options);
     expect(big5Decoder.getName()).toBe(big5Options.name);

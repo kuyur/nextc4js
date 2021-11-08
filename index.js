@@ -11,6 +11,8 @@ const encoder = require('./lib/encoder');
 const { Reference } = require('./lib/segment');
 const { Context } = require('./lib/context');
 const base64 = require('./lib/base64');
+const { loadFromJson, loadFromJsonSync } =  require('./lib/load-from-json');
+const { loadDefault } = require('./lib/load-default');
 
 module.exports = {
   Converter: Converter,
@@ -29,5 +31,8 @@ module.exports = {
   Context: Context,
   Consts: Consts,
   utils: BufferUtils,
-  base64: base64
+  base64: base64,
+  loadFromJson: loadFromJson,
+  loadFromJsonSync: loadFromJsonSync,
+  loadDefault: loadDefault
 };
