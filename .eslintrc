@@ -16,6 +16,8 @@
     "no-redeclare": "error",
     "no-undef": "error",
     "no-trailing-spaces": "error",
-    "max-len": ["error", { "code": 120 }]
+    "max-len": ["error", { "code": 120 }],
+    "no-multiple-empty-lines": ["error", { "max": 1 }],
+    "eol-last": ["error", "always"]
   }
 }

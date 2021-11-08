@@ -19,7 +19,6 @@ describe('Google Closure basic functions unit test', function() {
     expect(goog.typeOf(goog.nullFunction)).toBe('function');
   });
 
-
   it('isNull()', function() {
     expect(goog.isNull(null)).toBe(true);
     expect(goog.isNull(undefined)).toBe(false);

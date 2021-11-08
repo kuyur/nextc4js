@@ -98,7 +98,6 @@
    * @see https://github.com/google/closure-library
    */
 
-  (function (exports) {
   /**
    * When defining a class Foo with an abstract method bar(), you can do:
    * Foo.prototype.bar = goog.abstractMethod
@@ -112,7 +111,7 @@
    * @type {!Function}
    * @throws {Error} when invoked to indicate the method should be overridden.
    */
-  exports.abstractMethod = function() {
+  var abstractMethod = function() {
     throw Error('unimplemented abstract method');
   };
 
@@ -120,7 +119,7 @@
    * Null function used for default values of callbacks, etc.
    * @return {void} Nothing.
    */
-  exports.nullFunction = function() {};
+  var nullFunction = function() {};
 
   /**
    * Inherit the prototype methods from one constructor into another.
@@ -142,7 +141,7 @@
    * @param {!Function} childCtor Child class.
    * @param {!Function} parentCtor Parent class.
    */
-  exports.inherits = function(childCtor, parentCtor) {
+  var inherits = function(childCtor, parentCtor) {
     /** @constructor */
     function tempCtor() {}
     tempCtor.prototype = parentCtor.prototype;
@@ -158,7 +157,7 @@
    * @param {*} value The value to get the type of.
    * @return {string} The name of the type.
    */
-  exports.typeOf = function(value) {
+  var typeOf = function(value) {
     var s = typeof value;
     if (s === 'object') {
       if (value) {
@@ -255,7 +254,7 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is null.
    */
-  exports.isNull = function(val) {
+  var isNull = function(val) {
     return val === null;
   };
 
@@ -264,7 +263,7 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is defined and not null.
    */
-  exports.isDefAndNotNull = function(val) {
+  var isDefAndNotNull = function(val) {
     // Note that undefined == null.
     return val != null;
   };
@@ -274,8 +273,8 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is an array.
    */
-  exports.isArray = function(val) {
-    return exports.typeOf(val) === 'array';
+  var isArray = function(val) {
+    return typeOf(val) === 'array';
   };
 
   /**
@@ -285,8 +284,8 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is an array.
    */
-  exports.isArrayLike = function(val) {
-    var type = exports.typeOf(val);
+  var isArrayLike = function(val) {
+    var type = typeOf(val);
     return type === 'array' || type === 'object' && typeof val.length === 'number';
   };
 
@@ -296,8 +295,8 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is a like a Date.
    */
-  exports.isDateLike = function(val) {
-    return exports.isObject(val) && typeof val.getFullYear == 'function';
+  var isDateLike = function(val) {
+    return isObject(val) && typeof val.getFullYear == 'function';
   };
 
   /**
@@ -305,7 +304,7 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is a string.
    */
-  exports.isString = function(val) {
+  var isString = function(val) {
     return typeof val == 'string';
   };
 
@@ -314,7 +313,7 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is boolean.
    */
-  exports.isBoolean = function(val) {
+  var isBoolean = function(val) {
     return typeof val == 'boolean';
   };
 
@@ -323,7 +322,7 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is a number.
    */
-  exports.isNumber = function(val) {
+  var isNumber = function(val) {
     return typeof val == 'number';
   };
 
@@ -332,8 +331,8 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is a function.
    */
-  exports.isFunction = function(val) {
-    return exports.typeOf(val) === 'function';
+  var isFunction = function(val) {
+    return typeOf(val) === 'function';
   };
 
   /**
@@ -342,13 +341,27 @@
    * @param {?} val Variable to test.
    * @return {boolean} Whether variable is an object.
    */
-  exports.isObject = function(val) {
+  var isObject = function(val) {
     var type = typeof val;
     return type === 'object' && val != null || type === 'function';
     // return Object(val) === val also works, but is slower, especially if val is
     // not an object.
   };
-  }(googBase));
+
+  googBase.abstractMethod = abstractMethod;
+  googBase.nullFunction = nullFunction;
+  googBase.inherits = inherits;
+  googBase.typeOf = typeOf;
+  googBase.isNull = isNull;
+  googBase.isDefAndNotNull = isDefAndNotNull;
+  googBase.isArray = isArray;
+  googBase.isArrayLike = isArrayLike;
+  googBase.isDateLike = isDateLike;
+  googBase.isString = isString;
+  googBase.isBoolean = isBoolean;
+  googBase.isNumber = isNumber;
+  googBase.isFunction = isFunction;
+  googBase.isObject = isObject;
 
   /**
    * @author kuyur@kuyur.info
@@ -2644,7 +2657,6 @@
     this.decoders_[decoder$1.UTF8.getName()] = decoder$1.UTF8;
     this.decoders_[decoder$1.UTF16LE.getName()] = decoder$1.UTF16LE;
     this.decoders_[decoder$1.UTF16BE.getName()] = decoder$1.UTF16BE;
-
 
     this.encoders_ = {};
     this.encoders_[encoder$1.UTF8.getName()] = encoder$1.UTF8;
