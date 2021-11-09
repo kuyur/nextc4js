@@ -3,9 +3,7 @@
  */
 
 const fs = require('fs');
-const goog = require('../lib/goog-base');
 const base64 = require('../lib/base64');
-const consts = require('../lib/consts');
 
 function printHelp() {
   console.log('Usage:');
