@@ -176,6 +176,44 @@ Latin(CP1252)
 Cyrillic(CP1251)
 ```
 
+## Use in node
+```bash
+npm install nextc4.js
+```
+
+```javascript
+const nextc4 = require('nextc4.js');
+
+var context = nextc4.loadDefault();
+var shiftJisBuffer = new Uint8Array([
+  136, 234, 143, 205, 129, 64, 137, 147, 142, 113, 144,
+  230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
+  137, 198, 130, 197, 130, 183
+]);
+console.log(context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)'));
+```
+
+In node environment, you also can load a context from json file:
+```javascript
+var promise = nextc4.loadFromJson('path/to/presets/context-anisong.json');
+promise.then(context => {
+  ...
+});
+```
+
+You also can load synchronously:
+```javascript
+var context = nextc4.loadFromJsonSync('path/to/presets/context-anisong.json');
+```
+
+You even can do in this way: import JSON (charmap-embedded) and construct:
+```javascript
+var myPreset = require('path/to/presets-charmap-embedded/context-default.json');
+var nextc4 = require('nextc4.js');
+
+var context = new nextc4.Context(myPreset);
+```
+
 # API
 
 # Advanced Topics
@@ -201,7 +239,7 @@ Column #1 is the cp1253 code in hex, and Column #2 is the Unicode in hex.
 ...
 ```
  
-As 0x00~0x7F (ASCII code) will be mapped to U+0000~U+007F, we can remove this range to reduce the size of generated charmap. Save the lines of 0x80~0xFF, and name the file as `cp1253.txt`.
+As `0x00~0x7F` (ASCII code) will be mapped to `U+0000~U+007F`, we can remove this range to reduce the size of generated charmap. Save the lines of 0x80~0xFF, and name the file as `cp1253.txt`.
 ```text
 0x80	0x20AC	#EURO SIGN
 0x81	      	#UNDEFINED
