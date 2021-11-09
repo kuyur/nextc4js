@@ -225,7 +225,7 @@ var context = new nextc4.Context(myPreset);
 ## Generate your customized charmap
 nextc4 allow customization of charmap. Let's use [CP1253.TXT](https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT) as an example.  
 
-Here is a fragment from CP1253.TXT. As you can see, column #1 is the cp1253 code in hex and column #2 is the Unicode in hex. The lines are put in cp1253 order.
+Here is a fragment from CP1253.TXT. As you see, column #1 is the cp1253 code in hex and column #2 is the Unicode in hex. The lines are put in cp1253 order.
 ```text
 ...
 0x7B	0x007B	#LEFT CURLY BRACKET
