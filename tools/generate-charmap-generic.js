@@ -47,9 +47,13 @@ input_lines.forEach((line) => {
   }
 
   var parts = line.split(/\s+/);
+  var target = Number.parseInt(parts[1], 16);
+  if (Number.isNaN(target)) {
+    target = 0xFFFD;
+  }
   input_raw_arr.push({
     source_codepoint: Number.parseInt(parts[0], 16),
-    target_codepoint: Number.parseInt(parts[1], 16)
+    target_codepoint: target
   });
 });
 

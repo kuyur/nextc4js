@@ -1,5 +1,5 @@
 # nextc4.js
-A pure JavaScript library of Character Sets encoding/decoding. The basic concepts are coming from [C4](https://github.com/kuyur/c4) and [NextC4](https://github.com/kuyur/next-c4) projects.
+A pure JavaScript library of Character Sets encoding/decoding. The basic concepts are coming from [C4](https://github.com/kuyur/c4), [NextC4](https://github.com/kuyur/next-c4) and [Unicue](https://github.com/kuyur/unicue) projects.
 
 # Development
 
@@ -72,6 +72,183 @@ npm run lint:fix
 
     npm test
 
-## Build the distribution
+## Build the distributions
 
     npm run build
+
+# Usage
+
+## Use in browser
+
+### Lite version
+```html
+<script src="path_to_nextc4/nextc4-lite.min.js"></script>
+```
+
+The size of lite version is only 27k and doesn't contain any external charmaps.  
+```javascript
+// create a Context from empty configuration (without loading external charmaps)
+var context = new nextc4.Context();
+
+// UTF-8, UTF-16LE, UTF-16BE will be available for encoding and decoding
+var utf8BufferWithoutBom = new Uint8Array([
+  228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129,
+  160, 229, 173, 144, 229, 133, 136, 232, 188, 169, 227,
+  129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159,
+  229, 174, 182, 227, 129, 167, 227, 129, 153
+]);
+
+// decoded result is Uint32Array
+var unicodeCodePoints = context.decode(utf8BufferWithoutBom, 'UTF-8');
+
+// convert to string
+console.log(nextc4.utils.toString(unicodeCodePoints));
+
+// encoded results is Uint8Array (binary)
+context.encode(unicodeCodePoints, 'UTF-16LE');
+```
+
+You can load a context with external charmaps from a URL.  
+The loading is asynchronous and returns a Promise instance.
+
+```javascript
+var promise = nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets/context-anisong.json');
+promise.then(context => {
+  var shiftJisBuffer = new Uint8Array([
+    136, 234, 143, 205, 129, 64, 137, 147, 142, 113, 144,
+    230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
+    137, 198, 130, 197, 130, 183
+  ]);
+  var unicodeCodePoints = context.decode(shiftJisBuffer, 'Shift-JIS(CP932)');
+  console.log(nextc4.utils.toString(unicodeCodePoints));
+
+  // use decodeAsString() API
+  var str = context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)');
+  console.log(str);
+});
+```
+
+You also can load from a preset with charmap embedded.
+```javascript
+var promise = nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets-charmap-embedded/context-default.json');
+promise.then(context => {
+  ...
+  context.decode(...);
+  ...
+  context.encode(...);
+  ...
+});
+```
+
+with async/await:
+```javascript
+var context = await nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets/context-anisong.json');
+...
+context.decode(...);
+...
+context.encode(...);
+...
+```
+
+### Full version
+You also can use the full version containing embedded charmaps. This version provides `loadDefault()` method which returns a Context instance immediately.
+```html
+<script src="path_to_nextc4/nextc4-all.min.js"></script>
+```
+
+```javascript
+var context = nextc4.loadDefault(); // singleton
+var shiftJisBuffer = new Uint8Array([
+  136, 234, 143, 205, 129, 64, 137, 147, 142, 113, 144,
+  230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
+  137, 198, 130, 197, 130, 183
+]);
+console.log(context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)'));
+```
+
+The decoders below are available inside the default context:
+```text
+Shift-JIS(CP932)
+GBK(CP936)
+BIG5(UAO2.50)
+EUC-KR(CP949)
+Latin(CP1252)
+Cyrillic(CP1251)
+```
+
+# API
+
+# Advanced Topics
+
+## Generate your customized charmap
+Let's take a fragment from [CP1253.TXT](https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT).  
+Column #1 is the cp1253 code in hex, and Column #2 is the Unicode in hex.
+```text
+...
+0x7B	0x007B	#LEFT CURLY BRACKET
+0x7C	0x007C	#VERTICAL LINE
+0x7D	0x007D	#RIGHT CURLY BRACKET
+0x7E	0x007E	#TILDE
+0x7F	0x007F	#DELETE
+0x80	0x20AC	#EURO SIGN
+0x81	      	#UNDEFINED
+0x82	0x201A	#SINGLE LOW-9 QUOTATION MARK
+0x83	0x0192	#LATIN SMALL LETTER F WITH HOOK
+0x84	0x201E	#DOUBLE LOW-9 QUOTATION MARK
+0x85	0x2026	#HORIZONTAL ELLIPSIS
+0x86	0x2020	#DAGGER
+0x87	0x2021	#DOUBLE DAGGER
+...
+```
+ 
+As 0x00~0x7F (ASCII code) will be mapped to U+0000~U+007F, we can remove this range to reduce the size of generated charmap. Save the lines of 0x80~0xFF, and name the file as `cp1253.txt`.
+```text
+0x80	0x20AC	#EURO SIGN
+0x81	      	#UNDEFINED
+...
+0xFE	0x03CE	#GREEK SMALL LETTER OMEGA WITH TONOS
+0xFF	      	#UNDEFINED
+```
+
+Run the command:
+```bash
+node ./tools/generate-charmap-generic.js -i ./charmaps/source/front/cp1253.txt -o ./charmaps/front-greek2u-little-endian.map
+```
+
+Configure cp1253 charmap:
+```json
+  {
+    "name": "Greek(CP1253)",
+    "description": "Greek to Unicode.",
+    "version": "Microsoft CP1253",
+    "type": "decoder",
+    "buffer": "charmaps/front-greek2u-little-endian.map",
+    "byte": 2,
+    "rules": [
+      {
+        "condition": [
+          "0x00~0xFF"
+        ]
+      }
+    ],
+    "segments": [
+      {
+        "begin": 0,
+        "end": 127,
+        "reference": "ascii",
+        "characterset": "ascii"
+      },
+      {
+        "begin": 128,
+        "end": 255,
+        "reference": "buffer",
+        "offset": 0,
+        "characterset": "CP1253"
+      }
+    ]
+  }
+```
+
+## Performance vs Size
+
+## Configure a customized context and embed charmaps

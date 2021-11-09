@@ -6,6 +6,23 @@ const { Context } = require('../lib/context');
 const consts = require('../lib/consts');
 
 describe('Context unit test', function() {
+  it ('Context() - construct with empty configs', function() {
+    var context = new Context();
+    expect(context).not.toBe(null);
+
+    var decoders_list = context.getDecoderNames();
+    expect(decoders_list.length).toBe(3);
+    expect(decoders_list[0]).toBe('UTF-8');
+    expect(decoders_list[1]).toBe('UTF-16LE');
+    expect(decoders_list[2]).toBe('UTF-16BE');
+
+    var encoders_list = context.getEncoderNames();
+    expect(encoders_list.length).toBe(3);
+    expect(encoders_list[0]).toBe('UTF-8');
+    expect(encoders_list[1]).toBe('UTF-16LE');
+    expect(encoders_list[2]).toBe('UTF-16BE');
+  });
+
   it('getDecoderNames() - default context', function() {
     var context = new Context(json);
     expect(context).not.toBe(null);
