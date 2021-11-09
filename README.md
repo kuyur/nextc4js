@@ -151,7 +151,7 @@ context.encode(...);
 ```
 
 ### Full version
-You also can use the full version containing embedded charmaps. This version provides `loadDefault()` method which returns a Context instance immediately.
+You can use the full version containing embedded charmaps. This version provides `loadDefault()` method which returns a Context instance immediately.
 ```html
 <script src="path_to_nextc4/nextc4-all.min.js"></script>
 ```
@@ -193,7 +193,7 @@ var shiftJisBuffer = new Uint8Array([
 console.log(context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)'));
 ```
 
-In node environment, you also can load a context from json file:
+In node environment, you can load a context from json file:
 ```javascript
 var promise = nextc4.loadFromJson('path/to/presets/context-anisong.json');
 promise.then(context => {
