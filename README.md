@@ -218,9 +218,14 @@ var context = new nextc4.Context(myPreset);
 
 # Advanced Topics
 
+## Concept and Architecture
+
+![architecture](docs/next-c4-architecture.png)
+
 ## Generate your customized charmap
-Let's take a fragment from [CP1253.TXT](https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT).  
-Column #1 is the cp1253 code in hex, and Column #2 is the Unicode in hex.
+nextc4 allow customization of charmap. Let's use [CP1253.TXT](https://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP1253.TXT) as an example.  
+
+Here is a fragment from CP1253.TXT. As you can see, column #1 is the cp1253 code in hex and column #2 is the Unicode in hex. The lines are put in cp1253 order.
 ```text
 ...
 0x7B	0x007B	#LEFT CURLY BRACKET
@@ -239,7 +244,7 @@ Column #1 is the cp1253 code in hex, and Column #2 is the Unicode in hex.
 ...
 ```
  
-As `0x00~0x7F` (ASCII code) will be mapped to `U+0000~U+007F`, we can remove this range to reduce the size of generated charmap. Save the lines of 0x80~0xFF, and name the file as `cp1253.txt`.
+As `0x00~0x7F` (ASCII code) will be mapped to `U+0000~U+007F`, we can remove this range to reduce the size of generated charmap. Save the lines of `0x80~0xFF`, and name the file as `cp1253.txt`. We will use this file to generate a front charmap which will convert SBCS/DBCS/MBCS (they are called ANSI by Microsoft) to Unicdoe.
 ```text
 0x80	0x20AC	#EURO SIGN
 0x81	      	#UNDEFINED
