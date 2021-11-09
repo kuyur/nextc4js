@@ -1,1 +1,3 @@
+# http://unicode.org/Public/MAPPINGS/VENDORS/MICSFT/WINDOWS/CP936.TXT
+#
 0x80 0x20AC #EURO SIGN
