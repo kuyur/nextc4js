@@ -193,26 +193,26 @@ describe('Context unit test', function() {
       toThrow('Error: decoder HOGEHOGE not found in the context.');
   });
 
-  it('decodeAsString()', function() {
+  it('parse()', function() {
     var context = new Context(json);
 
     var shiftJisBuffer = fs.readFileSync('test/txt/shift-jis/02-shift-jis.txt');
-    var utf16Str = context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)');
+    var utf16Str = context.parse(shiftJisBuffer, 'Shift-JIS(CP932)');
     expect(utf16Str).toBe('一章　遠子先輩は、美食家です');
 
-    expect(() => context.decodeAsString(shiftJisBuffer, 'HOGEHOGE')).
+    expect(() => context.parse(shiftJisBuffer, 'HOGEHOGE')).
       toThrow('Error: decoder HOGEHOGE not found in the context.');
 
     var utf8BufferWithBom = new Uint8Array([0xEF, 0xBB, 0xBF,
       228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129, 160, 229, 173,
       144, 229, 133, 136, 232, 188, 169, 227, 129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159, 229, 174, 182,
       227, 129, 167, 227, 129, 153]);
-    expect(context.decodeAsString(utf8BufferWithBom, 'UTF-8')).toBe('一章　遠子先輩は、美食家です');
+    expect(context.parse(utf8BufferWithBom, 'UTF-8')).toBe('一章　遠子先輩は、美食家です');
 
     var utf8BufferWithoutBom = new Uint8Array([228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129, 160, 229, 173,
       144, 229, 133, 136, 232, 188, 169, 227, 129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159, 229, 174, 182,
       227, 129, 167, 227, 129, 153]);
-    expect(context.decodeAsString(utf8BufferWithoutBom, 'UTF-8')).toBe('一章　遠子先輩は、美食家です');
+    expect(context.parse(utf8BufferWithoutBom, 'UTF-8')).toBe('一章　遠子先輩は、美食家です');
   });
 
   it('encode()', function() {
@@ -236,31 +236,31 @@ describe('Context unit test', function() {
       toThrow('Error: encoder HOGEHOGE not found in the context.');
   });
 
-  it('encodeFromString()', function() {
+  it('unparse()', function() {
     var context = new Context(json);
 
-    var utf8BufferWithoutBom = context.encodeFromString('一章　遠子先輩は、美食家です', 'UTF-8', false);
+    var utf8BufferWithoutBom = context.unparse('一章　遠子先輩は、美食家です', 'UTF-8', false);
     expect(utf8BufferWithoutBom).toEqual(new Uint8Array([
       228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129, 160, 229, 173,
       144, 229, 133, 136, 232, 188, 169, 227, 129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159, 229, 174, 182,
       227, 129, 167, 227, 129, 153]));
 
-    var utf8BufferWithBom = context.encodeFromString('一章　遠子先輩は、美食家です', 'UTF-8', true);
+    var utf8BufferWithBom = context.unparse('一章　遠子先輩は、美食家です', 'UTF-8', true);
     expect(utf8BufferWithBom).toEqual(new Uint8Array([0xEF, 0xBB, 0xBF,
       228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129, 160, 229, 173,
       144, 229, 133, 136, 232, 188, 169, 227, 129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159, 229, 174, 182,
       227, 129, 167, 227, 129, 153]));
 
-    var utf8BufferWithBom2 = context.encodeFromString(String.fromCodePoint(consts.UNICODE_BYTE_ORDER_MARK) +
+    var utf8BufferWithBom2 = context.unparse(String.fromCodePoint(consts.UNICODE_BYTE_ORDER_MARK) +
       '一章　遠子先輩は、美食家です', 'UTF-8', true);
     expect(utf8BufferWithBom2).toEqual(utf8BufferWithBom);
 
-    expect(() => context.encodeFromString('', 'HOGEHOGE')).
+    expect(() => context.unparse('', 'HOGEHOGE')).
       toThrow('Error: encoder HOGEHOGE not found in the context.');
 
-    expect(context.encodeFromString('', 'UTF-16LE', true)).toEqual(consts.UTF16LE_BOM);
-    expect(context.encodeFromString('', 'UTF-16BE', true)).toEqual(consts.UTF16BE_BOM);
+    expect(context.unparse('', 'UTF-16LE', true)).toEqual(consts.UTF16LE_BOM);
+    expect(context.unparse('', 'UTF-16BE', true)).toEqual(consts.UTF16BE_BOM);
 
-    expect(() => context.encodeFromString(1234, 'UTF-8')).toThrow('Error: invalid type for str.');
+    expect(() => context.unparse(1234, 'UTF-8')).toThrow('Error: invalid type for str.');
   });
 });
