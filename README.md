@@ -122,8 +122,8 @@ promise.then(context => {
   var unicodeCodePoints = context.decode(shiftJisBuffer, 'Shift-JIS(CP932)');
   console.log(nextc4.utils.toString(unicodeCodePoints));
 
-  // use decodeAsString() API
-  var str = context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)');
+  // use parse() API
+  var str = context.parse(shiftJisBuffer, 'Shift-JIS(CP932)');
   console.log(str);
 });
 ```
@@ -163,7 +163,7 @@ var shiftJisBuffer = new Uint8Array([
   230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
   137, 198, 130, 197, 130, 183
 ]);
-console.log(context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)'));
+console.log(context.parse(shiftJisBuffer, 'Shift-JIS(CP932)'));
 ```
 
 The decoders below are available inside the default context:
@@ -190,7 +190,7 @@ var shiftJisBuffer = new Uint8Array([
   230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
   137, 198, 130, 197, 130, 183
 ]);
-console.log(context.decodeAsString(shiftJisBuffer, 'Shift-JIS(CP932)'));
+console.log(context.parse(shiftJisBuffer, 'Shift-JIS(CP932)'));
 ```
 
 In node environment, you can load a context from json file:
