@@ -5,7 +5,7 @@ A pure JavaScript library of Character Sets encoding/decoding. The basic concept
 
 ## Checkout source code
 
-    git clone https://github.com/kuyur/next-c4.git
+    git clone https://github.com/kuyur/nextc4js.git
 
 ## Preparation
 
