@@ -12,7 +12,7 @@ A pure JavaScript library of Character Sets encoding/decoding. The basic concept
     npm install
     npm install -g rollup
 
-## Generate charmap physical files
+## Generate charmap binary files
 
 Execute:
 
@@ -52,7 +52,7 @@ node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/simp
 node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/tra2simp.txt -o ./charmaps/medium-tra2simp-little-endian.map
 ```
 
-## Generate lite or full (charmap-embedded) preset
+## Generate lite or full (charmap-embedded) preset files for contexts
 
 ```bash
 node ./tools/generate-preset.js -i ./presets-template/context/context-default.json -o ./lib/contexts/context-default.json --embed-charmap
