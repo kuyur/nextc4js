@@ -2,7 +2,9 @@
 /.vscode
 /.npmrc
 /test/out
-/charmaps/temp
+/charmaps/temp/*.map
+/presets-built/lite/*.json
+/presets-built/full/*.json
 
 # OS metadata
 .DS_Store

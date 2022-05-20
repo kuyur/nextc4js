@@ -56,6 +56,16 @@ node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/tra2
 
 ```bash
 node ./tools/generate-preset.js -i ./presets-template/context/context-default.json -o ./lib/contexts/context-default.json --embed-charmap
+
+node ./tools/generate-preset.js -i ./presets-template/context/context-anisong.json -o ./presets-built/lite/context-anisong.json
+node ./tools/generate-preset.js -i ./presets-template/context/context-chinese.json -o ./presets-built/lite/context-chinese.json
+node ./tools/generate-preset.js -i ./presets-template/context/context-default.json -o ./presets-built/lite/context-default.json
+node ./tools/generate-preset.js -i ./presets-template/context/context-gb18030.json -o ./presets-built/lite/context-gb18030.json
+
+node ./tools/generate-preset.js -i ./presets-template/context/context-anisong.json -o ./presets-built/full/context-anisong.json --embed-charmap
+node ./tools/generate-preset.js -i ./presets-template/context/context-chinese.json -o ./presets-built/full/context-chinese.json --embed-charmap
+node ./tools/generate-preset.js -i ./presets-template/context/context-default.json -o ./presets-built/full/context-default.json --embed-charmap
+node ./tools/generate-preset.js -i ./presets-template/context/context-gb18030.json -o ./presets-built/full/context-gb18030.json --embed-charmap
 ```
 
 ## Linting

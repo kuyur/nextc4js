@@ -11,7 +11,7 @@ beforeAll(() => {
 
 describe('Loading Context unit test', function() {
   it('loadFromJson() - anisong', function() {
-    var promise = loadFromJson('presets/context-anisong.json');
+    var promise = loadFromJson('presets-built/lite/context-anisong.json');
     return promise.then(context => {
       expect(context).not.toBe(null);
 
@@ -67,7 +67,7 @@ describe('Loading Context unit test', function() {
   });
 
   it('loadFromJsonSync() - anisong', function() {
-    var context = loadFromJsonSync('presets/context-anisong.json');
+    var context = loadFromJsonSync('presets-built/lite/context-anisong.json');
     expect(context).not.toBe(null);
 
     var decoders_list = context.getDecoderNames();
@@ -121,7 +121,7 @@ describe('Loading Context unit test', function() {
   });
 
   it('loadFromJsonSync() - chinese', function() {
-    var context = loadFromJsonSync('presets/context-chinese.json');
+    var context = loadFromJsonSync('presets-built/lite/context-chinese.json');
     expect(context).not.toBe(null);
 
     var decoders_list = context.getDecoderNames();
@@ -170,7 +170,7 @@ describe('Loading Context unit test', function() {
   });
 
   it('loadFromJsonSync() - gb18030', function() {
-    var context = loadFromJsonSync('presets/context-gb18030.json');
+    var context = loadFromJsonSync('presets-built/lite/context-gb18030.json');
     expect(context).not.toBe(null);
 
     var decoders_list = context.getDecoderNames();

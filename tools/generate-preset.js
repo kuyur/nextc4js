@@ -11,8 +11,9 @@ function printHelp() {
   console.log('Usage:');
   console.log('  --input or -i: specify input file path of preset template');
   console.log('  --output or -o: specify output file path of built preset');
-  console.log('  --template-path: specify the path of charmap template folder if the tool is running under root folder. Default value is ./presets-template/charmap.');
-  console.log('  --embed-charmap: the flag to specify embedding the charmap into built preset.');
+  console.log('  --template-path: specify the path of charmap template folder if the tool is not running ' +
+    'under root folder. Default value is ./presets-template/charmap.');
+  console.log('  --embed-charmap: the flag to specify embedding the charmap binary into built preset.');
 }
 
 var args = process.argv.slice(2);
@@ -52,7 +53,7 @@ var configs = JSON.parse(input_content);
 var loadCharmapDetail = function(charmapName, type) {
   var path = `${template_path}/${type}/${charmapName.toLowerCase()}.json`;
   try {
-    charmap_content = fs.readFileSync(path, {
+    var charmap_content = fs.readFileSync(path, {
       encoding: 'utf8'
     });
     var charmap = JSON.parse(charmap_content);

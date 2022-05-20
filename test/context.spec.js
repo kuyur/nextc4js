@@ -1,4 +1,4 @@
-const json = require('../presets-charmap-embedded/context-default.json');
+const json = require('../lib/contexts/context-default.json');
 const utils = require('../lib/buffer-utils');
 const { UTF8 } = require('../lib/decoder');
 const fs = require('fs');
