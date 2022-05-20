@@ -14,7 +14,7 @@ A pure JavaScript library of Character Sets encoding/decoding. The basic concept
 
 ## Generate charmap physical files
 
-Create a folder called `temp` under `charmaps` and execute:
+Execute:
 
 ```bash
 # generate cp932 (shift-jis)  to unicode charmap
@@ -52,7 +52,7 @@ node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/simp
 node ./tools/generate-medium-charmap-generic.js -i ./charmaps/source/medium/tra2simp.txt -o ./charmaps/medium-tra2simp-little-endian.map
 ```
 
-## Generate charmap-embedded preset
+## Generate lite or full (charmap-embedded) preset
 
 ```bash
 node ./tools/generate-preset.js -i ./presets-template/context/context-default.json -o ./lib/contexts/context-default.json --embed-charmap
@@ -118,7 +118,7 @@ console.log(nextc4.utils.toString(unicodeCodePoints));
 context.encode(unicodeCodePoints, 'UTF-16LE');
 ```
 
-You can load a context with external charmaps from a URL.  
+You can load a context from a URL, when the binary data of external charmaps are stored separately.  
 The loading is asynchronous and returns a Promise instance.
 
 ```javascript
@@ -138,7 +138,17 @@ promise.then(context => {
 });
 ```
 
-You also can load from a preset with charmap embedded.
+with async/await:
+```javascript
+var context = await nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets/context-anisong.json');
+...
+context.decode(...);
+...
+context.encode(...);
+...
+```
+
+You also can load from the preset with binary charmap embedded.
 ```javascript
 var promise = nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets-charmap-embedded/context-default.json');
 promise.then(context => {
@@ -150,24 +160,14 @@ promise.then(context => {
 });
 ```
 
-with async/await:
-```javascript
-var context = await nextc4.loadFromUrl('https://kuyur.github.io/unicue-online/presets/context-anisong.json');
-...
-context.decode(...);
-...
-context.encode(...);
-...
-```
-
 ### Full version
-You can use the full version containing embedded charmaps. This version provides `loadDefault()` method which returns a Context instance immediately.
+You can use the full version containing some embedded charmaps. This version provides an additional `loadDefault()` method which will return a Context instance immediately.
 ```html
 <script src="path_to_nextc4/nextc4-all.min.js"></script>
 ```
 
 ```javascript
-var context = nextc4.loadDefault(); // singleton
+var context = nextc4.loadDefault(); // singleton instance. no promise is required 
 var shiftJisBuffer = new Uint8Array([
   136, 234, 143, 205, 129, 64, 137, 147, 142, 113, 144,
   230, 148, 121, 130, 205, 129, 65, 148, 252, 144, 72,
@@ -203,9 +203,25 @@ var shiftJisBuffer = new Uint8Array([
 console.log(context.parse(shiftJisBuffer, 'Shift-JIS(CP932)'));
 ```
 
-In node environment, you can load a context from json file:
+If you want to use other contexts, copy the charmap binary files and preset files of contexts to your project.
+
+There are two styles.
+
+### A. Lite preset file with separated charmap binary 
+Copy the files below to your project:
+```
+presets-built/lite/*.json
+charmaps/*.map
+```
+
+NOTE: If you want to use your customized context, follow the example under folder `presets-template/context/` and create a new one, and then execute:
+```bash
+node ./tools/generate-preset.js -i <input_template_path> -o <output_preset_path>
+```
+
+Then you can load a context from the preset file:
 ```javascript
-var promise = nextc4.loadFromJson('path/to/presets/context-anisong.json');
+var promise = nextc4.loadFromJson('/path/to/presets-lite/context-anisong.json');
 promise.then(context => {
   ...
 });
@@ -213,12 +229,24 @@ promise.then(context => {
 
 You also can load synchronously:
 ```javascript
-var context = nextc4.loadFromJsonSync('path/to/presets/context-anisong.json');
+var context = nextc4.loadFromJsonSync('path/to/presets-lite/context-anisong.json'); // no promise is required.
 ```
 
-You even can do in this way: import JSON (charmap-embedded) and construct:
+### B. Full preset file
+Copy the files below to your project:
+```
+presets-built/full/*.json
+```
+Because the charmap binary is already embedded, separated charmap binary files are not required.
+
+NOTE: If you want to use your customized context, follow the example under folder `presets-template/context/` and create a new one, and then execute:
+```bash
+node ./tools/generate-preset.js -i <input_template_path> -o <output_preset_path> --embed-charmap
+```
+
+You can load the context in this way: import JSON synchronously and construct:
 ```javascript
-var myPreset = require('path/to/presets-charmap-embedded/context-default.json');
+var myPreset = require('path/to/presets-full/context-default.json');
 var nextc4 = require('nextc4.js');
 
 var context = new nextc4.Context(myPreset);
