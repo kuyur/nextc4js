@@ -1,0 +1,29 @@
+{
+  "decoders": [
+    "GBK(CP936)",
+    "BIG5(UAO2.50)"
+  ],
+  "encoders": [],
+  "converters": [
+    "simp2tra",
+    "tra2simp"
+  ],
+  "channels": [
+    {
+      "name": "GBK_to_UTF16-LE_Traditionalized",
+      "decoder": "GBK(CP936)",
+      "converters": [
+        "simp2tra"
+      ],
+      "encoder": "UTF-16LE"
+    },
+    {
+      "name": "BIG5_to_UTF16-LE_Simplified",
+      "decoder": "BIG5(UAO2.50)",
+      "converters": [
+        "tra2simp"
+      ],
+      "encoder": "UTF-16LE"
+    }
+  ]
+}

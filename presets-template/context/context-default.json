@@ -1,0 +1,50 @@
+{
+  "decoders": [
+    "Shift-JIS(CP932)",
+    "GBK(CP936)",
+    "BIG5(UAO2.50)",
+    "EUC-KR(CP949)",
+    "Latin(CP1252)",
+    "Cyrillic(CP1251)"
+  ],
+  "detection_order": [
+    "Shift-JIS(CP932)",
+    "GBK(CP936)",
+    "BIG5(UAO2.50)",
+    "EUC-KR(CP949)"
+  ],
+  "encoders": [],
+  "converters": [],
+  "channels": [
+    {
+      "name": "Shift-JIS_to_UTF-8",
+      "decoder": "Shift-JIS(CP932)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "GBK_to_UTF-8",
+      "decoder": "GBK(CP936)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "BIG5_to_UTF-8",
+      "decoder": "BIG5(UAO2.50)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "EUC-KR-CP949_to_UTF-8",
+      "decoder": "EUC-KR(CP949)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "Latin-CP1252_to_UTF-8",
+      "decoder": "Latin(CP1252)",
+      "encoder": "UTF-8"
+    },
+    {
+      "name": "Cyrillic-CP1251_to_UTF-8",
+      "decoder": "Cyrillic(CP1251)",
+      "encoder": "UTF-8"
+    }
+  ]
+}

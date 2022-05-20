@@ -1,0 +1,30 @@
+{
+  "name": "Latin(CP1252)",
+  "description": "Latin to Unicode.",
+  "version": "Microsoft CP1252",
+  "type": "decoder",
+  "buffer": "charmaps/front-latin2u-little-endian.map",
+  "byte": 2,
+  "rules": [
+    {
+      "condition": [
+        "0x00~0xFF"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "begin": 0,
+      "end": 127,
+      "reference": "ascii",
+      "characterset": "ascii"
+    },
+    {
+      "begin": 128,
+      "end": 255,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "CP1252"
+    }
+  ]
+}

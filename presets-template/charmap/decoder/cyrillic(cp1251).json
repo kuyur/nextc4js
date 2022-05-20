@@ -1,0 +1,30 @@
+{
+  "name": "Cyrillic(CP1251)",
+  "description": "Cyrillic to Unicode.",
+  "version": "Microsoft CP1251",
+  "type": "decoder",
+  "buffer": "charmaps/front-cyrillic2u-little-endian.map",
+  "byte": 2,
+  "rules": [
+    {
+      "condition": [
+        "0x00~0xFF"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "begin": 0,
+      "end": 127,
+      "reference": "ascii",
+      "characterset": "ascii"
+    },
+    {
+      "begin": 128,
+      "end": 255,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "CP1251"
+    }
+  ]
+}

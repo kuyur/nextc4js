@@ -1,0 +1,42 @@
+{
+  "name": "EUC-KR(CP949)",
+  "description": "EUC-KR to Unicode.",
+  "version": "Microsoft CP949",
+  "type": "decoder",
+  "buffer": "charmaps/front-kr2u-little-endian.map",
+  "byte": 2,
+  "rules": [
+    {
+      "condition": [
+        "0x00~0x7F"
+      ]
+    },
+    {
+      "condition": [
+        "0x81~0xFE",
+        "0x40~0xFE"
+      ]
+    }
+  ],
+  "segments": [
+    {
+      "begin": 0,
+      "end": 127,
+      "reference": "ascii",
+      "characterset": "ascii"
+    },
+    {
+      "begin": 128,
+      "end": 33087,
+      "reference": "undefined",
+      "characterset": "undefined"
+    },
+    {
+      "begin": 33088,
+      "end": 65535,
+      "reference": "buffer",
+      "offset": 0,
+      "characterset": "CP949-double-bytes"
+    }
+  ]
+}
