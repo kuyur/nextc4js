@@ -90,6 +90,7 @@ describe('Simplified Chinese to Traditional Chinese Converter unit test', functi
     var s2t = new converter.Converter(sim2traOptions);
     expect(s2t.getName()).toBe(sim2traOptions.name);
     expect(s2t.getType()).toBe(CharmapType.CONVERTER);
+    expect(s2t.getBytesOfCodepoint()).toBe(2);
 
     expect(s2t.convert(null)).toBe(null);
 
@@ -106,6 +107,7 @@ describe('Traditional Chinese to Simplified Chinese Converter unit test', functi
     var t2s = new converter.Converter(tra2simpOptions);
     expect(t2s.getName()).toBe(tra2simpOptions.name);
     expect(t2s.getType()).toBe(CharmapType.CONVERTER);
+    expect(t2s.getBytesOfCodepoint()).toBe(2);
     var text = '鉛球萬袋一桶漿糊';
     var buffer = t2s.convert(bufferutils.toBuffer(text));
     expect(buffer).not.toBeNull();
