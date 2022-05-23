@@ -180,4 +180,60 @@ describe('Loading Context unit test', function() {
       expect(output[output.length - 1]).toBe(0x32);
     });
   });
+
+  it('loadFromUrl() - load charmap embedded context', function() {
+    var promise = loadFromUrl('https://kuyur.github.io/unicue-online/presets-charmap-embedded/context-default.json');
+    return promise.then(context => {
+      expect(context).not.toBe(null);
+
+      var decoders_list = context.getDecoderNames();
+      expect(decoders_list.length).toBe(9);
+      expect(decoders_list[0]).toBe('UTF-8');
+      expect(decoders_list[1]).toBe('UTF-16LE');
+      expect(decoders_list[2]).toBe('UTF-16BE');
+      expect(decoders_list[3]).toBe('Shift-JIS(CP932)');
+      expect(decoders_list[4]).toBe('GBK(CP936)');
+      expect(decoders_list[5]).toBe('BIG5(UAO2.50)');
+      expect(decoders_list[6]).toBe('EUC-KR(CP949)');
+      expect(decoders_list[7]).toBe('Latin(CP1252)');
+      expect(decoders_list[8]).toBe('Cyrillic(CP1251)');
+
+      var encoders_list = context.getEncoderNames();
+      expect(encoders_list.length).toBe(3);
+      expect(encoders_list[0]).toBe('UTF-8');
+      expect(encoders_list[1]).toBe('UTF-16LE');
+      expect(encoders_list[2]).toBe('UTF-16BE');
+
+      var converters_list = context.getConverterNames();
+      expect(converters_list.length).toBe(0);
+
+      var channels_list = context.getChannelNames();
+      expect(channels_list.length).toBe(6);
+      expect(channels_list[0]).toBe('Shift-JIS_to_UTF-8');
+      expect(channels_list[1]).toBe('GBK_to_UTF-8');
+      expect(channels_list[2]).toBe('BIG5_to_UTF-8');
+      expect(channels_list[3]).toBe('EUC-KR-CP949_to_UTF-8');
+      expect(channels_list[4]).toBe('Latin-CP1252_to_UTF-8');
+      expect(channels_list[5]).toBe('Cyrillic-CP1251_to_UTF-8');
+
+      var shiftJisToUtf8 = context.getChannel('Shift-JIS_to_UTF-8');
+      var shiftJisBuffer = fs.readFileSync('test/txt/shift-jis/02-shift-jis.txt');
+      expect(shiftJisToUtf8.match(shiftJisBuffer)).toBe(true);
+      var output = shiftJisToUtf8.process(shiftJisBuffer);
+      expect(output).not.toBeNull();
+      expect(Buffer.from(output).toString('utf-8')).toBe('一章　遠子先輩は、美食家です');
+      expect(utils.toString(UTF8.decode(output))).toBe('一章　遠子先輩は、美食家です');
+
+      var gbkBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
+      var result = context.findPossibleEncoding(gbkBuffer);
+      expect(result).not.toBe(null);
+      expect(result.encoding).toBe('GBK(CP936)');
+      expect(result.hasBom).toBe(false);
+      var gbk = context.getDecoder('GBK(CP936)');
+      var utf16buffer = gbk.decode(gbkBuffer);
+      expect(utils.toString(utf16buffer)).toBe('任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，' +
+        '以及浪漫气息所打动，情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，' +
+        '会感受到这种懊悔，这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
+    });
+  });
 });
