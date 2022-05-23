@@ -273,6 +273,22 @@ describe('GBK Decoder unit test', function() {
   });
 });
 
+describe('GBK Decoder unit test', function() {
+  it('parse()', function() {
+    var gbkTextBuffer = fs.readFileSync('test/txt/gbk/02-gbk.txt');
+    var shiftJisDecoder = new decoder.Multibyte(shiftJisOption);
+    expect(shiftJisDecoder.match(gbkTextBuffer)).toBe(false);
+
+    var gbkDecoder = new decoder.Multibyte(gbkOptions);
+    expect(gbkDecoder.getName()).toBe(gbkOptions.name);
+    expect(gbkDecoder.getType()).toBe(CharmapType.DECODER);
+
+    expect(gbkDecoder.parse(gbkTextBuffer)).toBe('任何读过黑塞作品的人，都会为黑塞作品中的人生阅历与感悟，以及浪漫气息所打动，' +
+      '情不自禁回忆起自己的青年时代。青年没能在青年时代阅读黑塞，是一个极大的损失，尽管成年之后，重读时，会感受到这种懊悔，' +
+      '这就是一位只要有过阅读，就一定会喜欢上的作家，一个性情中人，坦率的朋友，人生的导师。');
+  });
+});
+
 describe('Big5 Decoder unit test', function() {
   it('decode()', function() {
     var big5TextBuffer0 = fs.readFileSync('test/txt/big5/01-big5.cue');
@@ -332,26 +348,38 @@ describe('UTF16LE Decoder unit test', function() {
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
   });
 
-  describe('UTF16BE Decoder unit test', function() {
-    it('decode() - performance', function() {
-      var ts = new Date;
+  it('unparse()', function() {
+    var ts = new Date;
+    
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
+    var unicodeString = decoder.UTF16LE.parse(utf16TextBuffer);
+    expect(unicodeString).not.toBe('');
+    // BOM is removed
+    expect(unicodeString.codePointAt(0)).not.toBe(consts.UNICODE_BYTE_ORDER_MARK);
 
-      expect(decoder.UTF16BE.getName()).toBe('UTF-16BE');
-      expect(decoder.UTF16BE.getType()).toBe(CharmapType.DECODER);
+    console.log('Consumed time: ' + (new Date - ts) + 'ms');
+  });
+});
 
-      var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig-be.txt');
-      expect(decoder.UTF16BE.match(utf16TextBuffer)).toBe(true);
-      expect(decoder.UTF16BE.hasBom(utf16TextBuffer)).toBe(true);
-      expect(decoder.UTF16BE.match(utf16TextBuffer, 2)).toBe(true);
+describe('UTF16BE Decoder unit test', function() {
+  it('decode() - performance', function() {
+    var ts = new Date;
 
-      var unicodeBuffer = decoder.UTF16BE.decode(utf16TextBuffer);
-      expect(unicodeBuffer).not.toBeNull();
-      var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
-      expect(decoder.UTF8.hasBom(utf8Buffer)).toBe(true);
-      expect(decoder.UTF8.match(utf8Buffer)).toBe(true);
-      fs.writeFileSync('test/out/decoding-test-utf16be-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
+    expect(decoder.UTF16BE.getName()).toBe('UTF-16BE');
+    expect(decoder.UTF16BE.getType()).toBe(CharmapType.DECODER);
 
-      console.log('Consumed time: ' + (new Date - ts) + 'ms');
-    });
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode-orig-be.txt');
+    expect(decoder.UTF16BE.match(utf16TextBuffer)).toBe(true);
+    expect(decoder.UTF16BE.hasBom(utf16TextBuffer)).toBe(true);
+    expect(decoder.UTF16BE.match(utf16TextBuffer, 2)).toBe(true);
+
+    var unicodeBuffer = decoder.UTF16BE.decode(utf16TextBuffer);
+    expect(unicodeBuffer).not.toBeNull();
+    var utf8Buffer = encodingrule.UTF8.encode(unicodeBuffer);
+    expect(decoder.UTF8.hasBom(utf8Buffer)).toBe(true);
+    expect(decoder.UTF8.match(utf8Buffer)).toBe(true);
+    fs.writeFileSync('test/out/decoding-test-utf16be-in-utf8-out.txt', utf8Buffer, {flag: 'w+'});
+
+    console.log('Consumed time: ' + (new Date - ts) + 'ms');
   });
 });

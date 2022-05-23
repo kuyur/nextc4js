@@ -3,6 +3,7 @@ var encoder = require('../lib/encoder');
 var decoder = require('../lib/decoder');
 const { CharmapType } = require('../lib/charmap');
 var goog = require('../lib/goog-base');
+var consts = require('../lib/consts');
 
 var gb18030Options =  {
   'name': 'gb18030-encoder',
@@ -46,6 +47,17 @@ describe('UTF16LE encoder unit test', function() {
     expect(encoder.UTF16LE.getType()).toBe(CharmapType.ENCODER);
     var utf16Buffer = encoder.UTF16LE.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-utf16le-out.txt', utf16Buffer, {flag: 'w+'});
+    console.log('Consumed time: ' + (new Date - ts) + 'ms');
+  });
+
+  it('unparse()', function() {
+    var ts = new Date;
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
+    var unicodeString = decoder.UTF16LE.parse(utf16TextBuffer);
+    expect(unicodeString).not.toBe('');
+    expect(unicodeString.codePointAt(0)).not.toBe(consts.UNICODE_BYTE_ORDER_MARK); // BOM is removed
+    var utf16Buffer = encoder.UTF16LE.unparse(unicodeString, true);
+    fs.writeFileSync('test/out/encoding-test-utf16le-out2.txt', utf16Buffer, {flag: 'w+'});
     console.log('Consumed time: ' + (new Date - ts) + 'ms');
   });
 });
@@ -114,7 +126,18 @@ describe('GB18030 encoder unit test', function() {
     var gb18030Encoder = new encoder.Multibyte(gb18030Options);
     expect(gb18030Encoder.getName()).toBe(gb18030Options.name);
     expect(gb18030Encoder.getType()).toBe(CharmapType.ENCODER);
+    expect(gb18030Encoder.getBytesOfCodepoint()).toBe(4);
     var gb18030Buffer = gb18030Encoder.encode(unicodeBuffer);
     fs.writeFileSync('test/out/encoding-test-gb18030-out.txt', gb18030Buffer, {flag: 'w+'});
+  });
+
+  it('unparse()', function() {
+    var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/unicode-bmp-and-sp.txt');
+    var unicodeString = decoder.UTF16LE.parse(utf16TextBuffer);
+
+    var gb18030Encoder = new encoder.Multibyte(gb18030Options);
+    var gb18030Buffer = gb18030Encoder.unparse(unicodeString);
+    expect(gb18030Buffer).not.toBeNull();
+    fs.writeFileSync('test/out/encoding-test-gb18030-out2.txt', gb18030Buffer, {flag: 'w+'});
   });
 });

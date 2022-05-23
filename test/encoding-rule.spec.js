@@ -16,6 +16,11 @@ describe('EncodingRule.UTF16LE unit test', function() {
     expect(uint8array[2]).toBe(0x06);
     expect(uint8array[3]).toBe(0xDF);
   });
+
+  it('encode() - invalid', function() {
+    var uint8array = encodingrule.UTF16LE.encode({a: 'an object'});
+    expect(uint8array).toBeNull();
+  });
 });
 
 describe('EncodingRule.UTF16BE unit test', function() {
@@ -34,6 +39,11 @@ describe('EncodingRule.UTF16BE unit test', function() {
     expect(uint8array[2]).toBe(0xDF);
     expect(uint8array[3]).toBe(0x06);
   });
+
+  it('encode() - invalid', function() {
+    var uint8array = encodingrule.UTF16BE.encode({a: 'an object'});
+    expect(uint8array).toBeNull();
+  });
 });
 
 describe('EncodingRule.UTF8 unit test', function() {
@@ -51,5 +61,10 @@ describe('EncodingRule.UTF8 unit test', function() {
     expect(uint8array[1]).toBe(0x9D);
     expect(uint8array[2]).toBe(0x8C);
     expect(uint8array[3]).toBe(0x86);
+  });
+
+  it('encode() - invalid', function() {
+    var uint8array = encodingrule.UTF8.encode({a: 'an object'});
+    expect(uint8array).toBeNull();
   });
 });
