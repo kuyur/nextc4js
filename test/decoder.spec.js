@@ -350,7 +350,7 @@ describe('UTF16LE Decoder unit test', function() {
 
   it('unparse()', function() {
     var ts = new Date;
-    
+
     var utf16TextBuffer = fs.readFileSync('test/txt/utf-16/bungakusyoujyo-unicode.txt');
     var unicodeString = decoder.UTF16LE.parse(utf16TextBuffer);
     expect(unicodeString).not.toBe('');
