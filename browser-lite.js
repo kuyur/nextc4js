@@ -1,6 +1,7 @@
 'use strict';
 
 const BufferUtils = require('./lib/buffer-utils');
+const UtfUtils = require('./lib/utf-utils');
 const { Channel } = require('./lib/channel');
 const { CharmapType } = require('./lib/charmap');
 const { Condition } = require('./lib/condition');
@@ -29,7 +30,10 @@ module.exports = {
   SegmentReference: Reference,
   Context: Context,
   Consts: Consts,
-  utils: BufferUtils,
-  base64: base64,
+  utils: {
+    buffer: BufferUtils,
+    utf: UtfUtils,
+    base64: base64
+  },
   loadFromUrl: loadFromUrl
 };

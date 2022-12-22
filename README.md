@@ -95,12 +95,12 @@ npm run lint:fix
 <script src="path_to_nextc4/nextc4-lite.min.js"></script>
 ```
 
-The size of lite version is only 27k and doesn't contain any external charmaps.  
+The size of lite version is only 32k and doesn't contain any external charmaps.  
 ```javascript
 // create a Context from empty configuration (without loading external charmaps)
+// UTF-8, UTF-16LE, UTF-16BE will be available for encoding and decoding in this context
 var context = new nextc4.Context();
 
-// UTF-8, UTF-16LE, UTF-16BE will be available for encoding and decoding
 var utf8BufferWithoutBom = new Uint8Array([
   228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129,
   160, 229, 173, 144, 229, 133, 136, 232, 188, 169, 227,
@@ -112,10 +112,39 @@ var utf8BufferWithoutBom = new Uint8Array([
 var unicodeCodePoints = context.decode(utf8BufferWithoutBom, 'UTF-8');
 
 // convert to string
-console.log(nextc4.utils.toString(unicodeCodePoints));
+console.log(nextc4.utils.buffer.toString(unicodeCodePoints));
 
 // encoded results is Uint8Array (binary)
 context.encode(unicodeCodePoints, 'UTF-16LE');
+```
+
+More simply, you can code like this:
+```javascript
+// create a Context from empty configuration (without loading external charmaps)
+// UTF-8, UTF-16LE, UTF-16BE will be available for encoding and decoding in this context
+var context = new nextc4.Context();
+
+var utf8Binary = [
+  228, 184, 128, 231, 171, 160, 227, 128, 128, 233, 129,
+  160, 229, 173, 144, 229, 133, 136, 232, 188, 169, 227,
+  129, 175, 227, 128, 129, 231, 190, 142, 233, 163, 159,
+  229, 174, 182, 227, 129, 167, 227, 129, 153
+];
+
+// you also can write it in hexadecimal
+/*
+var utf8Binary = [
+  0xE4, 0xB8, 0x80, 0xE7, 0xAB, 0xA0, 0xE3, 0x80, 0x80, 0xE9, 0x81,
+  0xA0, 0xE5, 0xAD, 0x90, 0xE5, 0x85, 0x88, 0xE8, 0xBC, 0xA9, 0xE3,
+  0x81, 0xAF, 0xE3, 0x80, 0x81, 0xE7, 0xBE, 0x8E, 0xE9, 0xA3, 0x9F,
+  0xE5, 0xAE, 0xB6, 0xE3, 0x81, 0xA7, 0xE3, 0x81, 0x99
+];
+*/
+
+// use UTF-8 to decode the binary and return native JavaScript string
+var str = context.parse(utf8Binary, 'UTF-8');
+
+console.log(str);
 ```
 
 You can load a context from a URL, when the binary data of external charmaps are stored separately.  
@@ -130,7 +159,7 @@ promise.then(context => {
     137, 198, 130, 197, 130, 183
   ]);
   var unicodeCodePoints = context.decode(shiftJisBuffer, 'Shift-JIS(CP932)');
-  console.log(nextc4.utils.toString(unicodeCodePoints));
+  console.log(nextc4.utils.buffer.toString(unicodeCodePoints));
 
   // use parse() API
   var str = context.parse(shiftJisBuffer, 'Shift-JIS(CP932)');
@@ -376,7 +405,7 @@ var option = {
 var cp1253 = new DecoderMultibyte(option);
 
 var codepoints = cp1253.decode(new Uint8Array([0x41, 0x42, 0x43, 0x80, 0xDC, 0xDD, 0xDE, 0xDF]));
-console.log(utils.toString(codepoints));
+console.log(utils.buffer.toString(codepoints));
 ```
 
 ## Performance vs Size
