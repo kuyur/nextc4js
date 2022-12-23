@@ -1544,7 +1544,7 @@
         i++;
       }
     }
-    return results.slice(0, pos);
+    return results;
   };
 
   /**
@@ -3657,6 +3657,7 @@
    *   var output = dec.decode(buffer, opt_offset);
    * @param {Uint8Array} buffer input buffer to decode.
    * @param {string} decoderName name of decoder.
+   * @param {?number} opt_offset the start position in buffer to decode. 0 by default.
    * @return {Uint32Array} Unicode code points.
    */
   Context$2.prototype.decode = function(buffer, decoderName, opt_offset) {
