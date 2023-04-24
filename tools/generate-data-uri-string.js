@@ -1,5 +1,5 @@
 /**
- * @author kuyur@kuyur.info
+ * @author kuyur@kuyur.net
  */
 
 const fs = require('fs');

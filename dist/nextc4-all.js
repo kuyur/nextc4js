@@ -7,7 +7,7 @@
   var bufferUtils = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   /**
@@ -370,7 +370,7 @@
   var condition = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   /**
@@ -573,7 +573,7 @@
 
   /**
    * Segment class.
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Condition: Condition$3 } = condition;
@@ -729,7 +729,7 @@
   var consts$6 = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   consts$6.UNICODE_UNKNOWN_CHAR = 0xFFFD;
@@ -745,7 +745,7 @@
   consts$6.EMBEDDED_BASE64_PREFIX = 'data:application/octet-stream;base64,';
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Condition: Condition$2 } = condition;
@@ -789,7 +789,7 @@
 
   /**
    * Reading rule class.
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const goog$7 = googBase;
@@ -1504,7 +1504,7 @@
   encodingRule.Multibyte = EncodingRuleMultibyte;
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const {UTF8, UTF16LE, UTF16BE} = encodingRule;
@@ -1619,7 +1619,7 @@
   var channel = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const goog$6 = googBase;
@@ -1692,7 +1692,7 @@
   var charmap = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   /**
@@ -1765,7 +1765,7 @@
    * The base64 encoding/decoding implementation for browser environment.
    * The encode method accepts an Uint8Array as input.
    * The decode method outputs an Uint8Array as result.
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    * @see https://en.wikipedia.org/wiki/Base64
    */
 
@@ -1921,7 +1921,7 @@
   };
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Charmap: Charmap$2, CharmapType: CharmapType$3} = charmap;
@@ -2065,7 +2065,7 @@
 
   /**
    * Reading rule class.
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Condition: Condition$1 } = condition;
@@ -2898,7 +2898,7 @@
   decodingRule.UTF8 = new DecodingRuleUTF8();
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Charmap: Charmap$1, CharmapType: CharmapType$2 }= charmap;
@@ -3209,7 +3209,7 @@
   var encoder$2 = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Charmap, CharmapType: CharmapType$1 } = charmap;
@@ -3444,7 +3444,7 @@
   var context = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Channel: Channel$1 } = channel;
@@ -3776,7 +3776,7 @@
   var loadFromUrl$1 = {};
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const { Context: Context$2 } = context;
@@ -4147,7 +4147,7 @@
   };
 
   /**
-   * @author kuyur@kuyur.info
+   * @author kuyur@kuyur.net
    */
 
   const defaultPreset = require$$0;
