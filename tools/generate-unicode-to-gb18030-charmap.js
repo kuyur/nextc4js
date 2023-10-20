@@ -125,7 +125,7 @@ u2gb18030[0xFFFD] = 0x8431a437;
 
 var chr;
 for (j = 0x80; j <= 0xFFFF; ++j) {
-  chr = gb18030Decoder.convertChar_(j);
+  chr = gb18030Decoder.rule_.convertChar_(j);
   if (chr !== consts.UNICODE_UNKNOWN_CHAR) {
     if (chr <= 0xFFFF) {
       u2gb18030[chr] = j;
@@ -139,7 +139,7 @@ var GB18030_4BYTES_UNICODE_BMP = condition.Condition.build(['0x81~0x84', '0x30~0
 var gb_chr;
 for (j = 0; j < 39420; ++j) {
   gb_chr = GB18030_4BYTES_UNICODE_BMP.getCodePoint(j);
-  chr = gb18030Decoder.convertChar_(gb_chr);
+  chr = gb18030Decoder.rule_.convertChar_(gb_chr);
   // special case: ḿ is overridden in GB18030 4-bytes zone again
   if (chr !== consts.UNICODE_UNKNOWN_CHAR && gb_chr !== 0x8135F437) {
     if (chr <= 0xFFFF) {
